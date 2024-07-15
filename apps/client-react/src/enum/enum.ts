@@ -21,8 +21,8 @@ export enum MethodHttpEnum {
 
 // Router
 export enum RouterEnum {
-  LOGIN = '/login',
-  REGISTER = '/register',
+  LOGIN = '/Login',
+  REGISTER = '/Register',
   ADD_BOOK = '/add-book',
   BOOK = '/book/:id',
   BOOK_USER = '/books/:userId',

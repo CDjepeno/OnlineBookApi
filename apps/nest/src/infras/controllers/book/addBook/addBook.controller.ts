@@ -30,7 +30,7 @@ export class AddBookController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('coverFile'))
+  @UseInterceptors(FileInterceptor('coverUrl'))
   @ApiOperation({
     summary: 'Create Book',
   })
@@ -42,16 +42,16 @@ export class AddBookController {
         .addMaxSizeValidator({ maxSize: 3 * 1024 * 1024 })
         .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
     )
-    coverFile: Express.Multer.File,
+    coverUrl: Express.Multer.File,
   ) {
     try {
-      if (!coverFile) {
+      if (!coverUrl) {
         throw new BadRequestException('Cover file is required');
       }
 
       const result = await this.addBookUsecaseProxy
         .getInstance()
-        .execute({ ...createBookDto, coverFile });
+        .execute({ ...createBookDto, coverUrl });
 
       console.log('Book created successfully:', result);
 

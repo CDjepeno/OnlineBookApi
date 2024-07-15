@@ -4,31 +4,32 @@ import { AxiosError } from "axios";
 import { useContext } from "react";
 import { DefaultValues, useForm } from "react-hook-form";
 import * as yup from "yup";
-import { AuthContext } from "../../context";
-import { BookQueriesKeysEnum, RouterEnum } from "../../enum/enum";
-import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflowCallback";
-import { createBook } from "../../services/book-services";
+import { AuthContext } from "../../../../context";
+import { BookQueriesKeysEnum, RouterEnum } from "../../../../enum/enum";
+import { UseQueryWorkflowCallback } from "../../../../request/commons/useQueryWorkflowCallback";
+import { createBook } from "../../../../services/book.services";
 import {
   AddBookFormType,
   AddBookInput,
+  AddBookResponses,
   ErrorResponse,
-} from "../../types/book/book.types";
-import { AuthContextValue } from "../../types/user/auth.context.value";
+} from "../../../../types/book/book.types";
+import { AuthContextValue } from "../../../../types/user/auth.context.value";
 
 const defaultValues: DefaultValues<AddBookFormType> = {
   name: "",
   description: "",
   author: "",
-  releaseAt: new Date(),
-  coverFile: undefined,
+  releaseAt: "",
+  coverUrl: undefined,
 };
 
 const bookSchema = yup.object({
   name: yup.string().required("Le nom doit être renseigné"),
   description: yup.string().required("La description doit être renseignée"),
   author: yup.string().required("L'auteur doit être renseigné"),
-  releaseAt: yup.date().required("La date de sortie doit être renseignée"),
-  coverFile: yup
+  releaseAt: yup.string().required("La date de sortie doit être renseignée"),
+  coverUrl: yup
     .mixed<FileList>()
     .required("L'image de couverture est requise")
     .test("fileSize", "L'image doit faire moins de 5MB", (value) =>
@@ -36,7 +37,7 @@ const bookSchema = yup.object({
     ),
 });
 
-function AddBookHook() {
+function BookAddHook() {
   const { user } = useContext(AuthContext) as AuthContextValue;
   const queryClient = new QueryClient();
 
@@ -53,7 +54,11 @@ function AddBookHook() {
   const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
   const userId = user && user.id;
 
-  const { mutateAsync: addBook } = useMutation({
+  const { mutateAsync: addBook } = useMutation<
+    AddBookResponses,
+    AxiosError<unknown>,
+    FormData
+  >({
     mutationFn: async (data: FormData) => createBook(data, userId),
 
     onSuccess: (response) => {
@@ -86,12 +91,12 @@ function AddBookHook() {
       formData.append("name", data.name);
       formData.append("description", data.description);
       formData.append("author", data.author);
-      formData.append("releaseAt", data.releaseAt.toISOString());
+      formData.append("releaseAt", data.releaseAt);
 
-      if (data.coverFile && data.coverFile.length > 0) {
-        formData.append("coverFile", data.coverFile[0]);
+      if (data.coverUrl && data.coverUrl.length > 0) {
+        formData.append("coverUrl", data.coverUrl[0]);
       } else {
-        console.error("CoverFile is required");
+        console.error("coverUrl is required");
         return;
       }
 
@@ -104,7 +109,7 @@ function AddBookHook() {
   return { register, submit, handleSubmit, isSubmitting, errors, control };
 }
 
-export default AddBookHook;
+export default BookAddHook;
 
 function isAxiosError(error: unknown): error is AxiosError {
   return (

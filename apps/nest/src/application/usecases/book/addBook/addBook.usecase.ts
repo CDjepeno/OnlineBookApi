@@ -11,7 +11,7 @@ export class AddBookUseCase {
 
   async execute(request: AddBookRequest): Promise<AddBookResponse> {
     try {
-      const coverUrl = await this.awsS3Client.uploadFile(request.coverFile);
+      const coverUrl = await this.awsS3Client.uploadFile(request.coverUrl);
 
       const book = new BookEntity(
         request.id,

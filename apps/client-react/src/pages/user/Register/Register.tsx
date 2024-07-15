@@ -9,9 +9,9 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Controller } from "react-hook-form";
 import RegisterHook from "./Register.hook";
-import FormInput from "../../components/FormInput";
+import FormInput from "../../../components/FormInput";
 
-export default function SignIn() {
+export default function Register() {
   const {
     onSubmit,
     handleSubmit,

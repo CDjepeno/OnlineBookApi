@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getBooks } from "../../services/book-services";
 import { BookQueriesKeysEnum } from "../../enum/enum";
+import { getBooks } from "../../services/book.services";
 
 export default function HomePageHook() {
   const {
@@ -11,7 +11,6 @@ export default function HomePageHook() {
     queryKey: [BookQueriesKeysEnum.GetBooks],
     queryFn: getBooks,
   });
-
 
   return { isPending, books, error };
 }

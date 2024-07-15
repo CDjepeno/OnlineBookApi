@@ -1,12 +1,12 @@
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import App from "./App";
 import { RouterEnum } from "./enum/enum";
-import AddBook from "./pages/book/Add-book";
-import BookDetail from "./pages/book/Book-detail";
-import BookUser from "./pages/book/Book-user";
+import BookDetail from "./pages/book/BookDetail/BookDetail";
+import AddBook from "./pages/book/BookForm/BookAdd/BookAddForm";
+import BookUser from "./pages/book/BookList/BookListUser";
 import { HomePage } from "./pages/Homepage/HomePage";
-import Login from "./pages/login/login";
-import Register from "./pages/register/Register";
+import Login from "./pages/user/Login/Login";
+import Register from "./pages/user/Register/Register";
 import PrivateRoute from "./Private-route";
 
 type CustomRouteObject = RouteObject & {

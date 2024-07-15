@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
-import BookDetailHook from "./Book-detail.hook";
-import BookCardDetail from "./components/BookCardDetail";
+import BookCardDetail from "../components/BookDetailCard";
+import BookDetailHook from "./BookDetail.hook";
 
 function BookDetail() {
   const { isPending, book, error } = BookDetailHook();

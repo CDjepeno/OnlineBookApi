@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { BookQueriesKeysEnum } from "../../enum/enum";
-import { getBooksByUser } from "../../services/book-services";
+import { BookQueriesKeysEnum } from "../../../enum/enum";
+import { getBooksByUser } from "../../../services/book.services";
 
-function BookUserHook() {
+function BookListUserHook() {
   const { userId } = useParams<{ userId: string }>();
 
   const {
@@ -19,4 +19,4 @@ function BookUserHook() {
   return { books, isPending, error };
 }
 
-export default BookUserHook;
+export default BookListUserHook;

@@ -4,6 +4,6 @@ export class UpdateBookRequest {
   description?: string;
   author?: string;
   releaseAt?: Date;
-  coverFile?: Express.Multer.File;
+  coverUrl?: Express.Multer.File;
   userId?: number;
 }

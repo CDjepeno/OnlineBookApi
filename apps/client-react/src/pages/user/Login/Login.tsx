@@ -8,8 +8,8 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import FormInput from "../../components/FormInput";
-import LoginHook from "./login.hook";
+import LoginHook from "./Login.hook";
+import FormInput from "../../../components/FormInput";
 
 export default function Login() {
   const { onSubmit, handleSubmit, errors, isSubmitting, control } = LoginHook();

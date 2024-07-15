@@ -24,6 +24,8 @@ export class UsersController {
       const result = await this.createUserUsecaseProxy
         .getInstance()
         .execute(createUserDto);
+
+      // const { name, email, phone } = result;
       return {
         data: result,
       };

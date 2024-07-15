@@ -5,6 +5,7 @@ import {
   AddBookResponses,
   GetBookResponse,
   GetBooksResponse,
+  UpdateBookResponse,
 } from "../types/book/book.types";
 
 export const getBooks = async (): Promise<GetBooksResponse[]> => {
@@ -64,3 +65,16 @@ export const deleteBook = async (id: string): Promise<void> => {
     includeAuthorizationHeader: false,
   });
 };
+
+export const updateBook = async (
+  id: string,
+  data: FormData
+): Promise<UpdateBookResponse> => {
+  return await UseRequestApi({
+    method: MethodHttpEnum.PUT,
+    path: `${BOOK_ROUTE}/${id}`,
+    params: data,
+    includeAuthorizationHeader: true,
+  });
+};
+
