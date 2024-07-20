@@ -140,7 +140,6 @@ function BookUpdateForm({ bookUpdate }: BookUpdateFormProps) {
                         id="file-upload"
                         accept=".jpg,.jpeg,.png"
                         onChange={(e) => {
-                          console.log(e.target.files)
                           if (e.target.files && e.target.files.length > 0) {
                             const selectedFile = e.target.files[0];
                             onChange(selectedFile);
