@@ -29,11 +29,19 @@ const bookSchema = yup.object({
   description: yup.string().required("La description doit être renseignée"),
   author: yup.string().required("L'auteur doit être renseigné"),
   releaseAt: yup.string().required("La date de sortie doit être renseignée"),
+
+  // coverUrl: yup
+  //   .mixed<FileList>()
+  //   .required("L'image de couverture est requise")
+  //   .test("fileSize", "L'image doit faire moins de 5MB", (value) =>
+  //     value ? value[0].size <= 5000000 : false
+  //   ),
+
   coverUrl: yup
-    .mixed<FileList>()
+    .mixed<File>()
     .required("L'image de couverture est requise")
     .test("fileSize", "L'image doit faire moins de 5MB", (value) =>
-      value ? value[0].size <= 2000000 : true
+      value ? value.size <= 5000000 : false
     ),
 });
 
@@ -93,8 +101,8 @@ function BookAddHook() {
       formData.append("author", data.author);
       formData.append("releaseAt", data.releaseAt);
 
-      if (data.coverUrl && data.coverUrl.length > 0) {
-        formData.append("coverUrl", data.coverUrl[0]);
+      if (data.coverUrl) {
+        formData.append("coverUrl", data.coverUrl);
       } else {
         console.error("coverUrl is required");
         return;

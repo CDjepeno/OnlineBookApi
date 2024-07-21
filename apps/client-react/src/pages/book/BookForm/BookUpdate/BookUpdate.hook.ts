@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { useForm } from "react-hook-form";
 import { BookQueriesKeysEnum } from "../../../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../../../request/commons/useQueryWorkflowCallback";
 import { updateBook } from "../../../../services/book.services";
@@ -17,7 +18,12 @@ function BookUpdateHook() {
   const queryClient = useQueryClient();
   const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
 
-  console.log("update hookkkkk");
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<UpdateBookFormType>();
 
   const { mutateAsync: updateBookMutation } = useMutation<
     UpdateBookResponse,
@@ -53,7 +59,6 @@ function BookUpdateHook() {
   });
 
   const submit = async (data: UpdateBookFormType) => {
-    console.log("submit", data);
     try {
       const formData = new FormData();
       formData.append("name", data.name);
@@ -81,6 +86,10 @@ function BookUpdateHook() {
 
   return {
     submit,
+    handleSubmit,
+    control,
+    reset,
+    errors,
   };
 }
 

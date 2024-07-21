@@ -9,45 +9,47 @@ import {
   Typography,
 } from "@mui/material";
 import { fr } from "date-fns/locale";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
-import { Controller, useForm } from "react-hook-form";
-import { createGlobalStyle } from "styled-components";
+import { Controller } from "react-hook-form";
 import FormInput from "../../../../components/FormInput";
+import {
+  GlobalStyle,
+  IconWithMargin,
+  StyledButton,
+} from "../../../../StyledComponents/StyledComponents";
 import { UpdateBookFormType } from "../../../../types/book/book.types";
 import BookUpdateHook from "./BookUpdate.hook";
 
 registerLocale("fr", fr);
 
-const GlobalStyle = createGlobalStyle`
-  .react-datepicker-wrapper,
-  .react-datepicker__input-container {
-    width: 100%;
-  }
-`;
-
 type BookUpdateFormProps = {
   bookUpdate: UpdateBookFormType;
+  onClose: () => void;
 };
 
-function BookUpdateForm({ bookUpdate }: BookUpdateFormProps) {
-  console.log(bookUpdate?.coverUrl);
-
+function BookUpdateForm({ bookUpdate, onClose }: BookUpdateFormProps) {
   const [fileName, setFileName] = useState(bookUpdate?.coverUrl || "");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const {
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors },
-  } = useForm<UpdateBookFormType>();
-
-  const { submit } = BookUpdateHook();
+  const { submit, handleSubmit, control, reset, errors } = BookUpdateHook();
 
   useEffect(() => {
     reset(bookUpdate);
     setFileName(bookUpdate?.coverUrl || "");
   }, [reset, bookUpdate]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const selectedFile = e.target.files[0];
+      setFileName(URL.createObjectURL(selectedFile));
+    }
+  };
+
+  const onSubmit = async (data: UpdateBookFormType) => {
+    await submit(data);
+    onClose();
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -67,7 +69,7 @@ function BookUpdateForm({ bookUpdate }: BookUpdateFormProps) {
         <Box
           component="form"
           noValidate
-          onSubmit={handleSubmit(submit)}
+          onSubmit={handleSubmit(onSubmit)}
           sx={{ mt: 3 }}
         >
           <Grid container spacing={2}>
@@ -133,25 +135,40 @@ function BookUpdateForm({ bookUpdate }: BookUpdateFormProps) {
                 <Controller
                   name="coverUrl"
                   control={control}
-                  render={({ field: { onChange, ref } }) => (
+                  render={({ field: { onChange } }) => (
                     <Box>
                       <input
                         type="file"
                         id="file-upload"
                         accept=".jpg,.jpeg,.png"
                         onChange={(e) => {
-                          if (e.target.files && e.target.files.length > 0) {
-                            const selectedFile = e.target.files[0];
-                            onChange(selectedFile);
-                            setFileName(selectedFile.name);
-                          }
+                          handleFileChange(e);
+                          onChange(e.target.files ? e.target.files[0] : null);
                         }}
-                        ref={ref}
-                        style={{ width: "100%" }}
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
                       />
+                      <StyledButton
+                        variant="contained"
+                        onClick={() =>
+                          fileInputRef.current && fileInputRef.current.click()
+                        }
+                      >
+                        <IconWithMargin />
+                        Choisir un fichier
+                      </StyledButton>
+
                       {fileName && typeof fileName === "string" && (
                         <Typography variant="body2" mt={2}>
-                          Fichier actuel : {fileName}
+                          <img
+                            src={fileName}
+                            alt="Preview"
+                            style={{
+                              width: "100%",
+                              maxHeight: "120px",
+                              borderRadius: 7,
+                            }}
+                          />
                         </Typography>
                       )}
                     </Box>

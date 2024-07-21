@@ -141,7 +141,12 @@ export default function BookListUser() {
             boxShadow: 24,
           }}
         >
-          <BookUpdateForm bookUpdate={bookToUpdate} bookId={selectedBookId || ""} />
+          {selectedBookId && bookToUpdate && (
+            <BookUpdateForm
+              bookUpdate={bookToUpdate}
+              onClose={() => setIsFormOpen(false)}
+            />
+          )}
         </Box>
       </Modal>
     </Container>

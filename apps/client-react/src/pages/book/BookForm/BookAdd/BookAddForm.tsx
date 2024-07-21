@@ -6,25 +6,31 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { fr } from "date-fns/locale";
+import { useRef, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Controller } from "react-hook-form";
-import { createGlobalStyle } from "styled-components";
 import FormInput from "../../../../components/FormInput";
+import {
+  GlobalStyle,
+  IconWithMargin,
+  StyledButton,
+} from "../../../../StyledComponents/StyledComponents";
 import AddBookHook from "./BookAdd.hook";
 
 registerLocale("fr", fr);
 
-const GlobalStyle = createGlobalStyle`
-  .react-datepicker-wrapper,
-  .react-datepicker__input-container {
-    width: 100%;
-  }
-`;
-
 function BookAddForm() {
+  const [fileName, setFileName] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { submit, handleSubmit, errors, control } = AddBookHook();
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const selectedFile = e.target.files[0];
+      setFileName(URL.createObjectURL(selectedFile));
+    }
+  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -110,18 +116,42 @@ function BookAddForm() {
                 <Controller
                   name="coverUrl"
                   control={control}
-                  render={({ field: { onChange, ref } }) => (
-                    <input
-                      type="file"
-                      id="file-upload"
-                      accept=".jpg,.jpeg,.png"
-                      onChange={(e) => {
-                        console.log(e.target.files);
-                        onChange(e.target.files);
-                      }}
-                      ref={ref}
-                      style={{ width: "100%" }}
-                    />
+                  render={({ field: { onChange } }) => (
+                    <Box>
+                      <input
+                        type="file"
+                        id="file-upload"
+                        accept=".jpg,.jpeg,.png"
+                        onChange={(e) => {
+                          handleFileChange(e);
+                          onChange(e.target.files && e.target.files[0]);
+                        }}
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                      />
+                      <StyledButton
+                        variant="contained"
+                        onClick={() =>
+                          fileInputRef.current && fileInputRef.current.click()
+                        }
+                      >
+                        <IconWithMargin />
+                        Choisir un fichier
+                      </StyledButton>
+                      {fileName && typeof fileName === "string" && (
+                        <Typography variant="body2" mt={2}>
+                          <img
+                            src={fileName}
+                            alt="Preview"
+                            style={{
+                              width: "100%",
+                              maxHeight: "120px",
+                              borderRadius: 7,
+                            }}
+                          />
+                        </Typography>
+                      )}
+                    </Box>
                   )}
                 />
               </Box>
