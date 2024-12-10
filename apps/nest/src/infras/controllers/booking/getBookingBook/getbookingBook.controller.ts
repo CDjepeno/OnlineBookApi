@@ -11,14 +11,14 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
-import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookings/getBookingsBook.usecase';
+import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 
 @ApiTags('Booking')
 @Controller('/bookings/book')
 export class GetBookingBookController {
   constructor(
-    @Inject(UsecaseProxyModule.GET_BOOKINGS_BOOK_USECASE_PROXY)
+    @Inject(UsecaseProxyEnum.GET_BOOKINGS_BOOK_USECASE_PROXY)
     private readonly getBookingsBookUsecaseProxy: UseCaseProxy<GetBookingsBookUseCase>,
   ) {}
 

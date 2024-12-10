@@ -13,17 +13,17 @@ import { GetCurrentUserUseCase } from 'src/application/usecases/user/auth/get.cu
 import { LoginUserUseCase } from 'src/application/usecases/user/getuser/login.user.usecase';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
-import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { AuthDto } from './auth.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(
-    @Inject(UsecaseProxyModule.LOGIN_USER_USECASE_PROXY)
+    @Inject(UsecaseProxyEnum.LOGIN_USER_USECASE_PROXY)
     private readonly loginUsecaseProxy: UseCaseProxy<LoginUserUseCase>,
-    @Inject(UsecaseProxyModule.GET_CURRENT_USER_USECASE_PROXY)
+    @Inject(UsecaseProxyEnum.GET_CURRENT_USER_USECASE_PROXY)
     private readonly getCurrentUserUseCase: UseCaseProxy<GetCurrentUserUseCase>,
   ) {}
 

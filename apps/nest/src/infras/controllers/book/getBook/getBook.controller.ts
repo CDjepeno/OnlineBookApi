@@ -10,14 +10,14 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetBookUsecase } from 'src/application/usecases/book/getBook/getBook.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
-import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { GetBookDto } from './getBook.dto';
+import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 
 @ApiTags('Book')
 @Controller('book')
 export class GetBookController {
   constructor(
-    @Inject(UsecaseProxyModule.GET_BOOK_USECASE_PROXY)
+    @Inject(UsecaseProxyEnum.GET_BOOK_USECASE_PROXY)
     private readonly getBookUsecaseProxy: UseCaseProxy<GetBookUsecase>,
   ) {}
 

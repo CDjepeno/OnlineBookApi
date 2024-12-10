@@ -10,13 +10,13 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DeleteBookUsecase } from 'src/application/usecases/book/deleteBook/deleteBook.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
-import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
+import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 
 @ApiTags('Book')
 @Controller('book')
 export class DeleteBookController {
   constructor(
-    @Inject(UsecaseProxyModule.DELETE_BOOK_USECASE_PROXY)
+    @Inject(UsecaseProxyEnum.DELETE_BOOK_USECASE_PROXY)
     private readonly deleteBookUsecaseProxy: UseCaseProxy<DeleteBookUsecase>,
   ) {}
 

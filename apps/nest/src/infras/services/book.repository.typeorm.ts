@@ -68,7 +68,6 @@ export class BookRepositoryTyperom implements BookRepository {
       const totalBooks = await this.repository.count();
 
       const books = await this.repository.find({ skip, take });
-      console.log(books);
 
       return {
         books,

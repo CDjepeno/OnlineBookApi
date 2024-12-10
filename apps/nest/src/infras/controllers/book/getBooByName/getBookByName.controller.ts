@@ -8,15 +8,15 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
-import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { GetBookByNameDto } from './getBookByName.dto';
 import { GetBookByNameUsecase } from 'src/application/usecases/book/getBookByName/getBookByName.usecase';
+import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 
 @ApiTags('Book')
 @Controller('book')
 export class GetBookByNameController {
   constructor(
-    @Inject(UsecaseProxyModule.GET_BOOK_BY_NAME_USECASE_PROXY)
+    @Inject(UsecaseProxyEnum.GET_BOOK_BY_NAME_USECASE_PROXY)
     private readonly getBookByNameUsecaseProxy: UseCaseProxy<GetBookByNameUsecase>,
   ) {}
 

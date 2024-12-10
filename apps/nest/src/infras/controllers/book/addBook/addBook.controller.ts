@@ -16,14 +16,14 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AddBookUseCase } from 'src/application/usecases/book/addBook/addBook.usecase';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
-import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { CreateBookDto } from './addBook.dto';
+import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 
 @ApiTags('Book')
 @Controller('book')
 export class AddBookController {
   constructor(
-    @Inject(UsecaseProxyModule.ADD_BOOK_USECASE_PROXY)
+    @Inject(UsecaseProxyEnum.ADD_BOOK_USECASE_PROXY)
     private readonly addBookUsecaseProxy: UseCaseProxy<AddBookUseCase>,
   ) {}
 

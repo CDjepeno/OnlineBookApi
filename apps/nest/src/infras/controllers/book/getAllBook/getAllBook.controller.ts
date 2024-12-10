@@ -2,14 +2,14 @@ import { Controller, Get, Inject, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetAllBookUsecase } from 'src/application/usecases/book/getAllBook/getAllBook.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
-import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { GetAllBookResponsePagination } from 'src/application/usecases/book/getAllBook/getAllBook.response';
+import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 
 @ApiTags('Book')
 @Controller('books')
 export class GetAllBookController {
   constructor(
-    @Inject(UsecaseProxyModule.GET_ALL_BOOK_USECASE_PROXY)
+    @Inject(UsecaseProxyEnum.GET_ALL_BOOK_USECASE_PROXY)
     private readonly getAllBookUsecaseProxy: UseCaseProxy<GetAllBookUsecase>,
   ) {}
 
