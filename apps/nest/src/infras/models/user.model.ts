@@ -42,6 +42,10 @@ export class User {
   @IsString()
   name: string;
 
+  @Column({ nullable: true })
+  @IsString()
+  refreshToken: string;
+
   @Column()
   @IsString()
   phone: string;

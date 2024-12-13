@@ -7,11 +7,12 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { LogoutUserRequest } from 'src/application/usecases/logout/logout.user.request';
 import { AddUserRequest } from 'src/application/usecases/user/adduser/add.user.request';
 import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.response';
 import { CurrentUserResponse } from 'src/application/usecases/user/auth/current.user.response';
-import { LoginUserRequest } from 'src/application/usecases/user/getuser/login.user.request';
-import { LoginUserResponse } from 'src/application/usecases/user/getuser/login.user.response';
+import { LoginUserRequest } from 'src/application/usecases/user/login/login.user.request';
+import { LoginUserResponse } from 'src/application/usecases/user/login/login.user.response';
 import { Repository } from 'typeorm';
 import { UsersRepository } from '../../domaine/repositories/user.repository';
 import { User } from '../models/user.model';
@@ -67,10 +68,28 @@ export class UserRepositoryTyperom implements UsersRepository {
 
     const token = await this.jwtService.signAsync(payload, {
       secret: this.configService.get('JWT_SECRET'),
+      expiresIn: '16',
+    });
+
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      secret: this.configService.get('REFRESH_JWT_SECRET'),
       expiresIn: '24h',
     });
 
-    return { name: user.name, email: user.email, token };
+    await this.repository.update(user.id, { refreshToken: refreshToken });
+
+    return { name: user.name, email: user.email, token, refreshToken };
+  }
+
+  async signOut(request: LogoutUserRequest): Promise<void> {
+    try {
+      await this.repository.update({ id: request.id }, { refreshToken: null });
+    } catch (error) {
+      console.error('Error during signOut:', error);
+      throw new Error(
+        "Une erreur s'est produite lors de la deconexion de l'utilisateur.",
+      );
+    }
   }
 
   async getCurrentUser(email: string): Promise<CurrentUserResponse> {
