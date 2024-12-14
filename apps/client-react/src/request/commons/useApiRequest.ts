@@ -41,6 +41,15 @@ export async function UseRequestApi<TData, T>({
 
     return response;
   } catch (error) {
+    console.log(error);
+    if(error instanceof AxiosError && error.status === 401 ) {
+      // await UseRequestApi<GetBookingsBookResponse[], { id: string }>({
+      //   path: `${GET_BOOKINGS_BOOK_ROUTE}/${id}`,
+      //   method: MethodHttpEnum.POST,
+      //   params: { id },
+      //   includeAuthorizationHeader: false,
+      // })
+    }
     handleRequestError(error);
     throw error;
   }

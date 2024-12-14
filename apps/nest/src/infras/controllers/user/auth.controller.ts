@@ -10,14 +10,16 @@ import {
 } from '@nestjs/common';
 
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { LogoutUserUseCase } from 'src/application/usecases/logout/logout.user.usecase';
 import { GetCurrentUserUseCase } from 'src/application/usecases/user/auth/get.current.user.usecase';
-import { LoginUserUseCase } from 'src/application/usecases/user/login/login.user.usecase';
+import { LoginUserUseCase } from 'src/application/usecases/user/auth/login/login.user.usecase';
+import { LogoutUserUseCase } from 'src/application/usecases/user/auth/logout/logout.user.usecase';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 import { AuthDto } from './auth.dto';
 import { LogoutDto } from './logout.dto';
+import { RefreshTokenUseCase } from 'src/application/usecases/user/auth/refreshToken/refresh.token.usecase';
+import { RefreshTokenDto } from './refresh-token.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -31,6 +33,9 @@ export class AuthController {
 
     @Inject(UsecaseProxyEnum.GET_CURRENT_USER_USECASE_PROXY)
     private readonly getCurrentUserUseCase: UseCaseProxy<GetCurrentUserUseCase>,
+
+    @Inject(UsecaseProxyEnum.REFRESH_TOKEN_USECASE_PROXY)
+    private readonly refreshTokenUseCase: UseCaseProxy<RefreshTokenUseCase>,
   ) {}
 
   @Post('login')
@@ -51,7 +56,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Logout a user',
   })
-  async logout(@Body() request: LogoutDto) { 
+  async logout(@Body() request: LogoutDto) {
     await this.logoutUSeCaseProxy.getInstance().execute(request);
   }
 
@@ -64,5 +69,16 @@ export class AuthController {
     return await this.getCurrentUserUseCase
       .getInstance()
       .execute(request.user.email);
+  }
+
+  @Post('refresh-token')
+  @ApiOperation({
+    summary: 'Get a current user',
+  })
+  @UseGuards(JwtAuthGuard)
+  async getRefreshToken(@Body() request: RefreshTokenDto) {
+    return await this.refreshTokenUseCase
+      .getInstance()
+      .execute(request);
   }
 }

@@ -7,21 +7,23 @@ import { GetBooksByUserUsecase } from 'src/application/usecases/book/getBooksByU
 import { UpdateBookUseCase } from 'src/application/usecases/book/updateBook/updateBook.usecase';
 import { BookingBookUseCase } from 'src/application/usecases/booking/bookingBook/bookingBook.usecase';
 import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookings/getBookingsBook.usecase';
-import { LogoutUserUseCase } from 'src/application/usecases/logout/logout.user.usecase';
 import { AddUserUseCase } from 'src/application/usecases/user/adduser/add.user.usecase';
 import { GetCurrentUserUseCase } from 'src/application/usecases/user/auth/get.current.user.usecase';
-import { LoginUserUseCase } from 'src/application/usecases/user/login/login.user.usecase';
+import { LoginUserUseCase } from 'src/application/usecases/user/auth/login/login.user.usecase';
+import { LogoutUserUseCase } from 'src/application/usecases/user/auth/logout/logout.user.usecase';
 import { AwsS3Client } from '../clients/aws/aws-s3.client';
 import NodemailerClient from '../clients/nodemailer/nodemailer.client';
 import { BookRepositoryTyperom } from '../services/book.repository.typeorm';
 import { BookingRepositoryTypeorm } from '../services/booking.repository.typeorm';
 import { UserRepositoryTyperom } from '../services/user.repository.typeorm';
 import { UseCaseProxy } from './usecase-proxy';
+import { RefreshTokenUseCase } from 'src/application/usecases/user/auth/refreshToken/refresh.token.usecase';
 
 export enum UsecaseProxyEnum {
   CREATE_USER_USECASE_PROXY = 'createUserUsecaseProxy',
   LOGIN_USER_USECASE_PROXY = 'loginUserUseCaseProxy',
   LOGOUT_USER_USECASE_PROXY = 'logoutUserUseCaseProxy',
+  REFRESH_TOKEN_USECASE_PROXY = 'refreshTokenUseCaseProxy',
   BOOKING_BOOK_USECASE_PROXY = 'BookingBookUsecaseProxy',
   ADD_BOOK_USECASE_PROXY = 'addBookUsecaseProxy',
 
@@ -120,6 +122,12 @@ export const useCasesConfig = [
     provide: UsecaseProxyEnum.LOGOUT_USER_USECASE_PROXY,
     useFactory: (userRepository: UserRepositoryTyperom) =>
       new UseCaseProxy(new LogoutUserUseCase(userRepository)),
+  },
+  {
+    inject: [UserRepositoryTyperom],
+    provide: UsecaseProxyEnum.REFRESH_TOKEN_USECASE_PROXY,
+    useFactory: (userRepository: UserRepositoryTyperom) =>
+      new UseCaseProxy(new RefreshTokenUseCase(userRepository)),
   },
 ];
 

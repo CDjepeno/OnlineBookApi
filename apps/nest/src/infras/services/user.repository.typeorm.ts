@@ -1,3 +1,4 @@
+import { RefreshTokenResponse } from './../../application/usecases/user/auth/refreshToken/refresh.token.response';
 import {
   Injectable,
   NotFoundException,
@@ -7,15 +8,16 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { LogoutUserRequest } from 'src/application/usecases/logout/logout.user.request';
 import { AddUserRequest } from 'src/application/usecases/user/adduser/add.user.request';
 import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.response';
 import { CurrentUserResponse } from 'src/application/usecases/user/auth/current.user.response';
-import { LoginUserRequest } from 'src/application/usecases/user/login/login.user.request';
-import { LoginUserResponse } from 'src/application/usecases/user/login/login.user.response';
+import { LoginUserRequest } from 'src/application/usecases/user/auth/login/login.user.request';
+import { LoginUserResponse } from 'src/application/usecases/user/auth/login/login.user.response';
+import { LogoutUserRequest } from 'src/application/usecases/user/auth/logout/logout.user.request';
 import { Repository } from 'typeorm';
 import { UsersRepository } from '../../domaine/repositories/user.repository';
 import { User } from '../models/user.model';
+import { RefreshTokenRequest } from 'src/application/usecases/user/auth/refreshToken/refresh.token.request';
 
 @Injectable()
 export class UserRepositoryTyperom implements UsersRepository {
@@ -68,15 +70,18 @@ export class UserRepositoryTyperom implements UsersRepository {
 
     const token = await this.jwtService.signAsync(payload, {
       secret: this.configService.get('JWT_SECRET'),
-      expiresIn: '16',
+      expiresIn: '10m',
     });
 
+    
     const refreshToken = await this.jwtService.signAsync(payload, {
       secret: this.configService.get('REFRESH_JWT_SECRET'),
       expiresIn: '24h',
     });
 
-    await this.repository.update(user.id, { refreshToken: refreshToken });
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+
+    await this.repository.update(user.id, { refreshToken: hashedRefreshToken });
 
     return { name: user.name, email: user.email, token, refreshToken };
   }
@@ -108,5 +113,45 @@ export class UserRepositoryTyperom implements UsersRepository {
         "Une erreur s'est produite lors de la recherche de l'utilisateur.",
       );
     }
+  }
+
+  async getRefreshToken(refreshTokenRequest: RefreshTokenRequest): Promise<RefreshTokenResponse> {
+    const {refreshToken} = refreshTokenRequest
+    
+    const tokenDecoded = this.jwtService.verify(refreshToken, {
+      secret: this.configService.get('REFRESH_JWT_SECRET'),
+      ignoreExpiration: true, 
+    });
+    
+    const user = await this.repository.findOne({ where: { id: tokenDecoded.sub } });
+
+    const isRefreshTokenValid = await bcrypt.compare(refreshToken, user.refreshToken);
+
+    if (!isRefreshTokenValid) {
+      throw new UnauthorizedException('Refresh token invalide.');
+    }
+
+    const payload = {
+      sub: user.id,
+      email: user.email,
+    };
+
+    const newAccessToken = this.jwtService.sign(
+      payload,
+      { secret: process.env.JWT_SECRET, expiresIn: '15m' },
+    );
+    
+    const newRefreshToken = this.jwtService.sign(
+      payload,
+      { secret: process.env.JWT_REFRESH_SECRET, expiresIn: '7d' },
+    );
+
+    const hashedNewRefreshToken = await bcrypt.hash(newRefreshToken, 10);
+
+    await this.repository.update(user.id, { refreshToken: hashedNewRefreshToken });
+    
+
+    return {token : newAccessToken, refreshToken: newRefreshToken}
+    
   }
 }
