@@ -57,7 +57,8 @@ export async function UseRequestApi<TData, T>({
 
 function handleRequestError(error: unknown) {
   if (error instanceof Error) {
-    console.error("An unexpected error occurred:", error.message);
+    // console.error("An unexpected error occurred:", error.message);
+    console.error("An unexpected error occurred:", error);
   } else if (isAxiosError(error)) {
     console.error("An Axios error occurred:", error.message);
     if (error.response) {

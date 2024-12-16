@@ -68,13 +68,19 @@ export class UserRepositoryTyperom implements UsersRepository {
       email: user.email,
     };
 
+    const refreshPayload = {
+      sub: user.id,
+      email: user.email,
+      type:'refresh'
+    };
+
     const token = await this.jwtService.signAsync(payload, {
       secret: this.configService.get('JWT_SECRET'),
-      expiresIn: '10m',
+      expiresIn: '30s',
     });
 
     
-    const refreshToken = await this.jwtService.signAsync(payload, {
+    const refreshToken = await this.jwtService.signAsync(refreshPayload, {
       secret: this.configService.get('REFRESH_JWT_SECRET'),
       expiresIn: '24h',
     });
@@ -116,42 +122,48 @@ export class UserRepositoryTyperom implements UsersRepository {
   }
 
   async getRefreshToken(refreshTokenRequest: RefreshTokenRequest): Promise<RefreshTokenResponse> {
-    const {refreshToken} = refreshTokenRequest
-    
-    const tokenDecoded = this.jwtService.verify(refreshToken, {
-      secret: this.configService.get('REFRESH_JWT_SECRET'),
-      ignoreExpiration: true, 
-    });
-    
-    const user = await this.repository.findOne({ where: { id: tokenDecoded.sub } });
-
-    const isRefreshTokenValid = await bcrypt.compare(refreshToken, user.refreshToken);
-
-    if (!isRefreshTokenValid) {
-      throw new UnauthorizedException('Refresh token invalide.');
+    try {
+      
+      const {refreshToken} = refreshTokenRequest
+      
+      const tokenDecoded = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get('REFRESH_JWT_SECRET'),
+        ignoreExpiration: true, 
+      });
+      
+      const user = await this.repository.findOne({ where: { id: tokenDecoded.sub } });
+  
+      const isRefreshTokenValid = await bcrypt.compare(refreshToken, user.refreshToken);
+  
+      if (!isRefreshTokenValid) {
+        throw new UnauthorizedException('Refresh token invalide.');
+      }
+  
+      const payload = {
+        sub: user.id,
+        email: user.email,
+      };
+  
+      const newAccessToken = this.jwtService.sign(
+        payload,
+        { secret: process.env.JWT_SECRET, expiresIn: '30s' },
+      );
+      
+      const newRefreshToken = this.jwtService.sign(
+        payload,
+        { secret: process.env.JWT_REFRESH_SECRET, expiresIn: '7d' },
+      );
+  
+      const hashedNewRefreshToken = await bcrypt.hash(newRefreshToken, 10);
+  
+      await this.repository.update(user.id, { refreshToken: hashedNewRefreshToken });
+      
+  
+      return {token : newAccessToken, refreshToken: newRefreshToken}
+    } catch (error) {
+      console.log(error);
+      
     }
-
-    const payload = {
-      sub: user.id,
-      email: user.email,
-    };
-
-    const newAccessToken = this.jwtService.sign(
-      payload,
-      { secret: process.env.JWT_SECRET, expiresIn: '15m' },
-    );
-    
-    const newRefreshToken = this.jwtService.sign(
-      payload,
-      { secret: process.env.JWT_REFRESH_SECRET, expiresIn: '7d' },
-    );
-
-    const hashedNewRefreshToken = await bcrypt.hash(newRefreshToken, 10);
-
-    await this.repository.update(user.id, { refreshToken: hashedNewRefreshToken });
-    
-
-    return {token : newAccessToken, refreshToken: newRefreshToken}
     
   }
 }

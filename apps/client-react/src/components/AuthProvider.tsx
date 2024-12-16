@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context";
 import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useApiRequest";
-import { LOGIN_ROUTE } from "../request/route-http/route-http";
+import { LOGIN_ROUTE, LOGOUT_ROUTE } from "../request/route-http/route-http";
 import { getCurrentUser } from "../services/user.services";
 import { AuthFormInput } from "../types/user/input.types";
 import {
@@ -43,15 +43,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       includeAuthorizationHeader: false,
     });
 
-    if (response && response.token) {
+    if (response && response.token && response.refreshToken) {
       const token = response.token;
+      const refreshToken = response.refreshToken;
       localStorage.setItem("BookToken", JSON.stringify(token));
+      localStorage.setItem("RefreshToken", JSON.stringify(refreshToken));
       await getUser();
     }
   };
 
   const signout = async () => {
+    await UseRequestApi<unknown, unknown>({
+      method: MethodHttpEnum.POST,
+      path: LOGOUT_ROUTE,
+      params: {id: user?.id},
+      includeAuthorizationHeader: true,
+    })
     localStorage.removeItem("BookToken");
+    localStorage.removeItem("RefreshToken");
     setUser(null);
     navigate("/");
   };
