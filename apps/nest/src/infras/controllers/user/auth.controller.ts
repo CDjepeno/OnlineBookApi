@@ -56,7 +56,6 @@ export class AuthController {
   @ApiOperation({
     summary: 'Logout a user',
   })
-  @UseGuards(JwtAuthGuard)
   async logout(@Body() request: LogoutDto) {
     await this.logoutUSeCaseProxy.getInstance().execute(request);
   }

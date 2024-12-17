@@ -76,7 +76,7 @@ export class UserRepositoryTyperom implements UsersRepository {
 
     const token = await this.jwtService.signAsync(payload, {
       secret: this.configService.get('JWT_SECRET'),
-      expiresIn: '30s',
+      expiresIn: '30m',
     });
 
     
@@ -146,7 +146,7 @@ export class UserRepositoryTyperom implements UsersRepository {
   
       const newAccessToken = this.jwtService.sign(
         payload,
-        { secret: process.env.JWT_SECRET, expiresIn: '30s' },
+        { secret: process.env.JWT_SECRET, expiresIn: '30m' },
       );
       
       const newRefreshToken = this.jwtService.sign(

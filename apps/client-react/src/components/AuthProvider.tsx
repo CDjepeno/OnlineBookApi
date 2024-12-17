@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       method: MethodHttpEnum.POST,
       path: LOGOUT_ROUTE,
       params: {id: user?.id},
-      includeAuthorizationHeader: true,
+      includeAuthorizationHeader: false,
     })
     localStorage.removeItem("BookToken");
     localStorage.removeItem("RefreshToken");
