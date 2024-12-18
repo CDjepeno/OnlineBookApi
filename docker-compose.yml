@@ -18,6 +18,18 @@ services:
       DATABASE_NAME: ${DB_NAME}
     depends_on:
       - db
+  frontend:
+    build:
+      context: ./apps/client-react 
+      dockerfile: Dockerfile
+    container_name: react_frontend
+    ports:
+      - "5173:5173" 
+    volumes:
+      - ./apps/client-react:/app/app-react 
+      - ./apps/client-react/node_modules
+    environment:
+      NODE_ENV: development 
 
   db:
     image: mysql:8.0
