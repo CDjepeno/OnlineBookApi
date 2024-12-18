@@ -11,11 +11,11 @@ services:
       - ./apps/nest:/app
       - /apps/node_modules
     environment:
-      DATABASE_HOST: mysql_db
-      DATABASE_PORT: 3306
-      DATABASE_USER: root
-      DATABASE_PASSWORD: Dulonx95*
-      DATABASE_NAME: book_db
+      DATABASE_HOST: ${DB_HOST}
+      DATABASE_PORT: ${DB_PORT}
+      DATABASE_USER: ${DB_USERNAME}
+      DATABASE_PASSWORD: ${DB_PASSWORD}
+      DATABASE_NAME: ${DB_NAME}
     depends_on:
       - db
 
@@ -26,8 +26,10 @@ services:
     ports:
       - "3307:3306"           
     environment:
-      MYSQL_ROOT_PASSWORD: Dulonx95*
-      MYSQL_DATABASE: book_db
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
     volumes:
       - db_data:/var/lib/mysql
 

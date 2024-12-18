@@ -18,7 +18,11 @@ async function bootstrap() {
 
   app.useGlobalFilters(new NotFoundExceptionFilter());
 
-  app.enableCors();
+  app.enableCors({
+    origin: '*',  // Accepte toutes les origines
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,  // Assurez-vous que cette option est bien configurée
+  });
 
   await app.listen(3000);
 }

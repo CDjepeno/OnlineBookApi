@@ -1,5 +1,5 @@
 # Étape 1 : Utiliser une image Node.js légère
-FROM node:18-alpine
+FROM node:21
 
 # Définir le répertoire de travail dans le conteneur
 WORKDIR /app
@@ -17,6 +17,5 @@ COPY . .
 EXPOSE 3000
 
 # Commande pour démarrer l'application en mode développement
-CMD ["npm", "run", "dev"]
-
 # npm run dev
+CMD ["npm", "run", "dev"]
