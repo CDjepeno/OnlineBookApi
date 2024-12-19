@@ -8,8 +8,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./apps/nest:/app
-      - /apps/node_modules
+      - ./apps/nest:/app/nest
+      - nest_node_modules:/apps/node_modules
     environment:
       DATABASE_HOST: ${DB_HOST}
       DATABASE_PORT: ${DB_PORT}
@@ -26,13 +26,13 @@ services:
     ports:
       - "5173:5173" 
     volumes:
-      - ./apps/client-react:/app/app-react 
-      - ./apps/client-react/node_modules
+      - ./apps/client-react:/app/client-react
+      - react_node_modules:/app/node_modules
     environment:
       NODE_ENV: development 
 
   db:
-    image: mysql:8.0
+    image: mysql
     container_name: mysql_db
     restart: always
     ports:
@@ -40,10 +40,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
     volumes:
       - db_data:/var/lib/mysql
 
 volumes:
   db_data:
+  nest_node_modules:
+  react_node_modules:

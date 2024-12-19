@@ -11,8 +11,8 @@ import { AddUserUseCase } from 'src/application/usecases/user/adduser/add.user.u
 import { GetCurrentUserUseCase } from 'src/application/usecases/user/auth/get.current.user.usecase';
 import { LoginUserUseCase } from 'src/application/usecases/user/auth/login/login.user.usecase';
 import { LogoutUserUseCase } from 'src/application/usecases/user/auth/logout/logout.user.usecase';
-import { AwsS3Client } from '../clients/aws/aws-s3.client';
-import NodemailerClient from '../clients/nodemailer/nodemailer.client';
+import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
+import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { BookRepositoryTyperom } from '../services/book.repository.typeorm';
 import { BookingRepositoryTypeorm } from '../services/booking.repository.typeorm';
 import { UserRepositoryTyperom } from '../services/user.repository.typeorm';
