@@ -1,11 +1,16 @@
 {
   "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "commitizen": "^4.3.1",
+    "cz-customizable": "^7.3.0",
     "husky": "^8.0.0"
   },
   "scripts": {
     "lint-backend": "cd apps/nest && npm run lint",
     "lint-frontend": "cd apps/client-react && npm run lint",
     "test": "npm run lint-frontend && npm run lint-backend",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "lint:commit": "commitlint --from=HEAD~1"
   }
 }
