@@ -115,6 +115,8 @@ export class UserRepositoryTyperom implements UsersRepository {
 
       return userEntity;
     } catch (error) {
+      console.error('Error during getCurrentUser:', error);
+
       throw new Error(
         "Une erreur s'est produite lors de la recherche de l'utilisateur.",
       );

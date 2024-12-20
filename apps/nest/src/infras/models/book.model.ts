@@ -1,4 +1,4 @@
-import { IsInt, IsString } from 'class-validator';
+import { IsDate, IsInt, IsString } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -9,7 +9,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { IsDateFormat } from '../common/decorators/is-date-format.decorator';
 import { User } from './user.model';
 import { Booking } from './booking.model';
 
@@ -31,7 +30,7 @@ export class Book {
   author: string;
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-  @IsDateFormat()
+  @IsDate()
   releaseAt: Date;
 
   @Column()

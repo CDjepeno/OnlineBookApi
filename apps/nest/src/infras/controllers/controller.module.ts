@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { MulterModule } from '@nestjs/platform-express';
@@ -15,6 +16,7 @@ function loadControllers(): any[] {
   );
   
   for (const file of files) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const module = require(file);
     for (const exported in module) {
       if (module[exported].prototype) {

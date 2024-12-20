@@ -1,8 +1,8 @@
 import { Controller, Get, Inject, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { GetAllBookResponsePagination } from 'src/application/usecases/book/getAllBook/getAllBook.response';
 import { GetAllBookUsecase } from 'src/application/usecases/book/getAllBook/getAllBook.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
-import { GetAllBookResponsePagination } from 'src/application/usecases/book/getAllBook/getAllBook.response';
 import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 
 @ApiTags('Book')
@@ -21,16 +21,12 @@ export class GetAllBookController {
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '6',
   ): Promise<GetAllBookResponsePagination> {
-    try {
-      const pageNumber = parseInt(page, 10);
-      const limitNumber = parseInt(limit, 10);
-      const {books, meta} = await this.getAllBookUsecaseProxy
-        .getInstance()
-        .execute(pageNumber, limitNumber);
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    const { books, meta } = await this.getAllBookUsecaseProxy
+      .getInstance()
+      .execute(pageNumber, limitNumber);
 
-      return { books, meta };
-    } catch (error) {
-      throw error;
-    }
+    return { books, meta };
   }
 }

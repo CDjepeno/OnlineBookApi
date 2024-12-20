@@ -9,7 +9,6 @@ import {
   ParseFilePipeBuilder,
   ParseIntPipe,
   Put,
-  Req,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';

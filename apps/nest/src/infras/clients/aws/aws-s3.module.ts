@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MulterModule } from '@nestjs/platform-express';
-import { memoryStorage } from 'multer';
 import { AwsS3Client } from "./aws-s3.client"
 
 @Module({

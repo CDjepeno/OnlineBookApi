@@ -1,7 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import {
   IsEmail,
-  IsInt,
   IsNotEmpty,
   IsString,
   Length,

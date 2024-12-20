@@ -1,10 +1,11 @@
 {
   "devDependencies": {
-    "husky": "^9.1.7"
+    "husky": "^8.0.0"
   },
   "scripts": {
-    "lint-frontend": "cd apps/client-react && npm run lint",
     "lint-backend": "cd apps/nest && npm run lint",
-    "lint": "npm run lint-frontend && npm run lint-backend"
+    "lint-frontend": "cd apps/client-react && npm run lint",
+    "test": "npm run lint-frontend && npm run lint-backend",
+    "prepare": "husky install"
   }
 }

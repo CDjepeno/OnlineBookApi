@@ -2,9 +2,9 @@ import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AddUserUseCase } from 'src/application/usecases/user/adduser/add.user.usecase';
 import { User } from 'src/infras/models/user.model';
+import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 import { UseCaseProxy } from '../../../infras/usecase-proxy/usecase-proxy';
 import { CreateUserDto } from './user.dto';
-import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 
 @ApiTags('Authentication')
 @Controller('register')
@@ -20,19 +20,15 @@ export class UsersController {
   })
   @ApiCreatedResponse({ description: 'User created.', type: User })
   async createUser(@Body() createUserDto: CreateUserDto) {
-    try {
-      const result = await this.createUserUsecaseProxy
-        .getInstance()
-        .execute(createUserDto);
+    const result = await this.createUserUsecaseProxy
+      .getInstance()
+      .execute(createUserDto);
 
-      const { name, email, phone } = result;
-      return {
-        name,
-        email,
-        phone,
-      };
-    } catch (err) {
-      throw err;
-    }
+    const { name, email, phone } = result;
+    return {
+      name,
+      email,
+      phone,
+    };
   }
 }

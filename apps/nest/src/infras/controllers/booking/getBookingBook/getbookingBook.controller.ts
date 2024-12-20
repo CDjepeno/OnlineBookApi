@@ -7,7 +7,6 @@ import {
   InternalServerErrorException,
   Param,
   ParseIntPipe,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';

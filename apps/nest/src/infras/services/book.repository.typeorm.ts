@@ -76,7 +76,7 @@ export class BookRepositoryTyperom implements BookRepository {
           currentPage: page,
           totalPages: Math.ceil(totalBooks / take),
         },
-      };;
+      };
     } catch (error) {
       console.error('Erreur lors de la récupération des livres :', error);
       throw new InternalServerErrorException(
@@ -154,6 +154,8 @@ export class BookRepositoryTyperom implements BookRepository {
         throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
       }
     } catch (error) {
+      console.error(error);
+
       throw new InternalServerErrorException(
         'Impossible de supprimer le livre.',
       );
@@ -171,6 +173,8 @@ export class BookRepositoryTyperom implements BookRepository {
       }
       return book;
     } catch (error) {
+      console.error(error);
+
       throw new InternalServerErrorException(
         'Impossible de supprimer le livre.',
       );
