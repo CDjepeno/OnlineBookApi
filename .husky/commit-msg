@@ -1,4 +1,3 @@
-
 #!/usr/bin/env sh
 . "$(dirname "$0")/_/husky.sh"
-npx --no-install ts-node -O '{ "module": "CommonJS" }' ./commitlint.config.ts --edit $1
+npx --no-install commitlint --edit $1
