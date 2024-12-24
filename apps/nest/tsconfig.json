@@ -17,10 +17,10 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
   },
   "watchOptions": {
-    "watchFile": "dynamicPriorityPolling",
+    "watchFile": "fixedPollingInterval",
     "watchDirectory": "dynamicPriorityPolling",
     "excludeDirectories": ["**/node_modules","dist"]
   }

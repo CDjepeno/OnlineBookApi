@@ -21,9 +21,8 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',  // Accepte toutes les origines
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,  // Assurez-vous que cette option est bien configurée
   });
 
-  await app.listen(3000);
+  await app.listen(3000, "0.0.0.0");
 }
 bootstrap();

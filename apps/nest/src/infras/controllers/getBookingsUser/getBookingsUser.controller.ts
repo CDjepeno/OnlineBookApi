@@ -9,29 +9,29 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsBook.usecase';
+import { GetBookingsUserUseCase } from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 
 @ApiTags('Booking')
-@Controller('/bookings/book')
-export class GetBookingBookController {
+@Controller('/bookings/user')
+export class GetBookingUserController {
   constructor(
-    @Inject(UsecaseProxyEnum.GET_BOOKINGS_BOOK_USECASE_PROXY)
-    private readonly getBookingsBookUsecaseProxy: UseCaseProxy<GetBookingsBookUseCase>,
+    @Inject(UsecaseProxyEnum.GET_BOOKINGS_USER_USECASE_PROXY)
+    private readonly getBookingsUserUsecaseProxy: UseCaseProxy<GetBookingsUserUseCase>,
   ) {}
 
   @Get(':id')
   @ApiOperation({
-    summary: 'get Bookings for a Book',
+    summary: 'get Bookings for a User',
   })
-  async getbookingsBook(@Param('id', ParseIntPipe) bookId: number) {
+  async getbookingsBook(@Param('id', ParseIntPipe) userId: number) {
     try {
-      return await this.getBookingsBookUsecaseProxy
+      return await this.getBookingsUserUsecaseProxy
         .getInstance()
-        .execute(bookId);
+        .execute(userId);
     } catch (error) {
-      console.error('Error occurred while getbooking book:', typeof error);
+      console.error('Error occurred while getbooking user:', typeof error);
       if (
         error instanceof BadRequestException ||
         error instanceof ConflictException

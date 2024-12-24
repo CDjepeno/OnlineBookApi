@@ -35,8 +35,10 @@ export class AuthController {
     private readonly getCurrentUserUseCase: UseCaseProxy<GetCurrentUserUseCase>,
 
     @Inject(UsecaseProxyEnum.REFRESH_TOKEN_USECASE_PROXY)
-    private readonly refreshTokenUseCase: UseCaseProxy<RefreshTokenUseCase>,
-  ) {}
+   private readonly refreshTokenUseCase: UseCaseProxy<RefreshTokenUseCase>,
+  
+  )
+  {}
 
   @Post('login')
   @ApiOperation({

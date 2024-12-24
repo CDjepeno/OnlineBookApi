@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { MulterModule } from '@nestjs/platform-express';
@@ -9,7 +8,9 @@ import { UsecaseProxyModule } from '../usecase-proxy/usecase-proxy.module';
 import * as path from 'path';
 import * as glob from 'glob';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function loadControllers(): any[] {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const controllers: any[] = [];
   const files = glob.sync(
     path.join(__dirname, './**/*.controller.{ts,js}'),

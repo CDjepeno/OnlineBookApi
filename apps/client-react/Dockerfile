@@ -1,6 +1,6 @@
 FROM node:20-alpine AS react_build
 
-WORKDIR /app/react-app
+WORKDIR /app
 
 COPY package*.json ./
 
@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 5173
 
-CMD [ "npm","run","dev" ]
+CMD ["npm","run","dev"]

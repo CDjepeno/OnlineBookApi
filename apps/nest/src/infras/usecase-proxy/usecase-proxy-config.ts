@@ -6,7 +6,8 @@ import { GetBookByNameUsecase } from 'src/application/usecases/book/getBookByNam
 import { GetBooksByUserUsecase } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.usecase';
 import { UpdateBookUseCase } from 'src/application/usecases/book/updateBook/updateBook.usecase';
 import { BookingBookUseCase } from 'src/application/usecases/booking/bookingBook/bookingBook.usecase';
-import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookings/getBookingsBook.usecase';
+import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsBook.usecase';
+import { GetBookingsUserUseCase } from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.usecase';
 import { AddUserUseCase } from 'src/application/usecases/user/adduser/add.user.usecase';
 import { GetCurrentUserUseCase } from 'src/application/usecases/user/auth/get.current.user.usecase';
 import { LoginUserUseCase } from 'src/application/usecases/user/auth/login/login.user.usecase';
@@ -26,6 +27,7 @@ export enum UsecaseProxyEnum {
   REFRESH_TOKEN_USECASE_PROXY = 'refreshTokenUseCaseProxy',
   BOOKING_BOOK_USECASE_PROXY = 'BookingBookUsecaseProxy',
   ADD_BOOK_USECASE_PROXY = 'addBookUsecaseProxy',
+  
 
   GET_CURRENT_USER_USECASE_PROXY = 'getCurrentUserUseCaseProxy',
   GET_ALL_BOOK_USECASE_PROXY = 'getAllBookUsecaseProxy',
@@ -33,6 +35,7 @@ export enum UsecaseProxyEnum {
   GET_BOOK_USECASE_PROXY = 'getBookUsecaseProxy',
   GET_BOOK_BY_NAME_USECASE_PROXY = 'getBookByNameUsecaseProxy',
   GET_BOOKINGS_BOOK_USECASE_PROXY = 'getBookingBookUsecaseProxy',
+  GET_BOOKINGS_USER_USECASE_PROXY = 'getBookingUserUsecaseProxy',
 
   DELETE_BOOK_USECASE_PROXY = 'deleteBookUsecaseProxy',
   UPDATE_BOOK_USECASE_PROXY = 'updateBookUsecaseProxy',
@@ -128,6 +131,12 @@ export const useCasesConfig = [
     provide: UsecaseProxyEnum.REFRESH_TOKEN_USECASE_PROXY,
     useFactory: (userRepository: UserRepositoryTyperom) =>
       new UseCaseProxy(new RefreshTokenUseCase(userRepository)),
+  },
+  {
+    inject: [BookingRepositoryTypeorm],
+    provide: UsecaseProxyEnum.GET_BOOKINGS_USER_USECASE_PROXY,
+    useFactory: (bookingRepository: BookingRepositoryTypeorm) =>
+      new UseCaseProxy(new GetBookingsUserUseCase(bookingRepository)),
   },
 ];
 
