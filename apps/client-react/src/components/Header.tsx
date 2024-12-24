@@ -15,7 +15,7 @@ import * as React from "react";
 import { useContext, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AuthContext } from "../context";
-import { BOOKS_ROUTE } from "../request/route-http/route-http";
+import { GET_BOOKINGS_USER_ROUTE } from "../request/route-http/route-http";
 import { AuthContextValue } from "../types/user/auth.context.value";
 
 type LinkMap = {
@@ -206,7 +206,7 @@ function Header() {
                       <NavLink
                         to={
                           setting === "Dashboard"
-                            ? `${BOOKS_ROUTE}/${user.id}`
+                            ? `${GET_BOOKINGS_USER_ROUTE}/${user.id}`
                             : `/${setting.toLowerCase()}`
                         }
                         style={{ textDecoration: "none", color: "inherit" }}

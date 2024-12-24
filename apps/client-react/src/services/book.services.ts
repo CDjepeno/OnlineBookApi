@@ -64,7 +64,7 @@ export const createBook = async (
   });
 };
 
-export const deleteBook = async (id: string): Promise<void> => {
+export const deleteBook = async (id: number): Promise<void> => {
   await UseRequestApi({
     method: MethodHttpEnum.DELETE,
     path: `${BOOK_ROUTE}/${id}`,

@@ -8,6 +8,7 @@ import { HomePage } from "./pages/Homepage/HomePage";
 import Login from "./pages/user/Login/Login";
 import Register from "./pages/user/Register/Register";
 import PrivateRoute from "./Private-route";
+import Dashboard from "./pages/Dashboard/Dashboard";
 
 type CustomRouteObject = RouteObject & {
   element: JSX.Element;
@@ -28,6 +29,10 @@ const routes: CustomRouteObject[] = [
       {
         path: RouterEnum.BOOK_USER,
         element: <PrivateRoute element={<BookUser />} />,
+      },
+      {
+        path: RouterEnum.BOOKING_USER,
+        element: <PrivateRoute element={<Dashboard />} />,
       },
       { path: RouterEnum.BOOK, element: <BookDetail /> },
     ],

@@ -15,9 +15,9 @@ function DeleteBookUserHook() {
   const { mutateAsync: deleteBookMutation } = useMutation<
     void,
     AxiosError<unknown>,
-    string
+    number
   >({
-    mutationFn: async (id: string) => deleteBook(id),
+    mutationFn: async (id: number) => deleteBook(id),
 
     onSuccess: () => {
       onSuccessCommon("Le livre a été supprimé avec succès");

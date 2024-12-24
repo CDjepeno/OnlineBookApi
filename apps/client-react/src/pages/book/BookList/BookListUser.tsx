@@ -31,7 +31,7 @@ const headCells = [
 export default function BookListUser() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [book, setBook] = useState<UpdateBookFormType>({
-    id: "",
+    id: 0,
     name: "",
     description: "",
     author: "",
@@ -43,7 +43,7 @@ export default function BookListUser() {
   const { books, isPending, error } = BookListUserHook();
   const { deleteBookMutation } = DeleteBookUserHook();
 
-  const DeleteBook = async (id: string) => {
+  const DeleteBook = async (id: number) => {
     try {
       await deleteBookMutation(id);
     } catch (error) {

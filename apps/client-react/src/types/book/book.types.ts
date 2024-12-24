@@ -68,7 +68,7 @@ export interface UpdateBookResponse {
 }
 
 export type UpdateBookFormType = {
-  id: string;
+  id: number;
   name: string;
   description: string;
   author: string;

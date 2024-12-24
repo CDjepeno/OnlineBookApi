@@ -8,6 +8,7 @@ export enum BookQueriesKeysEnum {
 
 export enum BookingsQueriesKeysEnum {
   GetBookingsBook = 'getbookingsBook',
+  GetBookingsUser = 'getBookingsUser',
   BookingBook = 'bookingBook',
 }
 
@@ -30,6 +31,7 @@ export enum RouterEnum {
   REGISTER = '/Register',
   ADD_BOOK = '/add-book',
   BOOK = '/book/:id',
+  BOOKING_USER = '/bookings/user/:id',
   BOOK_USER = '/books/:userId',
   HOME = '/',
 }
