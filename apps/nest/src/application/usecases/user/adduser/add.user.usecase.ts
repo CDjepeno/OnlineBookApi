@@ -22,13 +22,14 @@ export class AddUserUseCase {
       subject: `Confirmation de votre inscription`,
       text: `Bonjour ${request.name}, \nVotre compte a bien été crée`,
     });
-
+    
     const user = new User(
       request.id,
       request.name,
-      request.email,
       request.password,
+      request.email,
       request.phone,
+      request.sexe,
     );
 
     return await this.usersRepository.signUp(user);

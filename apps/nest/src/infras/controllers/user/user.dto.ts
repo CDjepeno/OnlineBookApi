@@ -22,4 +22,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   @ApiProperty()
   phone: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  sexe: string;
 }

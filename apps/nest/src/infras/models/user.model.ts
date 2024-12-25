@@ -18,6 +18,7 @@ import {
 import { Book } from './book.model';
 import { Booking } from './booking.model';
 
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('increment')
@@ -47,12 +48,15 @@ export class User {
 
   @Column()
   @IsString()
+  sexe: string;
+
+  @Column()
+  @IsString()
   phone: string;
 
   @OneToMany(() => Book, (book) => book.user)
   books?: Book[];
-  
-  
+
   @OneToMany(() => Booking, (booking) => booking.user)
   bookings?: Booking[];
 

@@ -1,4 +1,3 @@
-import { RefreshTokenResponse } from './../../application/usecases/user/auth/refreshToken/refresh.token.response';
 import {
   Injectable,
   NotFoundException,
@@ -9,15 +8,16 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { AddUserRequest } from 'src/application/usecases/user/adduser/add.user.request';
-import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.response';
 import { CurrentUserResponse } from 'src/application/usecases/user/auth/current.user.response';
 import { LoginUserRequest } from 'src/application/usecases/user/auth/login/login.user.request';
-import { LoginUserResponse } from 'src/application/usecases/user/auth/login/login.user.response';
-import { LogoutUserRequest } from 'src/application/usecases/user/auth/logout/logout.user.request';
 import { Repository } from 'typeorm';
-import { UsersRepository } from '../../domaine/repositories/user.repository';
-import { User } from '../models/user.model';
 import { RefreshTokenRequest } from 'src/application/usecases/user/auth/refreshToken/refresh.token.request';
+import { LoginUserResponse } from 'application/usecases/user/auth/login/login.user.response';
+import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.response';
+import { LogoutUserRequest } from 'src/application/usecases/user/auth/logout/logout.user.request';
+import { RefreshTokenResponse } from 'src/application/usecases/user/auth/refreshToken/refresh.token.response';
+import { UsersRepository } from 'src/domaine/repositories/user.repository';
+import { User } from '../models/user.model';
 
 @Injectable()
 export class UserRepositoryTyperom implements UsersRepository {
@@ -35,7 +35,8 @@ export class UserRepositoryTyperom implements UsersRepository {
       user.password = addUserRequest.password;
       user.name = addUserRequest.name;
       user.phone = addUserRequest.phone;
-
+      user.sexe = addUserRequest.sexe;
+      
       return await this.repository.save(user);
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {

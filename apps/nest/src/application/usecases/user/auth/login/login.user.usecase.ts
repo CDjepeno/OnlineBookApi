@@ -1,6 +1,6 @@
 import { UsersRepository } from 'src/domaine/repositories/user.repository';
-import { LoginUserRequest } from './login.user.request';
 import { LoginUserResponse } from './login.user.response';
+import { LoginUserRequest } from './login.user.request';
 
 export class LoginUserUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}

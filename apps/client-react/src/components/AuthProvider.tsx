@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context";
 import { MethodHttpEnum } from "../enum/enum";
@@ -27,13 +27,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.error("Error getting current user:", error);
     }
   };
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem("BookToken");
-    if (storedToken) {
-      getUser();
-    }
-  }, []);
 
   const signin = async (credentials: AuthFormInput) => {
     const response = await UseRequestApi<SigninResponse, unknown>({

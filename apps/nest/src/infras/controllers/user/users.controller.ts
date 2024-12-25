@@ -3,8 +3,8 @@ import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AddUserUseCase } from 'src/application/usecases/user/adduser/add.user.usecase';
 import { User } from 'src/infras/models/user.model';
 import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
-import { UseCaseProxy } from '../../../infras/usecase-proxy/usecase-proxy';
 import { CreateUserDto } from './user.dto';
+import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 
 @ApiTags('Authentication')
 @Controller('register')

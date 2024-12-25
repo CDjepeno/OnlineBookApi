@@ -20,7 +20,7 @@ export default function Dashboard() {
       <img
         src={bookingUser.coverUrl}
         alt="couverture du book"
-        style={{ width: "50px", height: "30px", objectFit: "cover" }}
+        style={{ width: "90px", height: "60px", objectFit: "cover" }}
       />,
       formatDate(bookingUser.startAt),
       formatDate(bookingUser.endAt),

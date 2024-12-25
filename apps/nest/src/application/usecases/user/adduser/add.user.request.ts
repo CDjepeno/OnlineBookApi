@@ -4,4 +4,5 @@ export class AddUserRequest {
   email: string;
   password: string;
   phone: string;
+  sexe: string;
 }
