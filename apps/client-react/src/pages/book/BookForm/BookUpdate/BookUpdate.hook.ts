@@ -19,7 +19,7 @@ function BookUpdateHook(setIsFormOpen: (value: boolean) => void) {
   const { mutateAsync: updateBookMutation } = useMutation<
     UpdateBookResponse,
     AxiosError<unknown>,
-    { id: string; data: FormData | Record<string, unknown> }
+    { id: number; data: FormData | Record<string, unknown> }
   >({
     mutationFn: async ({ id, data }) => updateBook(id, data),
 

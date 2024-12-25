@@ -11,7 +11,9 @@
     "lint-frontend": "cd apps/client-react && npm run lint",
     "test": "npm run lint-frontend && npm run lint-backend",
     "prepare": "husky install",
-    "lint:commit": "commitlint --from=HEAD~1",
-    "build:all": "npm run build:react && npm run build:nest"
+    "build:react": "cd apps/client-react && npm run build",
+    "build:nest": "cd apps/nest && npm run build",
+    "build:all": "npm run build:react && npm run build:nest",
+    "lint:commit": "commitlint --from=HEAD~1"
   }
 }

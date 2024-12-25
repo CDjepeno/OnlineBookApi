@@ -74,7 +74,7 @@ export const deleteBook = async (id: number): Promise<void> => {
 };
 
 export const updateBook = async (
-  id: string,
+  id: number,
   data: FormData | Record<string, unknown> 
 ): Promise<UpdateBookResponse> => {
   const isFormdata = data instanceof FormData
