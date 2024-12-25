@@ -113,7 +113,7 @@ export class UserRepositoryTyperom implements UsersRepository {
       if (!userEntity) {
         throw new NotFoundException();
       }
-
+      
       return userEntity;
     } catch (error) {
       console.error('Error during getCurrentUser:', error);

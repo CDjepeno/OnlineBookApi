@@ -1,4 +1,5 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -8,8 +9,8 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Controller } from "react-hook-form";
-import RegisterHook from "./Register.hook";
 import FormInput from "../../../components/FormInput";
+import RegisterHook from "./Register.hook";
 
 export default function Register() {
   const {
@@ -47,6 +48,17 @@ export default function Register() {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormInput
+                name="name"
+                label="Name"
+                control={control}
+                errors={errors}
+              />
+              {errors.name && (
+                <small style={{ color: "red" }}>{errors.name.message}</small>
+              )}
+            </Grid>
+            <Grid item xs={12}>
+              <FormInput
                 name="email"
                 label="Email Address"
                 errors={errors}
@@ -59,6 +71,44 @@ export default function Register() {
             </Grid>
             <Grid item xs={12}>
               <FormInput
+                name="phone"
+                label="Phone"
+                control={control}
+                errors={errors}
+              />
+              {errors.phone && (
+                <small style={{ color: "red" }}>{errors.phone.message}</small>
+              )}
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth error={Boolean(errors.sexe)}>
+                <InputLabel id="demo-simple-select-label">Sexe</InputLabel>
+                <Controller
+                  name="sexe"
+                  control={control}
+                  defaultValue=""
+                  rules={{ required: "Le sexe est obligatoire" }}
+                  render={({ field }) => (
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      label="Sexe"
+                      {...field}
+                    >
+                      <MenuItem value="femme">Femme</MenuItem>
+                      <MenuItem value="homme">Homme</MenuItem>
+                    </Select>
+                  )}
+                />
+                {errors.sexe && (
+                  <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                    {errors.sexe.message}
+                  </Typography>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormInput
                 name="password"
                 label="password"
                 type="password"
@@ -68,7 +118,7 @@ export default function Register() {
               />
             </Grid>
             <Grid item xs={12}>
-            <Controller
+              <Controller
                 name="confirmPassword"
                 control={control}
                 render={({ field }) => (
@@ -88,28 +138,7 @@ export default function Register() {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormInput
-                name="name"
-                label="Name"
-                control={control}
-                errors={errors}
-              />
-              {errors.name && (
-                <small style={{ color: "red" }}>{errors.name.message}</small>
-              )}
-            </Grid>
-            <Grid item xs={12}>
-              <FormInput
-                name="phone"
-                label="Phone"
-                control={control}
-                errors={errors}
-              />
-              {errors.phone && (
-                <small style={{ color: "red" }}>{errors.phone.message}</small>
-              )}
-            </Grid>
+            
           </Grid>
           <Button
             type="submit"

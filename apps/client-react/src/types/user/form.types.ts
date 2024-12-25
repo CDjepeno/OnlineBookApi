@@ -4,6 +4,7 @@ export type RegisterFormInput = {
   confirmPassword: string;
   name: string;
   phone: string;
+  sexe: string;
 };
 
 export type RegisterResponse = {

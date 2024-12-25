@@ -56,6 +56,7 @@ export type AddBookFormType = {
   author: string;
   releaseAt: string;
   coverUrl: FileList;
+  sexe: string;
 };
 
 

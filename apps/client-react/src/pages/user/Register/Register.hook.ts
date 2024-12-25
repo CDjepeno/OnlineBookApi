@@ -17,6 +17,7 @@ export default function RegisterHook() {
     confirmPassword: "",
     name: "",
     phone: "",
+    sexe: "",
   };
 
   const signupSchema = yup.object({
@@ -42,6 +43,7 @@ export default function RegisterHook() {
       .min(2, "Le nom doit être explicite")
       .max(10, "Le titre doit être succinct"),
     phone: yup.string().required("Veuillez renseigner un numero valide"),
+    sexe: yup.string().required("Veuillez renseigner un numero valide"),
   });
 
   const {

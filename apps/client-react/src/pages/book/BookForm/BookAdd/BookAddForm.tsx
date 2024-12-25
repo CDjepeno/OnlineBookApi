@@ -72,7 +72,6 @@ function BookAddForm() {
                 errors={errors}
               />
             </Grid>
-
             <Grid item xs={12}>
               <Controller
                 name="releaseAt"
