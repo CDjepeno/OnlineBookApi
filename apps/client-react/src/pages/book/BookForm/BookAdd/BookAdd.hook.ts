@@ -4,7 +4,6 @@ import { AxiosError } from "axios";
 import { useContext } from "react";
 import { DefaultValues, useForm } from "react-hook-form";
 import * as yup from "yup";
-import { AuthContext } from "../../../../context";
 import { BookQueriesKeysEnum, RouterEnum } from "../../../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../../../request/commons/useQueryWorkflowCallback";
 import { createBook } from "../../../../services/book.services";
@@ -14,7 +13,8 @@ import {
   AddBookResponse,
   ErrorResponse,
 } from "../../../../types/book/book.types";
-import { AuthContextValue } from "../../../../types/user/auth.context.value";
+import { AuthContext } from "src/context";
+import { AuthContextValue } from "src/types/user/auth.context.value";
 
 const defaultValues: DefaultValues<AddBookFormType> = {
   name: "",

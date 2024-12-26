@@ -15,7 +15,10 @@ import * as React from "react";
 import { useContext, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AuthContext } from "../context";
-import { GET_BOOKINGS_USER_ROUTE } from "../request/route-http/route-http";
+import {
+  GET_BOOK_BY_USER_ROUTE,
+  GET_BOOKINGS_USER_ROUTE,
+} from "../request/route-http/route-http";
 import { AuthContextValue } from "../types/user/auth.context.value";
 
 type LinkMap = {
@@ -31,7 +34,7 @@ const formatLink = (page: string) => {
 };
 
 const pages = ["Ajouter un livre"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Profile", "Dashboard", "Logout"];
 
 function Header() {
   const location = useLocation();
@@ -207,7 +210,7 @@ function Header() {
                         to={
                           setting === "Dashboard"
                             ? `${GET_BOOKINGS_USER_ROUTE}/${user.id}`
-                            : `/${setting.toLowerCase()}`
+                            : `${GET_BOOK_BY_USER_ROUTE}/${user.id}`
                         }
                         style={{ textDecoration: "none", color: "inherit" }}
                       >

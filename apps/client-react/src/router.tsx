@@ -3,12 +3,12 @@ import App from "./App";
 import { RouterEnum } from "./enum/enum";
 import BookDetail from "./pages/book/BookDetail/BookDetail";
 import AddBook from "./pages/book/BookForm/BookAdd/BookAddForm";
-import BookUser from "./pages/book/BookList/BookListUser";
+import Dashboard from "./pages/Dashboard/Dashboard";
 import { HomePage } from "./pages/Homepage/HomePage";
+import Profile from "./pages/profile/profile";
 import Login from "./pages/user/Login/Login";
 import Register from "./pages/user/Register/Register";
 import PrivateRoute from "./Private-route";
-import Dashboard from "./pages/Dashboard/Dashboard";
 
 type CustomRouteObject = RouteObject & {
   element: JSX.Element;
@@ -27,11 +27,11 @@ const routes: CustomRouteObject[] = [
         element: <PrivateRoute element={<AddBook />} />,
       },
       {
-        path: RouterEnum.BOOK_USER,
-        element: <PrivateRoute element={<BookUser />} />,
+        path: RouterEnum.PROFILE,
+        element: <PrivateRoute element={<Profile />} />,
       },
       {
-        path: RouterEnum.BOOKING_USER,
+        path: RouterEnum.DASHBOARD,
         element: <PrivateRoute element={<Dashboard />} />,
       },
       { path: RouterEnum.BOOK, element: <BookDetail /> },
