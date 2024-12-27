@@ -15,7 +15,7 @@ import { Repository } from 'typeorm';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
 
-export class BookRepositoryTyperom implements BookRepository {
+export class BookRepositoryTypeorm implements BookRepository {
   constructor(
     @InjectRepository(Book)
     private readonly repository: Repository<Book>,

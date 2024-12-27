@@ -1,26 +1,29 @@
 import {
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { LoginUserResponse } from 'application/usecases/user/auth/login/login.user.response';
 import * as bcrypt from 'bcrypt';
 import { AddUserRequest } from 'src/application/usecases/user/adduser/add.user.request';
-import { CurrentUserResponse } from 'src/application/usecases/user/auth/current.user.response';
-import { LoginUserRequest } from 'src/application/usecases/user/auth/login/login.user.request';
-import { Repository } from 'typeorm';
-import { RefreshTokenRequest } from 'src/application/usecases/user/auth/refreshToken/refresh.token.request';
-import { LoginUserResponse } from 'application/usecases/user/auth/login/login.user.response';
 import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.response';
+import { CurrentUserByIdResponse, CurrentUserResponse } from 'src/application/usecases/user/auth/current.user.response';
+import { LoginUserRequest } from 'src/application/usecases/user/auth/login/login.user.request';
 import { LogoutUserRequest } from 'src/application/usecases/user/auth/logout/logout.user.request';
+import { RefreshTokenRequest } from 'src/application/usecases/user/auth/refreshToken/refresh.token.request';
 import { RefreshTokenResponse } from 'src/application/usecases/user/auth/refreshToken/refresh.token.response';
+import { UpdateUserRequest } from 'src/application/usecases/user/updateUser/update.user.request';
+import { UpdateUserResponse } from 'src/application/usecases/user/updateUser/update.user.response';
 import { UsersRepository } from 'src/domaine/repositories/user.repository';
+import { Repository } from 'typeorm';
 import { User } from '../models/user.model';
 
 @Injectable()
-export class UserRepositoryTyperom implements UsersRepository {
+export class UserRepositoryTypeorm implements UsersRepository {
   constructor(
     @InjectRepository(User)
     private readonly repository: Repository<User>,
@@ -36,7 +39,7 @@ export class UserRepositoryTyperom implements UsersRepository {
       user.name = addUserRequest.name;
       user.phone = addUserRequest.phone;
       user.sexe = addUserRequest.sexe;
-      
+
       return await this.repository.save(user);
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {
@@ -72,7 +75,7 @@ export class UserRepositoryTyperom implements UsersRepository {
     const refreshPayload = {
       sub: user.id,
       email: user.email,
-      type:'refresh'
+      type: 'refresh',
     };
 
     const token = await this.jwtService.signAsync(payload, {
@@ -80,7 +83,6 @@ export class UserRepositoryTyperom implements UsersRepository {
       expiresIn: '30m',
     });
 
-    
     const refreshToken = await this.jwtService.signAsync(refreshPayload, {
       secret: this.configService.get('REFRESH_JWT_SECRET'),
       expiresIn: '24h',
@@ -113,7 +115,7 @@ export class UserRepositoryTyperom implements UsersRepository {
       if (!userEntity) {
         throw new NotFoundException();
       }
-      
+
       return userEntity;
     } catch (error) {
       console.error('Error during getCurrentUser:', error);
@@ -124,49 +126,99 @@ export class UserRepositoryTyperom implements UsersRepository {
     }
   }
 
-  async getRefreshToken(refreshTokenRequest: RefreshTokenRequest): Promise<RefreshTokenResponse> {
+  async getRefreshToken(
+    refreshTokenRequest: RefreshTokenRequest,
+  ): Promise<RefreshTokenResponse> {
     try {
-      
-      const {refreshToken} = refreshTokenRequest
-      
+      const { refreshToken } = refreshTokenRequest;
+
       const tokenDecoded = this.jwtService.verify(refreshToken, {
         secret: this.configService.get('REFRESH_JWT_SECRET'),
-        ignoreExpiration: true, 
+        ignoreExpiration: true,
       });
-      
-      const user = await this.repository.findOne({ where: { id: tokenDecoded.sub } });
-  
-      const isRefreshTokenValid = await bcrypt.compare(refreshToken, user.refreshToken);
-  
+
+      const user = await this.repository.findOne({
+        where: { id: tokenDecoded.sub },
+      });
+
+      const isRefreshTokenValid = await bcrypt.compare(
+        refreshToken,
+        user.refreshToken,
+      );
+
       if (!isRefreshTokenValid) {
         throw new UnauthorizedException('Refresh token invalide.');
       }
-  
+
       const payload = {
         sub: user.id,
         email: user.email,
       };
-  
-      const newAccessToken = this.jwtService.sign(
-        payload,
-        { secret: process.env.JWT_SECRET, expiresIn: '30m' },
-      );
-      
-      const newRefreshToken = this.jwtService.sign(
-        payload,
-        { secret: process.env.JWT_REFRESH_SECRET, expiresIn: '7d' },
-      );
-  
+
+      const newAccessToken = this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET,
+        expiresIn: '30m',
+      });
+
+      const newRefreshToken = this.jwtService.sign(payload, {
+        secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: '7d',
+      });
+
       const hashedNewRefreshToken = await bcrypt.hash(newRefreshToken, 10);
-  
-      await this.repository.update(user.id, { refreshToken: hashedNewRefreshToken });
-      
-  
-      return {token : newAccessToken, refreshToken: newRefreshToken}
+
+      await this.repository.update(user.id, {
+        refreshToken: hashedNewRefreshToken,
+      });
+
+      return { token: newAccessToken, refreshToken: newRefreshToken };
     } catch (error) {
       console.log(error);
-      
     }
+  }
+
+  async updateUser(
+    user: Partial<UpdateUserRequest>,
+    existingUser: CurrentUserByIdResponse,
+  ): Promise<UpdateUserResponse> {
+    try {
+        existingUser.email = user.email
+        existingUser.name = user.name
+        existingUser.phone = user.phone
+        existingUser.password = user.password
+
+      const res = await this.repository.save(existingUser);
     
+      return res;
+    } catch (error) {
+      console.error("Erreur lors de la modification d'un livre :", error);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        `Impossible de modifier le l'utilisateur.`,
+      );
+    }
+  }
+
+  async getCurrentUserById(id: number): Promise<CurrentUserResponse> {
+    try {
+      const userEntity = await this.repository.findOne({
+        where: { id },
+      });
+      console.log(userEntity);
+      
+      if (!userEntity) {
+        throw new NotFoundException();
+      }
+
+      return userEntity;
+    } catch (error) {
+      console.error('Error during getCurrentUser:', error);
+
+      throw new Error(
+        "Une erreur s'est produite lors de la recherche de l'utilisateur.",
+      );
+    }
   }
 }

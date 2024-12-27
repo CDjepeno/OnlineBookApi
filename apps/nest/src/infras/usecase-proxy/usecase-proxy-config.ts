@@ -14,26 +14,29 @@ import { LoginUserUseCase } from 'src/application/usecases/user/auth/login/login
 import { LogoutUserUseCase } from 'src/application/usecases/user/auth/logout/logout.user.usecase';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
-import { BookRepositoryTyperom } from '../services/book.repository.typeorm';
 import { BookingRepositoryTypeorm } from '../services/booking.repository.typeorm';
-import { UserRepositoryTyperom } from '../services/user.repository.typeorm';
 import { UseCaseProxy } from './usecase-proxy';
 import { RefreshTokenUseCase } from 'src/application/usecases/user/auth/refreshToken/refresh.token.usecase';
+import { UserRepositoryTypeorm } from '../services/user.repository.typeorm';
+import { UpdateUserUseCase } from 'src/application/usecases/user/updateUser/update.user.usecase';
+import { BookRepositoryTypeorm } from '../services/book.repository.typeorm';
 
 export enum UsecaseProxyEnum {
   CREATE_USER_USECASE_PROXY = 'createUserUsecaseProxy',
   LOGIN_USER_USECASE_PROXY = 'loginUserUseCaseProxy',
   LOGOUT_USER_USECASE_PROXY = 'logoutUserUseCaseProxy',
   REFRESH_TOKEN_USECASE_PROXY = 'refreshTokenUseCaseProxy',
-  BOOKING_BOOK_USECASE_PROXY = 'BookingBookUsecaseProxy',
-  ADD_BOOK_USECASE_PROXY = 'addBookUsecaseProxy',
-  
-
   GET_CURRENT_USER_USECASE_PROXY = 'getCurrentUserUseCaseProxy',
+  UPDATE_USER_USECASE_PROXY = 'updateUserUseCaseProxy',
+  
+  
+  ADD_BOOK_USECASE_PROXY = 'addBookUsecaseProxy',
   GET_ALL_BOOK_USECASE_PROXY = 'getAllBookUsecaseProxy',
   GET_BOOKS_BY_USER_USECASE_PROXY = 'getBookByUserUsecaseProxy',
   GET_BOOK_USECASE_PROXY = 'getBookUsecaseProxy',
   GET_BOOK_BY_NAME_USECASE_PROXY = 'getBookByNameUsecaseProxy',
+
+  BOOKING_BOOK_USECASE_PROXY = 'BookingBookUsecaseProxy',
   GET_BOOKINGS_BOOK_USECASE_PROXY = 'getBookingBookUsecaseProxy',
   GET_BOOKINGS_USER_USECASE_PROXY = 'getBookingUserUsecaseProxy',
 
@@ -42,66 +45,94 @@ export enum UsecaseProxyEnum {
 }
 
 export const useCasesConfig = [
+  // ---------------------------- USER -----------------------------------
   {
-    inject: [UserRepositoryTyperom, NodemailerClient],
+    inject: [UserRepositoryTypeorm, NodemailerClient],
     provide: UsecaseProxyEnum.CREATE_USER_USECASE_PROXY,
     useFactory: (
-      userRepository: UserRepositoryTyperom,
+      userRepository: UserRepositoryTypeorm,
       nodemailerClient: NodemailerClient,
     ) => new UseCaseProxy(new AddUserUseCase(userRepository, nodemailerClient)),
   },
   {
-    inject: [UserRepositoryTyperom],
+    inject: [UserRepositoryTypeorm],
+    provide: UsecaseProxyEnum.UPDATE_USER_USECASE_PROXY,
+    useFactory: (userRepository: UserRepositoryTypeorm) =>
+      new UseCaseProxy(new UpdateUserUseCase(userRepository)),
+  },
+  {
+    inject: [UserRepositoryTypeorm],
+    provide: UsecaseProxyEnum.REFRESH_TOKEN_USECASE_PROXY,
+    useFactory: (userRepository: UserRepositoryTypeorm) =>
+      new UseCaseProxy(new RefreshTokenUseCase(userRepository)),
+  },
+  {
+    inject: [UserRepositoryTypeorm],
+    provide: UsecaseProxyEnum.LOGOUT_USER_USECASE_PROXY,
+    useFactory: (userRepository: UserRepositoryTypeorm) =>
+      new UseCaseProxy(new LogoutUserUseCase(userRepository)),
+  },
+  {
+    inject: [UserRepositoryTypeorm],
     provide: UsecaseProxyEnum.LOGIN_USER_USECASE_PROXY,
-    useFactory: (userRepository: UserRepositoryTyperom) =>
+    useFactory: (userRepository: UserRepositoryTypeorm) =>
       new UseCaseProxy(new LoginUserUseCase(userRepository)),
   },
   {
-    inject: [UserRepositoryTyperom],
+    inject: [UserRepositoryTypeorm],
     provide: UsecaseProxyEnum.GET_CURRENT_USER_USECASE_PROXY,
-    useFactory: (userRepository: UserRepositoryTyperom) =>
+    useFactory: (userRepository: UserRepositoryTypeorm) =>
       new UseCaseProxy(new GetCurrentUserUseCase(userRepository)),
   },
+  // ----------------------- BOOK -------------------------------
   {
-    inject: [BookRepositoryTyperom, AwsS3Client],
+    inject: [BookRepositoryTypeorm],
+    provide: UsecaseProxyEnum.GET_BOOK_BY_NAME_USECASE_PROXY,
+    useFactory: (bookRepository: BookRepositoryTypeorm) =>
+      new UseCaseProxy(new GetBookByNameUsecase(bookRepository)),
+  },
+  {
+    inject: [BookRepositoryTypeorm, AwsS3Client],
     provide: UsecaseProxyEnum.ADD_BOOK_USECASE_PROXY,
     useFactory: (
-      bookRepository: BookRepositoryTyperom,
+      bookRepository: BookRepositoryTypeorm,
       awsS3Client: AwsS3Client,
     ) => new UseCaseProxy(new AddBookUseCase(bookRepository, awsS3Client)),
   },
   {
-    inject: [BookRepositoryTyperom],
+    inject: [BookRepositoryTypeorm],
     provide: UsecaseProxyEnum.GET_ALL_BOOK_USECASE_PROXY,
-    useFactory: (bookRepository: BookRepositoryTyperom) =>
+    useFactory: (bookRepository: BookRepositoryTypeorm) =>
       new UseCaseProxy(new GetAllBookUsecase(bookRepository)),
   },
   {
-    inject: [BookRepositoryTyperom],
+    inject: [BookRepositoryTypeorm],
     provide: UsecaseProxyEnum.GET_BOOKS_BY_USER_USECASE_PROXY,
-    useFactory: (bookRepository: BookRepositoryTyperom) =>
+    useFactory: (bookRepository: BookRepositoryTypeorm) =>
       new UseCaseProxy(new GetBooksByUserUsecase(bookRepository)),
   },
   {
-    inject: [BookRepositoryTyperom],
+    inject: [BookRepositoryTypeorm],
     provide: UsecaseProxyEnum.GET_BOOK_USECASE_PROXY,
-    useFactory: (bookRepository: BookRepositoryTyperom) =>
+    useFactory: (bookRepository: BookRepositoryTypeorm) =>
       new UseCaseProxy(new GetBookUsecase(bookRepository)),
   },
   {
-    inject: [BookRepositoryTyperom],
+    inject: [BookRepositoryTypeorm],
     provide: UsecaseProxyEnum.DELETE_BOOK_USECASE_PROXY,
-    useFactory: (bookRepository: BookRepositoryTyperom) =>
+    useFactory: (bookRepository: BookRepositoryTypeorm) =>
       new UseCaseProxy(new DeleteBookUsecase(bookRepository)),
   },
   {
-    inject: [BookRepositoryTyperom, AwsS3Client],
+    inject: [BookRepositoryTypeorm, AwsS3Client],
     provide: UsecaseProxyEnum.UPDATE_BOOK_USECASE_PROXY,
     useFactory: (
-      bookRepository: BookRepositoryTyperom,
+      bookRepository: BookRepositoryTypeorm,
       awsS3Client: AwsS3Client,
     ) => new UseCaseProxy(new UpdateBookUseCase(bookRepository, awsS3Client)),
   },
+
+  // -------------------------------- BOOKING -------------------------------------
   {
     inject: [BookingRepositoryTypeorm],
     provide: UsecaseProxyEnum.BOOKING_BOOK_USECASE_PROXY,
@@ -110,34 +141,16 @@ export const useCasesConfig = [
   },
   {
     inject: [BookingRepositoryTypeorm],
-    provide: UsecaseProxyEnum.GET_BOOKINGS_BOOK_USECASE_PROXY,
-    useFactory: (bookingRepository: BookingRepositoryTypeorm) =>
-      new UseCaseProxy(new GetBookingsBookUseCase(bookingRepository)),
-  },
-  {
-    inject: [BookRepositoryTyperom],
-    provide: UsecaseProxyEnum.GET_BOOK_BY_NAME_USECASE_PROXY,
-    useFactory: (bookRepository: BookRepositoryTyperom) =>
-      new UseCaseProxy(new GetBookByNameUsecase(bookRepository)),
-  },
-  {
-    inject: [UserRepositoryTyperom],
-    provide: UsecaseProxyEnum.LOGOUT_USER_USECASE_PROXY,
-    useFactory: (userRepository: UserRepositoryTyperom) =>
-      new UseCaseProxy(new LogoutUserUseCase(userRepository)),
-  },
-  {
-    inject: [UserRepositoryTyperom],
-    provide: UsecaseProxyEnum.REFRESH_TOKEN_USECASE_PROXY,
-    useFactory: (userRepository: UserRepositoryTyperom) =>
-      new UseCaseProxy(new RefreshTokenUseCase(userRepository)),
-  },
-  {
-    inject: [BookingRepositoryTypeorm],
     provide: UsecaseProxyEnum.GET_BOOKINGS_USER_USECASE_PROXY,
     useFactory: (bookingRepository: BookingRepositoryTypeorm) =>
       new UseCaseProxy(new GetBookingsUserUseCase(bookingRepository)),
   },
+  {
+    inject: [BookingRepositoryTypeorm],
+    provide: UsecaseProxyEnum.GET_BOOKINGS_BOOK_USECASE_PROXY,
+    useFactory: (bookingRepository: BookingRepositoryTypeorm) =>
+      new UseCaseProxy(new GetBookingsBookUseCase(bookingRepository)),
+  }
 ];
 
 export function generateProviders() {

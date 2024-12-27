@@ -8,6 +8,7 @@ import {
 } from 'class-validator';
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -17,7 +18,6 @@ import {
 } from 'typeorm';
 import { Book } from './book.model';
 import { Booking } from './booking.model';
-
 
 @Entity()
 export class User {
@@ -67,9 +67,23 @@ export class User {
   updated_at: Date;
 
   @BeforeInsert()
-  async setPassword() {
-    const saltRounds = 10;
-    const salt = await bcrypt.genSalt(saltRounds);
-    this.password = await bcrypt.hash(this.password, salt);
+  async hashPasswordBeforeInsert() {
+    await this.hashPassword();
+  }
+
+  @BeforeUpdate()
+  async hashPasswordBeforeUpdate() {
+    if (this.password && !/^\$2[aby]\$.{56}$/.test(this.password)) {
+      await this.hashPassword();
+    }
+  }
+
+  private async hashPassword() {
+    const isHashed = /^\$2[aby]\$.{56}$/.test(this.password);
+    if (!isHashed) {
+      const saltRounds = 10;
+      const salt = await bcrypt.genSalt(saltRounds);
+      this.password = await bcrypt.hash(this.password, salt);
+    }
   }
 }
