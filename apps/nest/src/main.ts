@@ -10,7 +10,6 @@ async function bootstrap() {
     .setTitle('Online Book')
     .setDescription('Online Book API')
     .setVersion('1.0')
-    .addTag('Books')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
