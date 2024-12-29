@@ -9,5 +9,4 @@ export type RegisterInput = {
   name: string;
   phone: string;
   sexe: string;
-
 }

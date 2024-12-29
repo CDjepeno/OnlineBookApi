@@ -17,3 +17,21 @@ export type CurrentUserResponse = {
   phone: string;
   sexe: string;
 };
+
+export interface UpdateUserResponse {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  sexe: string;
+}
+
+export type GetUserByIdResponse = {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  sexe: string;
+};
+

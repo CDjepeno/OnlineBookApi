@@ -68,7 +68,6 @@ function BookUpdateHook(setIsFormOpen: (value: boolean) => void) {
         return
       }
 
-      console.log(coverUrl && coverUrl[0]);
 
       await updateBookMutation({ id, data: formData });
     } catch (error) {

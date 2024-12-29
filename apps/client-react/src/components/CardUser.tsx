@@ -7,16 +7,17 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 
 type UserCard = {
   sexe: string|undefined;
   name: string|undefined;
   email: string|undefined;
   phone: string|undefined;
+  action: ReactNode
 };
 
-const UserCard: FC<UserCard> = ({ sexe, name, email, phone }) => {
+const UserCard: FC<UserCard> = ({ sexe, name, email, phone, action }) => {
   return (
     <Card sx={{ maxWidth: 345, margin: "auto", mt: 4, boxShadow: 3 }}>
       <CardHeader
@@ -31,6 +32,7 @@ const UserCard: FC<UserCard> = ({ sexe, name, email, phone }) => {
             {email}
           </Typography>
         }
+        action={action}
       />
       <CardContent>
         <Typography variant="body1" gutterBottom>

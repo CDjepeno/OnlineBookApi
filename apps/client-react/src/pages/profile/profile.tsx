@@ -9,14 +9,17 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import UserCard from "src/components/CardUser";
 import { UpdateBookFormType } from "src/types/book/book.types";
-import { AuthContext } from "../../context";
-import { AuthContextValue } from "../../types/user/auth.context.value";
+import {
+  UpdateUserFormInput,
+  UpdateUserFormType,
+} from "src/types/user/form.types";
 import { formatDate } from "../../utils/formatDate";
 import BookUpdateForm from "../book/BookForm/BookUpdate/BookUpdateForm";
 import { TableList } from "../book/components/TableList";
+import UserUpdateForm from "../user/UserUpdate/UserUpdateForm";
 import ProfileHook from "./profile.hook";
 
 const headCells = [
@@ -29,7 +32,9 @@ const headCells = [
 ];
 
 export default function Profile() {
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const { books, isPending, error, deleteBookMutation, user } = ProfileHook();
+  const [isFormUpdateBookOpen, setIsFormUpdateBookOpen] = useState(false);
+  const [isFormUpdateUserOpen, setIsFormUpdateUserOpen] = useState(false);
   const [book, setBook] = useState<UpdateBookFormType>({
     id: 0,
     name: "",
@@ -38,9 +43,15 @@ export default function Profile() {
     releaseAt: "",
     coverUrl: undefined,
   });
-  const { user } = useContext(AuthContext) as AuthContextValue;
-
-  const { books, isPending, error, deleteBookMutation } = ProfileHook();
+  const [userForm, setUserForm] = useState<UpdateUserFormType>({
+    id: user!.id,
+    email: user!.email,
+    password: "",
+    confirmPassword: "",
+    name: user!.name,
+    phone: user!.phone,
+    sexe: user!.sexe,
+  });
 
   const DeleteBook = async (id: number) => {
     try {
@@ -52,7 +63,13 @@ export default function Profile() {
 
   const editBook = (book: UpdateBookFormType) => {
     setBook(book);
-    setIsFormOpen(true);
+    setIsFormUpdateBookOpen(true);
+  };
+
+  const editUser = (user: UpdateUserFormInput) => {
+    console.log(user);
+    setUserForm(user);
+    setIsFormUpdateUserOpen(true);
   };
 
   const rows =
@@ -96,7 +113,6 @@ export default function Profile() {
   if (error) {
     return (
       <Container>
-
         <Box
           display="flex"
           justifyContent="center"
@@ -111,7 +127,7 @@ export default function Profile() {
     );
   }
 
-  if (!books || books.length === 0 && !user) {
+  if (!books || (books.length === 0 && !user)) {
     return (
       <Container>
         <Box
@@ -129,16 +145,22 @@ export default function Profile() {
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">
       <UserCard
-          sexe={user?.sexe}
-          email={user?.email}
-          phone={user?.phone}
-          name={user?.name}
-        />
-      <Typography component="h1" variant="h5" mb="30px">
-      </Typography>
+        sexe={user?.sexe}
+        email={user?.email}
+        phone={user?.phone}
+        name={user?.name}
+        action={
+          <IconButton aria-label="edit" onClick={() => editUser(userForm)}>
+            <EditTwoToneIcon />
+          </IconButton>
+        }
+      />
+      <Typography component="h1" variant="h5" mb="30px"></Typography>
       <TableList headCells={headCells} rows={rows} />
-
-      <Modal open={isFormOpen} onClose={() => setIsFormOpen(false)}>
+      <Modal
+        open={isFormUpdateUserOpen}
+        onClose={() => setIsFormUpdateUserOpen(false)}
+      >
         <Box
           sx={{
             p: 4,
@@ -150,7 +172,31 @@ export default function Profile() {
             boxShadow: 24,
           }}
         >
-          <BookUpdateForm bookUpdate={book} setIsFormOpen={setIsFormOpen} />
+          <UserUpdateForm
+            userUpdate={userForm}
+            setIsFormUpdateUserOpen={setIsFormUpdateUserOpen}
+          />
+        </Box>
+      </Modal>
+      <Modal
+        open={isFormUpdateBookOpen}
+        onClose={() => setIsFormUpdateBookOpen(false)}
+      >
+        <Box
+          sx={{
+            p: 4,
+            backgroundColor: "white",
+            margin: "auto",
+            mt: 25,
+            width: "35%",
+            borderRadius: 2,
+            boxShadow: 24,
+          }}
+        >
+          <BookUpdateForm
+            bookUpdate={book}
+            setIsFormUpdateBookOpen={setIsFormUpdateBookOpen}
+          />
         </Box>
       </Modal>
     </Container>

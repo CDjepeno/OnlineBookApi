@@ -2,13 +2,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useParams } from "react-router-dom";
 import { ErrorResponse } from "src/types/book/book.types";
-import { deleteBook, getBooksByUser } from '../../services/book.services';
-import { BookQueriesKeysEnum } from '../../enum/enum';
-import { UseQueryWorkflowCallback } from '../../request/commons/useQueryWorkflowCallback';
+import { BookQueriesKeysEnum, UserQueriesKeysEnum } from "../../enum/enum";
+import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflowCallback";
+import { deleteBook, getBooksByUser } from "../../services/book.services";
+import { getUserById } from "src/services/user.services";
 
 function ProfileHook() {
-  const { userId } = useParams<{ userId: string }>();
-
+  const { id: userId } = useParams<{ id: string }>();
+  
   const {
     data: books,
     isPending,
@@ -16,6 +17,16 @@ function ProfileHook() {
   } = useQuery({
     queryKey: [BookQueriesKeysEnum.BooksUser],
     queryFn: () => getBooksByUser(userId!),
+    enabled: !!userId,
+  });
+
+  const {
+    data: user,
+    isPending:isPendingUser,
+    error:errorUser,
+  } = useQuery({
+    queryKey: [UserQueriesKeysEnum.GetUserByID],
+    queryFn: async () => getUserById(userId!),
     enabled: !!userId,
   });
 
@@ -29,7 +40,7 @@ function ProfileHook() {
   >({
     mutationFn: async (id: number) => deleteBook(id),
 
-    onSuccess: () => {
+    onSuccess: async () => {
       onSuccessCommon("Le livre a été supprimé avec succès");
       queryClient.invalidateQueries({
         queryKey: [BookQueriesKeysEnum.BooksUser],
@@ -55,7 +66,8 @@ function ProfileHook() {
     },
   });
 
-  return { books, isPending, error, deleteBookMutation };
+
+  return { books, isPending, error, deleteBookMutation, user, isPendingUser, errorUser };
 }
 
 export default ProfileHook;

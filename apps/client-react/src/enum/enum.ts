@@ -14,6 +14,9 @@ export enum BookingsQueriesKeysEnum {
 
 export enum UserQueriesKeysEnum {
   Login = 'login',
+  UpdateUser = 'updateUser',
+  GetCurrentUser = 'getcurrentuser',
+  GetUserByID = 'getUserById',
 }
 
 // Method HTTP
@@ -32,6 +35,6 @@ export enum RouterEnum {
   ADD_BOOK = '/add-book',
   BOOK = '/book/:id',
   DASHBOARD = '/bookings/user/:id',
-  PROFILE = '/books/user/:userId',
+  PROFILE = '/books/user/:id',
   HOME = '/',
 }

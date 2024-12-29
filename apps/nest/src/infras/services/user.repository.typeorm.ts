@@ -11,7 +11,9 @@ import { LoginUserResponse } from 'application/usecases/user/auth/login/login.us
 import * as bcrypt from 'bcrypt';
 import { AddUserRequest } from 'src/application/usecases/user/adduser/add.user.request';
 import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.response';
-import { CurrentUserByIdResponse, CurrentUserResponse } from 'src/application/usecases/user/auth/current.user.response';
+import {
+  CurrentUserResponse,
+} from 'src/application/usecases/user/auth/GetCurrentUser/current.user.response';
 import { LoginUserRequest } from 'src/application/usecases/user/auth/login/login.user.request';
 import { LogoutUserRequest } from 'src/application/usecases/user/auth/logout/logout.user.request';
 import { RefreshTokenRequest } from 'src/application/usecases/user/auth/refreshToken/refresh.token.request';
@@ -21,6 +23,7 @@ import { UpdateUserResponse } from 'src/application/usecases/user/updateUser/upd
 import { UsersRepository } from 'src/domaine/repositories/user.repository';
 import { Repository } from 'typeorm';
 import { User } from '../models/user.model';
+import { CurrentUserByIdResponse } from 'src/application/usecases/user/GetUserById/current.user.response';
 
 @Injectable()
 export class UserRepositoryTypeorm implements UsersRepository {
@@ -182,13 +185,14 @@ export class UserRepositoryTypeorm implements UsersRepository {
     existingUser: CurrentUserByIdResponse,
   ): Promise<UpdateUserResponse> {
     try {
-        existingUser.email = user.email
-        existingUser.name = user.name
-        existingUser.phone = user.phone
-        existingUser.password = user.password
+      existingUser.email = user.email;
+      existingUser.name = user.name;
+      existingUser.phone = user.phone;
+      existingUser.password = user.password;
+      existingUser.sexe = user.sexe;
 
       const res = await this.repository.save(existingUser);
-    
+
       return res;
     } catch (error) {
       console.error("Erreur lors de la modification d'un livre :", error);
@@ -201,15 +205,14 @@ export class UserRepositoryTypeorm implements UsersRepository {
     }
   }
 
-  async getCurrentUserById(id: number): Promise<CurrentUserResponse> {
+  async getUserById(id: number): Promise<CurrentUserByIdResponse> {
     try {
       const userEntity = await this.repository.findOne({
         where: { id },
       });
-      console.log(userEntity);
       
       if (!userEntity) {
-        throw new NotFoundException();
+        throw new NotFoundException(`L'user avec l'id ${id} n'est pas trouver `);
       }
 
       return userEntity;

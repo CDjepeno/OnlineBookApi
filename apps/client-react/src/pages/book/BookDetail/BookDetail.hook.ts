@@ -14,7 +14,7 @@ import { BookingBookFormInput } from "../../../types/user/form.types";
 function BookDetailHook() {
   const { id: bookId } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
-
+  
   const {
     isPending,
     data: book,

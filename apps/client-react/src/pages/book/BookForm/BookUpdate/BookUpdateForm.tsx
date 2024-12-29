@@ -28,10 +28,10 @@ const GlobalStyle = createGlobalStyle`
 
 type BookUpdateFormProps = {
   bookUpdate: UpdateBookFormType;
-  setIsFormOpen: (value: boolean) => void;
+  setIsFormUpdateBookOpen: (value: boolean) => void;
 };
 
-function BookUpdateForm({ bookUpdate, setIsFormOpen }: BookUpdateFormProps) {
+function BookUpdateForm({ bookUpdate, setIsFormUpdateBookOpen }: BookUpdateFormProps) {
   
   const [fileName, setFileName] = useState(bookUpdate?.coverUrl || "");
   
@@ -52,7 +52,7 @@ function BookUpdateForm({ bookUpdate, setIsFormOpen }: BookUpdateFormProps) {
     setFileName(bookUpdate?.coverUrl || "");
   }, [bookUpdate, reset]);
 
-  const { submit } = BookUpdateHook(setIsFormOpen);
+  const { submit } = BookUpdateHook(setIsFormUpdateBookOpen);
 
   return (
     <Container component="main" maxWidth="xs">
