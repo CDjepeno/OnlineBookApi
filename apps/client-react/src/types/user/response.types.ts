@@ -35,3 +35,9 @@ export type GetUserByIdResponse = {
   sexe: string;
 };
 
+export type RegisterResponse = {
+  email: string;
+  name: string;
+  phone: string;
+};
+

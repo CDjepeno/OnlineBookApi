@@ -13,15 +13,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import Link from "@mui/material/Link";
 import { fr } from "date-fns/locale";
 import { useEffect } from "react";
 import { registerLocale } from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
-import { UpdateUserFormType } from "src/types/user/form.types";
-import { createGlobalStyle } from "styled-components";
 import FormInput from "src/components/FormInput";
-import Link from "@mui/material/Link";
-import UserUpdateHook from "./UserUpdate.hook";
+import { UserFormType } from "src/types/user/form.types";
+import { UserFormInput } from "src/types/user/input.types";
+import { createGlobalStyle } from "styled-components";
+import UserUpdateRegisterHook from "../UserUpdateRegister.hook";
 
 registerLocale("fr", fr);
 
@@ -33,7 +34,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 type UserUpdateFormProps = {
-  userUpdate: UpdateUserFormType;
+  userUpdate: UserFormInput;
   setIsFormUpdateUserOpen: (value: boolean) => void;
 };
 
@@ -41,7 +42,6 @@ function UserUpdateForm({
   userUpdate,
   setIsFormUpdateUserOpen,
 }: UserUpdateFormProps) {
-
   const {
     control,
     reset,
@@ -49,12 +49,11 @@ function UserUpdateForm({
     watch,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<UpdateUserFormType>({
+  } = useForm<UserFormType>({
     defaultValues: {
-      ...userUpdate
+      ...userUpdate,
     },
   });
-
 
   const password = watch("password", "");
   const confirmPassword = watch("confirmPassword", "");
@@ -70,13 +69,11 @@ function UserUpdateForm({
     }
   };
 
-
-  const { submit } = UserUpdateHook(setIsFormUpdateUserOpen);
+  const { onSubmit } = UserUpdateRegisterHook(setIsFormUpdateUserOpen);
 
   useEffect(() => {
     reset(userUpdate);
   }, [userUpdate, reset]);
-
 
   return (
     <Container component="main" maxWidth="xs">
@@ -99,7 +96,7 @@ function UserUpdateForm({
         <Box
           component="form"
           noValidate
-          onSubmit={handleSubmit(submit)}
+          onSubmit={handleSubmit(onSubmit)}
           sx={{ mt: 3 }}
         >
           <Grid container spacing={2}>

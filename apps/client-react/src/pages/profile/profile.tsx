@@ -11,16 +11,14 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import UserCard from "src/components/CardUser";
-import { UpdateBookFormType } from "src/types/book/book.types";
-import {
-  UpdateUserFormInput,
-  UpdateUserFormType,
-} from "src/types/user/form.types";
 import { formatDate } from "../../utils/formatDate";
 import BookUpdateForm from "../book/BookForm/BookUpdate/BookUpdateForm";
 import { TableList } from "../book/components/TableList";
-import UserUpdateForm from "../user/UserUpdate/UserUpdateForm";
+import UserUpdateForm from "../user/Update-User/UserUpdateForm";
 import ProfileHook from "./profile.hook";
+import { UpdateBookFormType } from "src/types/book/form.types";
+import { UserFormType } from "src/types/user/form.types";
+import { UserFormInput } from "src/types/user/input.types";
 
 const headCells = [
   "Name",
@@ -43,14 +41,15 @@ export default function Profile() {
     releaseAt: "",
     coverUrl: undefined,
   });
-  const [userForm, setUserForm] = useState<UpdateUserFormType>({
-    id: user!.id,
-    email: user!.email,
+  
+  const [userForm, setUserForm] = useState<UserFormInput>({
+    id: user?.id || 0,
+    email: user?.email || "",
     password: "",
     confirmPassword: "",
-    name: user!.name,
-    phone: user!.phone,
-    sexe: user!.sexe,
+    name: user?.name || "",
+    phone: user?.phone || "",
+    sexe: user?.sexe || "",
   });
 
   const DeleteBook = async (id: number) => {
@@ -66,8 +65,7 @@ export default function Profile() {
     setIsFormUpdateBookOpen(true);
   };
 
-  const editUser = (user: UpdateUserFormInput) => {
-    console.log(user);
+  const editUser = (user: UserFormType) => {
     setUserForm(user);
     setIsFormUpdateUserOpen(true);
   };
@@ -141,7 +139,20 @@ export default function Profile() {
       </Container>
     );
   }
-
+  if (!userForm) {
+    return (
+      <Container>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="100vh"
+        >
+          <Typography variant="h6">No user found</Typography>
+        </Box>
+      </Container>
+    );
+  }
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">
       <UserCard

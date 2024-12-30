@@ -9,7 +9,7 @@ import {
   BookingBookResponse,
   GetBookingsBookResponse,
   GetBookingUserResponse,
-} from "../types/booking/booking.types";
+} from "../types/booking/input.types";
 import { BookingBookFormInput } from "../types/user/form.types";
 
 export const getBookingsBook = async (

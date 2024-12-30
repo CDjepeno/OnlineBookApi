@@ -1,15 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useParams } from "react-router-dom";
-import { ErrorResponse } from "src/types/book/book.types";
+import { getUserById } from "src/services/user.services";
 import { BookQueriesKeysEnum, UserQueriesKeysEnum } from "../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflowCallback";
 import { deleteBook, getBooksByUser } from "../../services/book.services";
-import { getUserById } from "src/services/user.services";
+import { ErrorResponse } from "src/types/book/response.types";
 
 function ProfileHook() {
   const { id: userId } = useParams<{ id: string }>();
-  
+
   const {
     data: books,
     isPending,
@@ -22,11 +22,11 @@ function ProfileHook() {
 
   const {
     data: user,
-    isPending:isPendingUser,
-    error:errorUser,
+    isPending: isPendingUser,
+    error: errorUser,
   } = useQuery({
     queryKey: [UserQueriesKeysEnum.GetUserByID],
-    queryFn: async () => getUserById(userId!),
+    queryFn: () => getUserById(userId!),
     enabled: !!userId,
   });
 
@@ -66,8 +66,15 @@ function ProfileHook() {
     },
   });
 
-
-  return { books, isPending, error, deleteBookMutation, user, isPendingUser, errorUser };
+  return {
+    books,
+    isPending,
+    error,
+    deleteBookMutation,
+    user,
+    isPendingUser,
+    errorUser,
+  };
 }
 
 export default ProfileHook;

@@ -14,8 +14,8 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { createGlobalStyle } from "styled-components";
 import FormInput from "../../../../components/FormInput";
-import { UpdateBookFormType } from "../../../../types/book/book.types";
 import BookUpdateHook from "./BookUpdate.hook";
+import { UpdateBookFormType } from "src/types/book/form.types";
 
 registerLocale("fr", fr);
 
@@ -31,10 +31,12 @@ type BookUpdateFormProps = {
   setIsFormUpdateBookOpen: (value: boolean) => void;
 };
 
-function BookUpdateForm({ bookUpdate, setIsFormUpdateBookOpen }: BookUpdateFormProps) {
-  
+function BookUpdateForm({
+  bookUpdate,
+  setIsFormUpdateBookOpen,
+}: BookUpdateFormProps) {
   const [fileName, setFileName] = useState(bookUpdate?.coverUrl || "");
-  
+
   const {
     control,
     reset,
@@ -43,8 +45,8 @@ function BookUpdateForm({ bookUpdate, setIsFormUpdateBookOpen }: BookUpdateFormP
   } = useForm<UpdateBookFormType>({
     defaultValues: {
       ...bookUpdate,
-      coverUrl: bookUpdate.coverUrl
-    }
+      coverUrl: bookUpdate.coverUrl,
+    },
   });
 
   useEffect(() => {
@@ -146,7 +148,6 @@ function BookUpdateForm({ bookUpdate, setIsFormUpdateBookOpen }: BookUpdateFormP
                         accept=".jpg,.jpeg,.png"
                         onChange={(e) => {
                           if (e.target.files && e.target.files.length > 0) {
-
                             const selectedFile = e.target.files;
                             onChange(selectedFile);
                             setFileName(selectedFile[0].name);
@@ -189,6 +190,3 @@ function BookUpdateForm({ bookUpdate, setIsFormUpdateBookOpen }: BookUpdateFormP
 }
 
 export default BookUpdateForm;
-
-
-

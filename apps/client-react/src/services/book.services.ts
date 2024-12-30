@@ -7,9 +7,12 @@ import {
   GetBookResponse,
   GetBooksResponse,
   UpdateBookResponse,
-} from "../types/book/book.types";
+} from "../types/book/input.types";
 
-export const getBooks = async (page: number, limit: number): Promise<GetAllBookResponsePagination> => {
+export const getBooks = async (
+  page: number,
+  limit: number
+): Promise<GetAllBookResponsePagination> => {
   return await UseRequestApi<GetAllBookResponsePagination, null>({
     path: `${BOOKS_ROUTE}?page=${page}?limit=${limit}`,
     method: MethodHttpEnum.GET,
@@ -26,7 +29,9 @@ export const getBook = async (id: string): Promise<GetBookResponse> => {
   });
 };
 
-export const getBookByName = async (nameBook: string): Promise<GetBookResponse> => {
+export const getBookByName = async (
+  nameBook: string
+): Promise<GetBookResponse> => {
   return await UseRequestApi<GetBookResponse, { nameBook: string }>({
     path: `${BOOK_ROUTE}?name=${nameBook}`,
     method: MethodHttpEnum.GET,
@@ -75,9 +80,9 @@ export const deleteBook = async (id: number): Promise<void> => {
 
 export const updateBook = async (
   id: number,
-  data: FormData | Record<string, unknown> 
+  data: FormData | Record<string, unknown>
 ): Promise<UpdateBookResponse> => {
-  const isFormdata = data instanceof FormData
+  const isFormdata = data instanceof FormData;
   return await UseRequestApi({
     method: MethodHttpEnum.PUT,
     path: `${BOOK_ROUTE}/${id}`,
@@ -88,4 +93,3 @@ export const updateBook = async (
     },
   });
 };
-

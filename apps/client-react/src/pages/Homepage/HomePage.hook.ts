@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 import { BookQueriesKeysEnum } from "../../enum/enum";
 import { getBooks } from "../../services/book.services";
-import { useForm } from "react-hook-form";
-import { GetBookByNameInput } from "../../types/book/book.types";
+import { GetBookByNameInput } from "../../types/book/input.types";
 
 export default function HomePageHook(page: number, limit: number) {
   const {
@@ -19,9 +19,8 @@ export default function HomePageHook(page: number, limit: number) {
     formState: { errors },
   } = useForm<GetBookByNameInput>();
 
-  const totalPages = booksPagination?.meta.totalPages  
-  const books = booksPagination?.books  
-  
+  const totalPages = booksPagination?.meta.totalPages;
+  const books = booksPagination?.books;
 
   return { isPending, books, error, control, errors, totalPages };
 }

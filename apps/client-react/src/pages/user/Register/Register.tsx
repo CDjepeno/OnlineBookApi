@@ -1,3 +1,4 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
@@ -8,20 +9,35 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import FormInput from "../../../components/FormInput";
-import RegisterHook from "./Register.hook";
+import UserUpdateRegisterHook from "../UserUpdateRegister.hook";
+import { UserFormType } from "src/types/user/form.types";
 
 export default function Register() {
+  const { onSubmit, signupSchema } = UserUpdateRegisterHook();
+
   const {
-    onSubmit,
     handleSubmit,
+    setError,
+    watch,
     control,
-    errors,
-    isSubmitting,
-    isPasswordMatch,
-    handleConfirmPasswordChange,
-  } = RegisterHook();
+    formState: { errors, isSubmitting },
+  } = useForm<UserFormType>({ resolver: yupResolver(signupSchema) });
+
+  const password = watch("password", "");
+  const confirmPassword = watch("confirmPassword", "");
+
+  const isPasswordMatch = password === confirmPassword;
+
+  const handleConfirmPasswordChange = () => {
+    if (!isPasswordMatch) {
+      setError("confirmPassword", {
+        type: "manual",
+        message: "Les mots de passe ne correspondent pas.",
+      });
+    }
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -138,7 +154,6 @@ export default function Register() {
                 )}
               />
             </Grid>
-            
           </Grid>
           <Button
             type="submit"

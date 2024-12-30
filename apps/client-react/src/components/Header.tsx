@@ -15,11 +15,11 @@ import * as React from "react";
 import { useContext, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AuthContext } from "../context";
+import { AuthContextValue } from "../interfaces/auth.context.value";
 import {
   GET_BOOK_BY_USER_ROUTE,
   GET_BOOKINGS_USER_ROUTE,
 } from "../request/route-http/route-http";
-import { AuthContextValue } from "../types/user/auth.context.value";
 
 type LinkMap = {
   [key: string]: string;

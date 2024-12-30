@@ -3,10 +3,9 @@ import { AxiosError } from "axios";
 import { BookQueriesKeysEnum } from "../../../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../../../request/commons/useQueryWorkflowCallback";
 import { updateBook } from "../../../../services/book.services";
-import {
-  UpdateBookFormType,
-  UpdateBookResponse,
-} from "../../../../types/book/book.types";
+import { UpdateBookResponse } from "src/types/book/response.types";
+import { UpdateBookForm } from "src/types/book/form.types";
+
 
 interface ErrorResponse {
   message: string;
@@ -24,7 +23,7 @@ function BookUpdateHook(setIsFormOpen: (value: boolean) => void) {
     mutationFn: async ({ id, data }) => updateBook(id, data),
 
     onSuccess: () => {
-      setIsFormOpen(false)
+      setIsFormOpen(false);
       onSuccessCommon("Le livre a été mis à jour avec succès");
       queryClient.invalidateQueries({
         queryKey: [BookQueriesKeysEnum.BooksUser],
@@ -34,7 +33,6 @@ function BookUpdateHook(setIsFormOpen: (value: boolean) => void) {
     onError: (error: Error | AxiosError<unknown>) => {
       let errorMessage =
         "Une erreur est survenue lors de la mise à jour du livre";
-
 
       if ((error as AxiosError<unknown>).isAxiosError) {
         if (
@@ -51,7 +49,7 @@ function BookUpdateHook(setIsFormOpen: (value: boolean) => void) {
     },
   });
 
-  const submit = async (formData: UpdateBookFormType) => {
+  const submit = async (formData: UpdateBookForm) => {
     try {
       const { id, name, description, author, releaseAt, coverUrl } = formData;
 
@@ -65,9 +63,8 @@ function BookUpdateHook(setIsFormOpen: (value: boolean) => void) {
         data.append("releaseAt", releaseAt ? releaseAt.toString() : "");
 
         await updateBookMutation({ id, data });
-        return
+        return;
       }
-
 
       await updateBookMutation({ id, data: formData });
     } catch (error) {

@@ -4,17 +4,12 @@ import { AxiosError } from "axios";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { LoginFormInput } from "src/types/user/input.types";
 import * as yup from "yup";
 import { AuthContext } from "../../../context";
 import { RouterEnum } from "../../../enum/enum";
+import { AuthContextValue } from "../../../interfaces/auth.context.value";
 import { UseQueryWorkflowCallback } from "../../../request/commons/useQueryWorkflowCallback";
-import { AuthContextValue } from "../../../types/user/auth.context.value";
-import { AuthFormInput } from "../../../types/user/input.types";
-
-export type LoginFormType = {
-  email: string;
-  password: string;
-};
 
 export default function LoginHook() {
   const { signin } = useContext(AuthContext) as AuthContextValue;
@@ -30,24 +25,19 @@ export default function LoginHook() {
       .min(6, "Mot de passe trop court"),
   });
 
-  const defaultValues: LoginFormType = {
-    email: "",
-    password: "",
-  };
-
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
     clearErrors,
     control,
-  } = useForm({ defaultValues, resolver: yupResolver(validationSchema) });
+  } = useForm<LoginFormInput>({ resolver: yupResolver(validationSchema) });
 
   const { onErrorCommon } = UseQueryWorkflowCallback();
   const navigate = useNavigate();
 
   const { mutateAsync: submit } = useMutation({
-    mutationFn: async (input: AuthFormInput) => signin(input),
+    mutationFn: async (input: LoginFormInput) => signin(input),
     onError: (error) => {
       if (
         (error as AxiosError).response &&
@@ -62,7 +52,7 @@ export default function LoginHook() {
     },
   });
 
-  const onSubmit = (input: AuthFormInput) => {
+  const onSubmit = (input: LoginFormInput) => {
     return submit(input);
   };
 

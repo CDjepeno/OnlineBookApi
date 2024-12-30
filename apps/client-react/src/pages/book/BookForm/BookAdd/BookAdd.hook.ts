@@ -2,34 +2,23 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useContext } from "react";
-import { DefaultValues, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { AuthContext } from "src/context";
+import { AuthContextValue } from "src/interfaces/auth.context.value";
 import * as yup from "yup";
 import { BookQueriesKeysEnum, RouterEnum } from "../../../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../../../request/commons/useQueryWorkflowCallback";
 import { createBook } from "../../../../services/book.services";
-import {
-  AddBookFormType,
-  AddBookInput,
-  AddBookResponse,
-  ErrorResponse,
-} from "../../../../types/book/book.types";
-import { AuthContext } from "src/context";
-import { AuthContextValue } from "src/types/user/auth.context.value";
+import { AddBookForm } from "src/types/book/form.types";
+import { AddBookResponse, ErrorResponse } from "src/types/book/response.types";
+import { AddBookInput } from "src/types/book/input.types";
 
-const defaultValues: DefaultValues<AddBookFormType> = {
-  name: "",
-  description: "",
-  author: "",
-  releaseAt: "",
-  coverUrl: undefined,
-};
 
 const bookSchema = yup.object({
   name: yup.string().required("Le nom doit être renseigné"),
   description: yup.string().required("La description doit être renseignée"),
   author: yup.string().required("L'auteur doit être renseigné"),
-  sexe: yup.string().required("Le sexe doit être renseigné"),
-  releaseAt: yup.string ().required("La date de sortie doit être renseignée"),
+  releaseAt: yup.string().required("La date de sortie doit être renseignée"),
   coverUrl: yup
     .mixed<FileList>()
     .required("L'image de couverture est requise")
@@ -47,8 +36,7 @@ function BookAddHook() {
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<AddBookFormType>({
-    defaultValues,
+  } = useForm<AddBookForm>({
     resolver: yupResolver(bookSchema),
   });
 
@@ -86,7 +74,7 @@ function BookAddHook() {
   });
 
   const submit = async (data: AddBookInput) => {
-    try {   
+    try {
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("description", data.description);

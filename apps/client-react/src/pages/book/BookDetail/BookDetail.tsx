@@ -17,7 +17,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import dayjs, { Dayjs } from "dayjs";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../context";
-import { AuthContextValue } from "../../../types/user/auth.context.value";
+import { AuthContextValue } from "../../../interfaces/auth.context.value";
 import { formatDate } from "../../../utils/formatDate";
 import { truncateDescription } from "../../../utils/truncateText";
 import BookDetailHook from "./BookDetail.hook";

@@ -11,13 +11,13 @@ import {
 } from "@mui/material";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../context";
-import { UpdateBookFormType } from "../../../types/book/book.types";
-import { AuthContextValue } from "../../../types/user/auth.context.value";
+import { AuthContextValue } from "../../../interfaces/auth.context.value";
+import { UpdateBookFormType } from "../../../types/book/input.types";
 import { formatDate } from "../../../utils/formatDate";
 import BookUpdateForm from "../BookForm/BookUpdate/BookUpdateForm";
 import { TableList } from "../components/TableList";
-import DeleteBookUserHook from "../Delete-book-user-hook";
 import BookListUserHook from "./BookListUser.hook";
+import DeleteBookUserHook from "./Delete-book-user-hook";
 
 const headCells = [
   "Name",

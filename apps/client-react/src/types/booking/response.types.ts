@@ -1,13 +1,13 @@
-export interface GetBookingsBookResponse {
+export type GetBookingsBookResponse = {
   startAt: string;
   endAt: string;
 }
 
-export interface BookingBookResponse {
+export type BookingBookResponse = {
   bookId: number;
 }
 
-export interface GetBookingUserResponse {
+export type GetBookingUserResponse = {
   bookId: number;
   name: string;
   coverUrl: string;

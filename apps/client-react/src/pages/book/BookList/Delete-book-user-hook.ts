@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { BookQueriesKeysEnum } from "../../enum/enum";
-import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflowCallback";
-import { deleteBook } from "../../services/book.services";
+import { BookQueriesKeysEnum } from "../../../enum/enum";
+import { UseQueryWorkflowCallback } from "../../../request/commons/useQueryWorkflowCallback";
+import { deleteBook } from "../../../services/book.services";
 
 interface ErrorResponse {
   message: string;
