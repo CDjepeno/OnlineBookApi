@@ -6,8 +6,8 @@ export type AddBookForm = {
   coverUrl: FileList;
 }
 
-export type UpdateBookForm = {
-  id: number;
+export type BookForm = {
+  id?: number;
   name: string;
   description: string;
   author: string;

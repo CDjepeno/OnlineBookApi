@@ -12,10 +12,10 @@ import { fr } from "date-fns/locale";
 import { useEffect, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
+import { BookForm } from "src/types/book/form.types";
 import { createGlobalStyle } from "styled-components";
 import FormInput from "../../../../components/FormInput";
-import BookUpdateHook from "./BookUpdate.hook";
-import { UpdateBookFormType } from "src/types/book/form.types";
+import BookUpdateAddHook from "../BookAddUpdate.hook";
 
 registerLocale("fr", fr);
 
@@ -27,7 +27,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 type BookUpdateFormProps = {
-  bookUpdate: UpdateBookFormType;
+  bookUpdate: BookForm;
   setIsFormUpdateBookOpen: (value: boolean) => void;
 };
 
@@ -42,7 +42,7 @@ function BookUpdateForm({
     reset,
     handleSubmit,
     formState: { errors },
-  } = useForm<UpdateBookFormType>({
+  } = useForm<BookForm>({
     defaultValues: {
       ...bookUpdate,
       coverUrl: bookUpdate.coverUrl,
@@ -54,7 +54,7 @@ function BookUpdateForm({
     setFileName(bookUpdate?.coverUrl || "");
   }, [bookUpdate, reset]);
 
-  const { submit } = BookUpdateHook(setIsFormUpdateBookOpen);
+  const { submit } = BookUpdateAddHook(setIsFormUpdateBookOpen);
 
   return (
     <Container component="main" maxWidth="xs">

@@ -10,9 +10,9 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Controller, useForm } from "react-hook-form";
+import { UserForm } from "src/types/user/form.types";
 import FormInput from "../../../components/FormInput";
 import UserUpdateRegisterHook from "../UserUpdateRegister.hook";
-import { UserFormType } from "src/types/user/form.types";
 
 export default function Register() {
   const { onSubmit, signupSchema } = UserUpdateRegisterHook();
@@ -23,7 +23,7 @@ export default function Register() {
     watch,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<UserFormType>({ resolver: yupResolver(signupSchema) });
+  } = useForm<UserForm>({ resolver: yupResolver(signupSchema) });
 
   const password = watch("password", "");
   const confirmPassword = watch("confirmPassword", "");

@@ -8,10 +8,12 @@ import Typography from "@mui/material/Typography";
 import { fr } from "date-fns/locale";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { createGlobalStyle } from "styled-components";
 import FormInput from "../../../../components/FormInput";
-import AddBookHook from "./BookAdd.hook";
+import { AddBookForm } from "src/types/book/form.types";
+import { yupResolver } from "@hookform/resolvers/yup";
+import BookUpdateAddHook from "../BookAddUpdate.hook";
 
 registerLocale("fr", fr);
 
@@ -23,8 +25,14 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function BookAddForm() {
-  const { submit, handleSubmit, errors, control } = AddBookHook();
-
+  const { submit, bookSchema } = BookUpdateAddHook();
+  const {
+    handleSubmit,
+    control,
+    formState: { errors},
+  } = useForm<AddBookForm>({
+    resolver: yupResolver(bookSchema),
+  });
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />

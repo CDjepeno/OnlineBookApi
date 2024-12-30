@@ -19,7 +19,7 @@ import { useEffect } from "react";
 import { registerLocale } from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import FormInput from "src/components/FormInput";
-import { UserFormType } from "src/types/user/form.types";
+import { UserForm } from "src/types/user/form.types";
 import { UserFormInput } from "src/types/user/input.types";
 import { createGlobalStyle } from "styled-components";
 import UserUpdateRegisterHook from "../UserUpdateRegister.hook";
@@ -49,7 +49,7 @@ function UserUpdateForm({
     watch,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<UserFormType>({
+  } = useForm<UserForm>({
     defaultValues: {
       ...userUpdate,
     },

@@ -1,7 +1,7 @@
 
 
 
-export type UserFormType = {
+export type UserForm = {
   email: string;
   password: string;
   confirmPassword: string;
