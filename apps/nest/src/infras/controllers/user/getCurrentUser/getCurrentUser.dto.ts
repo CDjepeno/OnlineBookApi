@@ -6,5 +6,5 @@ export class GetCurrentUserDto {
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  readonly email: string;
+  readonly email!: string;
 }

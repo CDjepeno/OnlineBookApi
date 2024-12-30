@@ -18,7 +18,7 @@ export class GetBookingsBookUseCase {
       ) {
         throw error;
       }
-      throw new Error(error);
+      throw new Error("internal server error");
     }
   }
 }

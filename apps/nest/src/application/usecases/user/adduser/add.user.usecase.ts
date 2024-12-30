@@ -24,7 +24,7 @@ export class AddUserUseCase {
     });
     
     const user = new User(
-      request.id,
+      request.id!,
       request.name,
       request.password,
       request.email,

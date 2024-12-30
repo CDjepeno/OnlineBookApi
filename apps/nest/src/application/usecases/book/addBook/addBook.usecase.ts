@@ -15,7 +15,7 @@ export class AddBookUseCase {
       const coverUrl = await this.awsS3Client.uploadFile(request.coverUrl);
 
       const book = new BookEntity(
-        request.id,
+        request.id!,
         request.name,
         request.description,
         request.author,
@@ -28,7 +28,7 @@ export class AddBookUseCase {
       return res;
     } catch (error) {
       console.error("Erreur lors de l'ajout du livre :", error);
-      throw new Error(error);
+      throw new Error("internal server error");
     }
   }
 }

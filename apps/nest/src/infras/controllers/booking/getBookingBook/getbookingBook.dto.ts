@@ -4,9 +4,9 @@ import { IsNotEmpty } from 'class-validator';
 export class GetBookingBookDto {
   @ApiProperty()
   @IsNotEmpty()
-  startAt: Date;
+  startAt!: Date;
 
   @ApiProperty()
   @IsNotEmpty()
-  endAt: Date;
+  endAt!: Date;
 }

@@ -13,31 +13,31 @@ import { IsInt } from 'class-validator';
 @Entity()
 export class Booking {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @Column()
-  startAt: Date;
+  startAt!: Date;
 
   @Column()
-  endAt: Date;
+  endAt!: Date;
 
   @Column()
   @IsInt()
-  userId: number;
+  userId!: number;
 
   @ManyToOne(() => User, (user) => user.bookings)
   @IsInt()
   @JoinColumn({ name: 'userId' })
-  user: User;
+  user!: User;
 
   @Column()
   @IsInt()
-  bookId: number;
+  bookId!: number;
 
   @ManyToOne(() => Book, (book) => book.bookings,{ nullable: false })
   @JoinColumn({ name: 'bookId' })
-  book: Book;
+  book!: Book;
 }

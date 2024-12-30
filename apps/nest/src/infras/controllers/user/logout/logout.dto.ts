@@ -5,6 +5,6 @@ import { IsNotEmpty } from "class-validator";
 export class LogoutDto {
   @ApiProperty({ required: true })
   @IsNotEmpty()
-  readonly id: number;
+  readonly id!: number;
 
 }

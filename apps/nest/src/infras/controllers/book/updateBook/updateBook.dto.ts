@@ -5,17 +5,17 @@ export class UpdateBookDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ description: 'Nom du livre' })
-  name: string;
+  name!: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ description: 'Description du livre' })
-  description: string;
+  description!: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ description: "Nom de l'auteur du livre" })
-  author: string;
+  author!: string;
 
   @IsNotEmpty()
   @IsOptional()

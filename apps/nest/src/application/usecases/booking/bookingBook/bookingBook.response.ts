@@ -1,3 +1,3 @@
-export class BookingBookResponse {
-  bookId: number;
+export type BookingBookResponse = {
+  bookId: number
 }

@@ -5,23 +5,23 @@ export class CreateBookDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  name: string;
+  name!: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  description: string;
+  description!: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  author: string;
+  author!: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  releaseAt: Date;
+  releaseAt!: Date;
 
   @IsNotEmpty()
   @IsInt()
-  userId: number;
+  userId!: number;
 }

@@ -1,3 +1,4 @@
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
 import { NotFoundError } from 'src/domaine/errors/book.error';
 import { BookRepository } from 'src/domaine/repositories/book.repository';
@@ -23,7 +24,7 @@ export class UpdateBookUseCase {
 
       if (typeof request.coverUrl === `object`) {
         coverUrl = await this.awsS3Client.uploadFile(request.coverUrl);
-      } 
+      }
 
       const updatedBook = new BookEntity(
         request.id,
@@ -32,14 +33,20 @@ export class UpdateBookUseCase {
         request.author ?? existingBook.author,
         request.releaseAt ?? existingBook.releaseAt,
         coverUrl,
-        request.userId,
+        request.userId!,
       );
-      
+
       const res = await this.bookRepository.updateBook(request.id, updatedBook);
 
       return res;
     } catch (error) {
-      throw new Error(error);
+      if (
+        error instanceof BadRequestException ||
+        error instanceof ConflictException
+      ) {
+        throw error;
+      }
+      throw new Error('internal server error');
     }
   }
 }

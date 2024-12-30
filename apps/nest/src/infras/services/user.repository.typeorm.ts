@@ -21,7 +21,7 @@ import { RefreshTokenResponse } from 'src/application/usecases/user/auth/refresh
 import { UpdateUserRequest } from 'src/application/usecases/user/updateUser/update.user.request';
 import { UpdateUserResponse } from 'src/application/usecases/user/updateUser/update.user.response';
 import { UsersRepository } from 'src/domaine/repositories/user.repository';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { User } from '../models/user.model';
 import { CurrentUserByIdResponse } from 'src/application/usecases/user/GetUserById/current.user.response';
 
@@ -32,6 +32,8 @@ export class UserRepositoryTypeorm implements UsersRepository {
     private readonly repository: Repository<User>,
     private readonly jwtService: JwtService,
     private configService: ConfigService,
+
+
   ) {}
 
   async signUp(addUserRequest: AddUserRequest): Promise<AddUserResponse> {
@@ -45,10 +47,10 @@ export class UserRepositoryTypeorm implements UsersRepository {
 
       return await this.repository.save(user);
     } catch (error) {
-      if (error.code === 'ER_DUP_ENTRY') {
+      if (error instanceof QueryFailedError && error.driverError.code === 'ER_DUP_ENTRY') {
         throw new UnauthorizedException('Cet email est deja utilise.');
       }
-      throw new Error(error);
+      throw new Error('une erreure est survenue');
     }
   }
 
@@ -86,7 +88,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
       expiresIn: '30m',
     });
 
-    const refreshToken = await this.jwtService.signAsync(refreshPayload, {
+    const refreshToken: string| null = await this.jwtService.signAsync(refreshPayload, {
       secret: this.configService.get('REFRESH_JWT_SECRET'),
       expiresIn: '24h',
     });
@@ -100,7 +102,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
 
   async signOut(request: LogoutUserRequest): Promise<void> {
     try {
-      await this.repository.update({ id: request.id }, { refreshToken: null });
+      await this.repository.update({ id: request.id }, { refreshToken: undefined });
     } catch (error) {
       console.error('Error during signOut:', error);
       throw new Error(
@@ -144,18 +146,19 @@ export class UserRepositoryTypeorm implements UsersRepository {
         where: { id: tokenDecoded.sub },
       });
 
-      const isRefreshTokenValid = await bcrypt.compare(
-        refreshToken,
-        user.refreshToken,
-      );
+        const isRefreshTokenValid = bcrypt.compare(
+          refreshToken,
+          user!.refreshToken!
+        );
 
-      if (!isRefreshTokenValid) {
-        throw new UnauthorizedException('Refresh token invalide.');
-      }
+        if (!isRefreshTokenValid) {
+          throw new UnauthorizedException('Refresh token invalide.');
+        }
+
 
       const payload = {
-        sub: user.id,
-        email: user.email,
+        sub: user!.id,
+        email: user!.email,
       };
 
       const newAccessToken = this.jwtService.sign(payload, {
@@ -170,13 +173,14 @@ export class UserRepositoryTypeorm implements UsersRepository {
 
       const hashedNewRefreshToken = await bcrypt.hash(newRefreshToken, 10);
 
-      await this.repository.update(user.id, {
+      await this.repository.update(user!.id, {
         refreshToken: hashedNewRefreshToken,
       });
 
       return { token: newAccessToken, refreshToken: newRefreshToken };
     } catch (error) {
       console.log(error);
+      throw new UnauthorizedException('Invalid refresh token or error during token refresh.');
     }
   }
 
@@ -185,11 +189,11 @@ export class UserRepositoryTypeorm implements UsersRepository {
     existingUser: CurrentUserByIdResponse,
   ): Promise<UpdateUserResponse> {
     try {
-      existingUser.email = user.email;
-      existingUser.name = user.name;
-      existingUser.phone = user.phone;
-      existingUser.password = user.password;
-      existingUser.sexe = user.sexe;
+      existingUser.email = user.email!;
+      existingUser.name = user.name!;
+      existingUser.phone = user.phone!;
+      existingUser.password = user.password!;
+      existingUser.sexe = user.sexe!;
 
       const res = await this.repository.save(existingUser);
 

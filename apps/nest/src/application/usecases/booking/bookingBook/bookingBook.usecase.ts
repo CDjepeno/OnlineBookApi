@@ -29,7 +29,7 @@ export class BookingBookUseCase {
       }
 
       const book = new BookingEntity(
-        request.id,
+        request.id!,
         request.createdAt,
         request.startAt,
         request.endAt,
@@ -47,7 +47,7 @@ export class BookingBookUseCase {
       ) {
         throw error;
       }
-      throw new Error(error);
+      throw new Error("internal server error");
     }
   }
 }

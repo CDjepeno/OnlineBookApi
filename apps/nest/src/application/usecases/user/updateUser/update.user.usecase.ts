@@ -15,14 +15,14 @@ export class UpdateUserUseCase {
       throw new InvalidPhoneNumberException("Numero n'est pas valide");
     }
 
-     const existingUser = await this.userRepository.getUserById(+request.id);
+     const existingUser = await this.userRepository.getUserById(+request.id!);
     
           if (!existingUser) {
             throw new NotFoundError(`L'user avec l'ID ${request.id} est introuvable.`);
           }
     
     const user = new User(
-      request.id,
+      request.id!,
       request.name,
       request.password,
       request.email,

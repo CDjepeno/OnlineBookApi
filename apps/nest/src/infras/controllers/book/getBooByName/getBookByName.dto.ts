@@ -5,25 +5,25 @@ export class GetBookByNameDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ description: 'Nom du livre' })
-  name: string;
+  name!: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ description: 'Description du livre' })
-  description: string;
+  description!: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ description: "Nom de l'auteur du livre" })
-  author: string;
+  author!: string;
 
   @IsNotEmpty()
   @IsDate()
   @ApiProperty({ description: 'Date de publication du livre' })
-  releaseAt: Date;
+  releaseAt!: Date;
 
   @IsNotEmpty()
   @IsUrl()
   @ApiProperty({ description: 'URL de la couverture du livre' })
-  coverUrl: string;
+  coverUrl!: string;
 }

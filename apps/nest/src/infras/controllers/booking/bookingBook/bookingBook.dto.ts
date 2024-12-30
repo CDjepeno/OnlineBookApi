@@ -5,21 +5,21 @@ export class BookingBookDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsInt()
-  bookId: number;
+  bookId!: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  createdAt: Date;
+  createdAt!: Date;
 
   @ApiProperty()
   @IsNotEmpty()
-  startAt: Date;
+  startAt!: Date;
 
   @ApiProperty()
   @IsNotEmpty()
-  endAt: Date;
+  endAt!: Date;
 
   @IsNotEmpty()
   @IsInt()
-  userId: number;
+  userId!: number;
 }

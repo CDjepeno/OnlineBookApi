@@ -22,12 +22,12 @@ import { Booking } from './booking.model';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('increment')
-  id: number;
+  id!: number;
 
   @Column('varchar', { unique: true })
   @IsEmail()
   @IsNotEmpty({ message: 'The email is required' })
-  email: string;
+  email!: string;
 
   @Column()
   @IsString()
@@ -36,23 +36,23 @@ export class User {
     message:
       'Password should have 1 upper case, 1 lowercase letter, 1 number, and 1 special character.',
   })
-  password: string;
+  password!: string;
 
   @Column()
   @IsString()
-  name: string;
+  name!: string;
 
   @Column({ nullable: true })
   @IsString()
-  refreshToken: string;
+  refreshToken!: string;
 
   @Column()
   @IsString()
-  sexe: string;
+  sexe!: string;
 
   @Column()
   @IsString()
-  phone: string;
+  phone!: string;
 
   @OneToMany(() => Book, (book) => book.user)
   books?: Book[];
@@ -61,10 +61,10 @@ export class User {
   bookings?: Booking[];
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 
   @BeforeInsert()
   async hashPasswordBeforeInsert() {

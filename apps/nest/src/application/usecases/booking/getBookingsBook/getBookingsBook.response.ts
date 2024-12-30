@@ -1,4 +1,4 @@
-export class GetBookingsBookResponse {
-  startAt: Date;
-  endAt: Date;
+export type GetBookingsBookResponse = {
+  startAt: Date,
+  endAt: Date
 }

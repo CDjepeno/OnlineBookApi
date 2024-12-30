@@ -19,7 +19,7 @@ export class AwsS3Client {
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       region: process.env.AWS_REGION,
     });
-    this.bucketName = process.env.AWS_BUCKET_NAME;
+    this.bucketName = process.env.AWS_BUCKET_NAME!;
     this.logger.debug(`Bucket name from config: ${this.bucketName}`);
   }
 

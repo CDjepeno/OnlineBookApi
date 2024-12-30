@@ -6,10 +6,10 @@ export class LoginDto {
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  readonly email: string;
+  readonly email!: string;
 
   @ApiProperty({ required: true })
   @IsNotEmpty()
   @IsString()
-  readonly password: string;
+  readonly password!: string;
 }

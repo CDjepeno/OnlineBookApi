@@ -101,6 +101,9 @@ export class BookRepositoryTypeorm implements BookRepository {
         "Erreur s'est produite lors de la récupération des livres",
         error,
       );
+      throw new InternalServerErrorException(
+        'Impossible de récupérer le livre.',
+      );
     }
   }
 

@@ -15,42 +15,42 @@ import { Booking } from './booking.model';
 @Entity()
 export class Book {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
   @IsString()
-  name: string;
+  name!: string;
 
   @Column()
   @IsString()
-  description: string;
+  description!: string;
 
   @Column()
   @IsString()
-  author: string;
+  author!: string;
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   @IsDate()
-  releaseAt: Date;
+  releaseAt!: Date;
 
   @Column()
   @IsString()
-  coverUrl: string;
+  coverUrl!: string;
 
   @Column()
   @IsInt()
-  userId: number;
+  userId!: number;
 
   @ManyToOne(() => User, (user) => user.books)
   @JoinColumn({ name: 'userId' })
-  user: User;
+  user!: User;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
   
   @OneToMany(() => Booking, (bookings) => bookings.book)
-  bookings: Booking[];
+  bookings!: Booking[];
 }
