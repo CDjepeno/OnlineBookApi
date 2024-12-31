@@ -19,6 +19,7 @@ export function HomePage() {
     currentPage,
     limit
   );
+  console.log(books);
   
   const { data: book } = useQuery({
     queryKey: [BookQueriesKeysEnum.Book, activeSearchTerm],
@@ -34,6 +35,8 @@ export function HomePage() {
     _event: React.ChangeEvent<unknown>,
     page: number
   ) => {
+    console.log(page);
+    
     setCurrentPage(page); 
   };
 

@@ -23,10 +23,10 @@ export class GetAllBookController {
   ): Promise<GetAllBookResponsePagination> {
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
-    const { books, meta } = await this.getAllBookUsecaseProxy
+    const { books, pagination } = await this.getAllBookUsecaseProxy
       .getInstance()
       .execute(pageNumber, limitNumber);
 
-    return { books, meta };
+    return { books, pagination };
   }
 }

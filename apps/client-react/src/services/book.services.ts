@@ -1,13 +1,13 @@
-import { MethodHttpEnum } from "../enum/enum";
-import { UseRequestApi } from "../request/commons/useApiRequest";
-import { BOOKS_ROUTE, BOOK_ROUTE } from "../request/route-http/route-http";
 import {
   AddBookResponse,
   GetAllBookResponsePagination,
+  GetBookByUserPaginationResponse,
   GetBookResponse,
-  GetBooksResponse,
   UpdateBookResponse,
-} from "../types/book/input.types";
+} from "src/types/book/response.types";
+import { MethodHttpEnum } from "../enum/enum";
+import { UseRequestApi } from "../request/commons/useApiRequest";
+import { BOOKS_ROUTE, BOOK_ROUTE } from "../request/route-http/route-http";
 
 export const getBooks = async (
   page: number,
@@ -40,10 +40,12 @@ export const getBookByName = async (
 };
 
 export const getBooksByUser = async (
-  id: string
-): Promise<GetBooksResponse[]> => {
-  return await UseRequestApi<GetBooksResponse[], { id: string }>({
-    path: `${BOOKS_ROUTE}/${id}`,
+  id: string,
+  page: number,
+  limit: number
+): Promise<GetBookByUserPaginationResponse> => {
+  return await UseRequestApi<GetBookByUserPaginationResponse, { id: string }>({
+    path: `${BOOKS_ROUTE}/${id}?page=${page}?limit=${limit}`,
     method: MethodHttpEnum.GET,
     params: { id },
     includeAuthorizationHeader: false,

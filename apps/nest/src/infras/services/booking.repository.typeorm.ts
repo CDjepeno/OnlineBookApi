@@ -3,7 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BookingBookRequest } from 'src/application/usecases/booking/bookingBook/bookingBook.request';
 import { BookingBookResponse } from 'src/application/usecases/booking/bookingBook/bookingBook.response';
 import { GetBookingsBookResponse } from 'src/application/usecases/booking/getBookingsBook/getBookingsBook.response';
-import { GetBookingsUserResponse } from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.response';
+import {
+  GetBookingUserPaginationResponse,
+  GetBookingUserResponse,
+} from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.response';
 import { BookingRepository } from 'src/domaine/repositories/bookingBook.repository';
 import { Between, Repository } from 'typeorm';
 import { Booking } from '../models/booking.model';
@@ -58,8 +61,16 @@ export class BookingRepositoryTypeorm implements BookingRepository {
     });
   }
 
-  async getBookingsUser(userId: number): Promise<GetBookingsUserResponse[]> {
-    const bookings = await this.repository
+  async getBookingsUser(
+    userId: number,
+    page: number,
+    limit: number,
+  ): Promise<GetBookingUserPaginationResponse> {
+    const currentPage = Math.max(0, page - 1); // La page commence à partir de 0 pour la pagination
+    const take = limit > 0 ? limit : 6; // Limiter les résultats par page, par défaut 6
+    const skip = currentPage * take;
+    
+    const raw  = await this.repository
       .createQueryBuilder('booking')
       .leftJoinAndSelect('booking.book', 'book')
       .where('booking.userId = :userId', { userId })
@@ -70,7 +81,33 @@ export class BookingRepositoryTypeorm implements BookingRepository {
         'booking.startAt AS startAt',
         'booking.endAt AS endAt',
       ])
+      .skip(skip) 
+      .take(take) 
       .getRawMany();
-    return bookings;
+
+    console.log(raw);
+    
+    
+    const bookings: GetBookingUserResponse[] = raw.map((booking) => ({
+      BookId: booking.bookId,
+      name: booking.name,
+      coverUrl: booking.coverUrl,
+      startAt: booking.startAt,
+      endAt: booking.endAt,
+    }));
+    
+    const totalBooks = await this.repository
+    .createQueryBuilder('booking')
+    .where('booking.userId = :userId', { userId })
+    .getCount();
+
+    return {
+      bookings,
+      pagination: {
+        totalBookings: 10,
+        currentPage: page,
+        totalPages: Math.ceil(totalBooks / take),
+      },
+    };
   }
 }

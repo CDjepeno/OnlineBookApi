@@ -85,12 +85,12 @@ export class UserRepositoryTypeorm implements UsersRepository {
 
     const token = await this.jwtService.signAsync(payload, {
       secret: this.configService.get('JWT_SECRET'),
-      expiresIn: '30m',
+      expiresIn: '1h',
     });
 
     const refreshToken: string| null = await this.jwtService.signAsync(refreshPayload, {
       secret: this.configService.get('REFRESH_JWT_SECRET'),
-      expiresIn: '24h',
+      expiresIn: '30d',
     });
 
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);

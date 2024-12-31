@@ -19,7 +19,7 @@ export default function HomePageHook(page: number, limit: number) {
     formState: { errors },
   } = useForm<GetBookByNameInput>();
 
-  const totalPages = booksPagination?.meta.totalPages;
+  const totalPages = booksPagination?.pagination.totalPages;
   const books = booksPagination?.books;
 
   return { isPending, books, error, control, errors, totalPages };

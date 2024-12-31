@@ -26,11 +26,24 @@ export interface GetBooksResponse {
   author: string;
   releaseAt: string;
   coverUrl: string;
+  userId: number;
+  created_At: string;
+  updated_At: string;
+
 }
 
 export type GetAllBookResponsePagination = {
   books: GetBooksResponse[],
-  meta: {
+  pagination: {
+    totalBooks: number,
+    currentPage: number,
+    totalPages: number,
+  },
+}
+
+export type GetBookByUserPaginationResponse = {
+  books: GetBooksResponse[],
+  pagination: {
     totalBooks: number,
     currentPage: number,
     totalPages: number,

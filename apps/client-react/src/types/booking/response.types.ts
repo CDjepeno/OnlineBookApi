@@ -14,3 +14,12 @@ export type GetBookingUserResponse = {
   startAt: string;
   endAt: string;
 }
+
+export type GetBookingUserPaginationResponse = {
+  bookings: GetBookingUserResponse[],
+    pagination: {
+      totalBooks: number,
+      currentPage: number,
+      totalPages: number,
+    },
+}

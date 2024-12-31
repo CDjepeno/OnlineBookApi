@@ -6,19 +6,20 @@ import {
   Container,
   IconButton,
   Modal,
+  Pagination,
   Stack,
   Typography,
 } from "@mui/material";
 import { useState } from "react";
 import UserCard from "src/components/CardUser";
+import { BookForm } from "src/types/book/form.types";
+import { UserForm } from "src/types/user/form.types";
+import { UserFormInput } from "src/types/user/input.types";
 import { formatDate } from "../../utils/formatDate";
 import BookUpdateForm from "../book/BookForm/BookUpdate/BookUpdateForm";
 import { TableList } from "../book/components/TableList";
 import UserUpdateForm from "../user/Update-User/UserUpdateForm";
 import ProfileHook from "./profile.hook";
-import { UpdateBookFormType } from "src/types/book/form.types";
-import { UserFormType } from "src/types/user/form.types";
-import { UserFormInput } from "src/types/user/input.types";
 
 const headCells = [
   "Name",
@@ -30,10 +31,16 @@ const headCells = [
 ];
 
 export default function Profile() {
-  const { books, isPending, error, deleteBookMutation, user } = ProfileHook();
   const [isFormUpdateBookOpen, setIsFormUpdateBookOpen] = useState(false);
   const [isFormUpdateUserOpen, setIsFormUpdateUserOpen] = useState(false);
-  const [book, setBook] = useState<UpdateBookFormType>({
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 6;
+  const { books, isPending, error, deleteBookMutation, user } = ProfileHook(
+    currentPage,
+    limit
+  );
+
+  const [book, setBook] = useState<BookForm>({
     id: 0,
     name: "",
     description: "",
@@ -41,7 +48,7 @@ export default function Profile() {
     releaseAt: "",
     coverUrl: undefined,
   });
-  
+
   const [userForm, setUserForm] = useState<UserFormInput>({
     id: user?.id || 0,
     email: user?.email || "",
@@ -60,14 +67,21 @@ export default function Profile() {
     }
   };
 
-  const editBook = (book: UpdateBookFormType) => {
+  const editBook = (book: BookForm) => {
     setBook(book);
     setIsFormUpdateBookOpen(true);
   };
 
-  const editUser = (user: UserFormType) => {
+  const editUser = (user: UserForm) => {
     setUserForm(user);
     setIsFormUpdateUserOpen(true);
+  };
+
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    page: number
+  ) => {
+    setCurrentPage(page);
   };
 
   const rows =
@@ -153,6 +167,7 @@ export default function Profile() {
       </Container>
     );
   }
+
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">
       <UserCard
@@ -166,8 +181,33 @@ export default function Profile() {
           </IconButton>
         }
       />
-      <Typography component="h1" variant="h5" mb="30px"></Typography>
+      <Typography
+        component="h1"
+        variant="h5"
+        mb="30px"
+        sx={{ color: "primary.main" }}
+      >
+        Livre de {user?.name}
+      </Typography>
       <TableList headCells={headCells} rows={rows} />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          mt: 1,
+          backgroundColor: "background.default",
+          padding: 1,
+          borderRadius: "8px",
+        }}
+      >
+        <Pagination
+          count={2}
+          page={currentPage}
+          onChange={handlePageChange}
+          color="primary"
+        />
+      </Box>
       <Modal
         open={isFormUpdateUserOpen}
         onClose={() => setIsFormUpdateUserOpen(false)}

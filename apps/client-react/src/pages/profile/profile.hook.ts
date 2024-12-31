@@ -7,16 +7,16 @@ import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflow
 import { deleteBook, getBooksByUser } from "../../services/book.services";
 import { ErrorResponse } from "src/types/book/response.types";
 
-function ProfileHook() {
+function ProfileHook(page: number, limit: number) {
   const { id: userId } = useParams<{ id: string }>();
 
   const {
-    data: books,
+    data: booksPagination,
     isPending,
     error,
   } = useQuery({
-    queryKey: [BookQueriesKeysEnum.BooksUser],
-    queryFn: () => getBooksByUser(userId!),
+    queryKey: [BookQueriesKeysEnum.BooksUser, page],
+    queryFn: () => getBooksByUser(userId!, page, limit),
     enabled: !!userId,
   });
 
@@ -65,6 +65,7 @@ function ProfileHook() {
       onErrorCommon(errorMessage);
     },
   });
+  const books = booksPagination?.books;
 
   return {
     books,

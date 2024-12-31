@@ -7,12 +7,12 @@ export type GetAllBookResponse = {
   coverUrl: string;
   created_at?: Date;
   update_at?: Date;
-  booking?: string  ;
+  booking?: string;
 }
 
 export type GetAllBookResponsePagination = {
     books: GetAllBookResponse[],
-    meta: {
+    pagination: {
       totalBooks: number,
       currentPage: number,
       totalPages: number,

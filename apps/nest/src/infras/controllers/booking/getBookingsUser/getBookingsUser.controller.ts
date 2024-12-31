@@ -7,8 +7,10 @@ import {
   InternalServerErrorException,
   Param,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { GetBookingUserPaginationResponse } from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.response';
 import { GetBookingsUserUseCase } from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
@@ -25,11 +27,23 @@ export class GetBookingUserController {
   @ApiOperation({
     summary: 'get Bookings for a User',
   })
-  async getbookingsBook(@Param('id', ParseIntPipe) userId: number) {
+  async getbookingsBook(
+    @Param('id', ParseIntPipe) userId: number,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '6',
+  ): Promise<GetBookingUserPaginationResponse> {
     try {
-      return await this.getBookingsUserUsecaseProxy
+      const pageNumber = parseInt(page, 10);
+      const limitNumber = parseInt(limit, 10);
+ 
+      const {bookings, pagination} = await this.getBookingsUserUsecaseProxy
         .getInstance()
-        .execute(userId);
+        .execute(userId, pageNumber,limitNumber);
+
+      return {
+        bookings,
+        pagination
+      }
     } catch (error) {
       console.error('Error occurred while getbooking user:', typeof error);
       if (

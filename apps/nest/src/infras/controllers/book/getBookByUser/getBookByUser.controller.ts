@@ -6,11 +6,12 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { GetBooksByUserPaginationResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
 import { GetBooksByUserUsecase } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
-import { GetBooksByUserDto } from './getBooksByUser.dto';
 import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 
 @ApiTags('Book')
@@ -27,17 +28,21 @@ export class GetBookByUserController {
   })
   async getbooksByUser(
     @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<GetBooksByUserDto[]> {
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '6',
+  ): Promise<GetBooksByUserPaginationResponse> {
     try {
-      const books = this.getBooksByUserUsecaseProxy
+      const pageNumber = parseInt(page, 10);
+      const limitNumber = parseInt(limit, 10);
+      const { books, pagination } = await this.getBooksByUserUsecaseProxy
         .getInstance()
-        .execute(userId);
+        .execute(userId, pageNumber, limitNumber);
       if (!books) {
         throw new NotFoundException(
           `Aucun livre trouve pour l'utilisateur avec l'userId ${userId}`,
         );
       }
-      return books;
+      return {books, pagination};
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw new NotFoundException(error.message);

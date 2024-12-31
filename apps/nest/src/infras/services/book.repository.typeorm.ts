@@ -7,7 +7,9 @@ import { AddBookResponse } from 'src/application/usecases/book/addBook/addBook.r
 import { GetAllBookResponsePagination } from 'src/application/usecases/book/getAllBook/getAllBook.response';
 import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
 import { GetBookByNameResponse } from 'src/application/usecases/book/getBookByName/getBookByName.response';
-import { GetBooksByUserResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
+import {
+  GetBooksByUserPaginationResponse,
+} from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
 import { UpdateBookResponse } from 'src/application/usecases/book/updateBook/updateBook.response';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
 import { BookRepository } from 'src/domaine/repositories/book.repository';
@@ -62,7 +64,7 @@ export class BookRepositoryTypeorm implements BookRepository {
   ): Promise<GetAllBookResponsePagination> {
     try {
       const currentPage = Math.max(0, page - 1);
-      const take = limit > 0 ? limit : 6;
+      const take = limit > 0 ? limit : 10;
       const skip = currentPage * take;
 
       const totalBooks = await this.repository.count();
@@ -71,7 +73,7 @@ export class BookRepositoryTypeorm implements BookRepository {
 
       return {
         books,
-        meta: {
+        pagination: {
           totalBooks,
           currentPage: page,
           totalPages: Math.ceil(totalBooks / take),
@@ -85,17 +87,39 @@ export class BookRepositoryTypeorm implements BookRepository {
     }
   }
 
-  async getBooksByUser(userId: number): Promise<GetBooksByUserResponse[]> {
+  async getBooksByUser(
+    userId: number,
+    page: number,
+    limit: number,
+  ): Promise<GetBooksByUserPaginationResponse> {
     try {
-      const books = this.repository.find({
+      const currentPage = Math.max(0, page - 1);
+      const take = limit > 0 ? limit : 6;
+      const skip = currentPage * take;
+
+      const totalBooks = await this.repository.count({
         where: { userId },
       });
+      
+      const books = await this.repository.find({
+        where: { userId },
+        take,
+        skip,
+      });
+
       if (!books) {
         throw new NotFoundException(
           `Aucun livre trouve pour l'utilisateur avec l'userId ${userId} `,
         );
       }
-      return books;
+      return {
+        books,
+        pagination: {
+          totalBooks,
+          currentPage: page,
+          totalPages: Math.ceil(totalBooks / take),
+        },
+      };
     } catch (error) {
       console.error(
         "Erreur s'est produite lors de la récupération des livres",

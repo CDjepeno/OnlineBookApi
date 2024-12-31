@@ -1,13 +1,13 @@
 import { BadRequestException, ConflictException } from '@nestjs/common';
 import { BookingRepository } from 'src/domaine/repositories/bookingBook.repository';
-import { GetBookingsUserResponse } from './getBookingsUser.response';
+import { GetBookingUserPaginationResponse } from './getBookingsUser.response';
 
 export class GetBookingsUserUseCase {
   constructor(private readonly getbookingBookRepository: BookingRepository) {}
 
-  async execute(userId: number): Promise<GetBookingsUserResponse[]> {
+  async execute(userId: number, page: number, limit: number): Promise<GetBookingUserPaginationResponse> {
     try {
-      return await this.getbookingBookRepository.getBookingsUser(userId);
+      return await this.getbookingBookRepository.getBookingsUser(userId, page, limit);
     } catch (error) {
       if (
         error instanceof BadRequestException ||
@@ -15,7 +15,7 @@ export class GetBookingsUserUseCase {
       ) {
         throw error;
       }
-      throw new Error("internale server error");
+      throw new Error('internale server error');
     }
   }
 }
