@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Book } from 'src/infras/models/book.model';
 import { Booking } from 'src/infras/models/booking.model';
+import { Contact } from 'src/infras/models/contact.model';
 import { User } from 'src/infras/models/user.model';
 
 
@@ -20,11 +21,11 @@ import { User } from 'src/infras/models/user.model';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Book, Booking],
+        entities: [User, Book, Booking, Contact],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
   ],
 })
-export class TypeOModule {}
+export class ConfigTypeOrmModule {}

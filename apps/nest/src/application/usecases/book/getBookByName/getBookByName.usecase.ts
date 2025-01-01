@@ -1,4 +1,4 @@
-import { BookRepository } from 'src/domaine/repositories/book.repository';
+import { BookRepository } from 'src/repositories/book.repository';
 import { GetBookByNameResponse } from './getBookByName.response';
 
 export class GetBookByNameUsecase {

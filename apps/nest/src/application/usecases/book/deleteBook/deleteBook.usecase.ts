@@ -1,4 +1,4 @@
-import { BookRepository } from 'src/domaine/repositories/book.repository';
+import { BookRepository } from "src/repositories/book.repository";
 
 export class DeleteBookUsecase {
   constructor(private readonly repository: BookRepository) {}

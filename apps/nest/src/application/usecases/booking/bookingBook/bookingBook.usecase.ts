@@ -1,8 +1,8 @@
 import { BadRequestException, ConflictException } from '@nestjs/common';
 import { BookingEntity } from 'src/domaine/entities/Booking.entity';
-import { BookingRepository } from 'src/domaine/repositories/bookingBook.repository';
 import { BookingBookRequest } from './bookingBook.request';
 import { BookingBookResponse } from './bookingBook.response';
+import { BookingRepository } from 'src/repositories/bookingBook.repository';
 
 export class BookingBookUseCase {
   constructor(private readonly bookingRepository: BookingRepository) {}
@@ -15,7 +15,6 @@ export class BookingBookUseCase {
         );
       }
 
-      // Vérifier la disponibilité du livre
       const isBookReserved = await this.bookingRepository.isBookReserved(
         request.bookId,
         request.startAt,

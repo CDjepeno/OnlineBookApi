@@ -1,4 +1,4 @@
-import { UsersRepository } from 'src/domaine/repositories/user.repository';
+import { UsersRepository } from 'src/repositories/user.repository';
 import { RefreshTokenRequest } from './refresh.token.request';
 import { RefreshTokenResponse } from './refresh.token.response';
 

@@ -14,10 +14,12 @@ import {
 } from './book.repository.typeorm';
 import { BookingRepositoryTypeorm } from './booking.repository.typeorm';
 import { UserRepositoryTypeorm } from './user.repository.typeorm';
+import { ContactRepositoryTypeorm } from './contact.repository.typeorm';
+import { Contact } from '../models/contact.model';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Book, Booking]),
+    TypeOrmModule.forFeature([User, Book, Booking, Contact]),
     ConfigModule,
     NodemailerModules,
     AwsS3Module,
@@ -34,11 +36,13 @@ import { UserRepositoryTypeorm } from './user.repository.typeorm';
     NodemailerClient,
     ConfigService,
     JwtAuthGuard,
+    ContactRepositoryTypeorm
   ],
   exports: [
     UserRepositoryTypeorm,
     BookRepositoryTypeorm,
     BookingRepositoryTypeorm,
+    ContactRepositoryTypeorm
   ],
 })
 export class RepositoriesModule {}

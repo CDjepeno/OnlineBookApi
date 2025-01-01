@@ -1,9 +1,9 @@
 import { User } from 'src/domaine/entities/User.entity';
 import { InvalidPhoneNumberException } from 'src/domaine/errors/book.error';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
-import { UsersRepository } from '../../../../domaine/repositories/user.repository';
 import { AddUserRequest } from './add.user.request';
 import { AddUserResponse } from './add.user.response';
+import { UsersRepository } from 'src/repositories/user.repository';
 
 export class AddUserUseCase {
   constructor(
@@ -16,12 +16,6 @@ export class AddUserUseCase {
     if (!regexPhone.test(request.phone)) {
       throw new InvalidPhoneNumberException("Numero n'est pas valide");
     }
-
-    await this.nodemailerClient.sendMail({
-      to: request.email,
-      subject: `Confirmation de votre inscription`,
-      text: `Bonjour ${request.name}, \nVotre compte a bien été crée`,
-    });
     
     const user = new User(
       request.id!,
@@ -32,6 +26,16 @@ export class AddUserUseCase {
       request.sexe,
     );
 
-    return await this.usersRepository.signUp(user);
+    const res = await this.usersRepository.signUp(user);
+
+    if(res) {
+      await this.nodemailerClient.sendMail({
+        to: request.email,
+        subject: `Confirmation de votre inscription`,
+        text: `Bonjour ${request.name}, \nVotre compte a bien été crée`,
+      });
+      return res
+    }
+    throw new Error("une erreur est survenue");
   }
 }

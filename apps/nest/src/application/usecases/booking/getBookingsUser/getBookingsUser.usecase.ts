@@ -1,6 +1,6 @@
 import { BadRequestException, ConflictException } from '@nestjs/common';
-import { BookingRepository } from 'src/domaine/repositories/bookingBook.repository';
 import { GetBookingUserPaginationResponse } from './getBookingsUser.response';
+import { BookingRepository } from 'src/repositories/bookingBook.repository';
 
 export class GetBookingsUserUseCase {
   constructor(private readonly getbookingBookRepository: BookingRepository) {}

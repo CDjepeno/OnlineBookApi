@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AddBookUseCase } from './application/usecases/book/addBook/addBook.usecase';
 import { BookingBookUseCase } from './application/usecases/booking/bookingBook/bookingBook.usecase';
 import { AddUserUseCase } from './application/usecases/user/adduser/add.user.usecase';
-import { TypeOModule } from './infras/clients/typeorm/type-orm.module';
+import { ConfigTypeOrmModule } from './infras/clients/typeorm/typeorm.module';
 import { ControllerModule } from './infras/controllers/controller.module';
 import { RegisterController } from './infras/controllers/user/register/register.controller';
 import { UsecaseProxyModule } from './infras/usecase-proxy/usecase-proxy.module';
@@ -13,7 +13,7 @@ import { UsecaseProxyModule } from './infras/usecase-proxy/usecase-proxy.module'
     UsecaseProxyModule.register(),
     ControllerModule,
     ConfigModule.forRoot(),
-    TypeOModule,
+    ConfigTypeOrmModule,
   ],
   controllers: [RegisterController],
   providers: [AddUserUseCase, AddBookUseCase, BookingBookUseCase],

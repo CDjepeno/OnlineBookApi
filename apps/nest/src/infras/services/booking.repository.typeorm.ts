@@ -7,9 +7,9 @@ import {
   GetBookingUserPaginationResponse,
   GetBookingUserResponse,
 } from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.response';
-import { BookingRepository } from 'src/domaine/repositories/bookingBook.repository';
 import { Between, Repository } from 'typeorm';
 import { Booking } from '../models/booking.model';
+import { BookingRepository } from 'src/repositories/bookingBook.repository';
 
 export class BookingRepositoryTypeorm implements BookingRepository {
   constructor(
@@ -49,7 +49,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       ],
     });
 
-    return !!existingBooking; // Retourne true si une réservation existe, sinon false
+    return !!existingBooking; 
   }
 
   async getBookingsDatesByBookId(
@@ -66,8 +66,8 @@ export class BookingRepositoryTypeorm implements BookingRepository {
     page: number,
     limit: number,
   ): Promise<GetBookingUserPaginationResponse> {
-    const currentPage = Math.max(0, page - 1); // La page commence à partir de 0 pour la pagination
-    const take = limit > 0 ? limit : 6; // Limiter les résultats par page, par défaut 6
+    const currentPage = Math.max(0, page - 1);
+    const take = limit > 0 ? limit : 6;
     const skip = currentPage * take;
     
     const raw  = await this.repository

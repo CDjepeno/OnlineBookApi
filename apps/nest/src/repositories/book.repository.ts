@@ -4,7 +4,7 @@ import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.r
 import { GetBookByNameResponse } from 'src/application/usecases/book/getBookByName/getBookByName.response';
 import { GetBooksByUserPaginationResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
 import { UpdateBookResponse } from 'src/application/usecases/book/updateBook/updateBook.response';
-import { BookEntity } from '../entities/Book.entity';
+import { BookEntity } from 'src/domaine/entities/Book.entity';
 
 export interface BookRepository {
   addBook(book: BookEntity): Promise<AddBookResponse>;

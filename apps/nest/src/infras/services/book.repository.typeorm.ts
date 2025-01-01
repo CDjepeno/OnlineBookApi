@@ -12,10 +12,10 @@ import {
 } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
 import { UpdateBookResponse } from 'src/application/usecases/book/updateBook/updateBook.response';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
-import { BookRepository } from 'src/domaine/repositories/book.repository';
 import { Repository } from 'typeorm';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
+import { BookRepository } from 'src/repositories/book.repository';
 
 export class BookRepositoryTypeorm implements BookRepository {
   constructor(

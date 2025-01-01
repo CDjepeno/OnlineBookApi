@@ -1,6 +1,6 @@
 import { NotFoundError } from 'src/domaine/errors/book.error';
-import { BookRepository } from 'src/domaine/repositories/book.repository';
 import { GetBooksByUserPaginationResponse } from './getBooksByUser.response';
+import { BookRepository } from 'src/repositories/book.repository';
 
 export class GetBooksByUserUsecase {
   constructor(private readonly repository: BookRepository) {}

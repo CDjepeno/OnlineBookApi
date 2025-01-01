@@ -20,10 +20,10 @@ import { RefreshTokenRequest } from 'src/application/usecases/user/auth/refreshT
 import { RefreshTokenResponse } from 'src/application/usecases/user/auth/refreshToken/refresh.token.response';
 import { UpdateUserRequest } from 'src/application/usecases/user/updateUser/update.user.request';
 import { UpdateUserResponse } from 'src/application/usecases/user/updateUser/update.user.response';
-import { UsersRepository } from 'src/domaine/repositories/user.repository';
 import { QueryFailedError, Repository } from 'typeorm';
 import { User } from '../models/user.model';
 import { CurrentUserByIdResponse } from 'src/application/usecases/user/GetUserById/current.user.response';
+import { UsersRepository } from 'src/repositories/user.repository';
 
 @Injectable()
 export class UserRepositoryTypeorm implements UsersRepository {

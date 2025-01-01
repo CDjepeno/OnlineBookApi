@@ -1,4 +1,4 @@
-import { UsersRepository } from 'src/domaine/repositories/user.repository';
+import { UsersRepository } from 'src/repositories/user.repository';
 import { CurrentUserResponse } from './current.user.response';
 
 export class GetCurrentUserUseCase {

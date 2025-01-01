@@ -1,10 +1,10 @@
 import { BadRequestException, ConflictException } from '@nestjs/common';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
 import { NotFoundError } from 'src/domaine/errors/book.error';
-import { BookRepository } from 'src/domaine/repositories/book.repository';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
 import { UpdateBookRequest } from './updateBook.request';
 import { UpdateBookResponse } from './updateBook.response';
+import { BookRepository } from 'src/repositories/book.repository';
 
 export class UpdateBookUseCase {
   constructor(

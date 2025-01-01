@@ -8,7 +8,10 @@ import { UpdateBookUseCase } from 'src/application/usecases/book/updateBook/upda
 import { BookingBookUseCase } from 'src/application/usecases/booking/bookingBook/bookingBook.usecase';
 import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsBook.usecase';
 import { GetBookingsUserUseCase } from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.usecase';
+import { ContactUseCase } from 'src/application/usecases/contact/contact.usecase';
+import { GetUserByIdUseCase } from 'src/application/usecases/user/GetUserById/get.user_by_id.usecase';
 import { AddUserUseCase } from 'src/application/usecases/user/adduser/add.user.usecase';
+import { GetCurrentUserUseCase } from 'src/application/usecases/user/auth/GetCurrentUser/get.current.user.usecase';
 import { LoginUserUseCase } from 'src/application/usecases/user/auth/login/login.user.usecase';
 import { LogoutUserUseCase } from 'src/application/usecases/user/auth/logout/logout.user.usecase';
 import { RefreshTokenUseCase } from 'src/application/usecases/user/auth/refreshToken/refresh.token.usecase';
@@ -17,10 +20,9 @@ import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { BookRepositoryTypeorm } from '../services/book.repository.typeorm';
 import { BookingRepositoryTypeorm } from '../services/booking.repository.typeorm';
+import { ContactRepositoryTypeorm } from '../services/contact.repository.typeorm';
 import { UserRepositoryTypeorm } from '../services/user.repository.typeorm';
 import { UseCaseProxy } from './usecase-proxy';
-import { GetUserByIdUseCase } from 'src/application/usecases/user/GetUserById/get.user_by_id.usecase';
-import { GetCurrentUserUseCase } from 'src/application/usecases/user/auth/GetCurrentUser/get.current.user.usecase';
 
 export enum UsecaseProxyEnum {
   CREATE_USER_USECASE_PROXY = 'createUserUsecaseProxy',
@@ -43,6 +45,8 @@ export enum UsecaseProxyEnum {
 
   DELETE_BOOK_USECASE_PROXY = 'deleteBookUsecaseProxy',
   UPDATE_BOOK_USECASE_PROXY = 'updateBookUsecaseProxy',
+
+  CONTACT_USECASE_PROXY = 'contactUseCaseProxy',
 }
 
 export const useCasesConfig = [
@@ -157,6 +161,13 @@ export const useCasesConfig = [
     provide: UsecaseProxyEnum.GET_BOOKINGS_BOOK_USECASE_PROXY,
     useFactory: (bookingRepository: BookingRepositoryTypeorm) =>
       new UseCaseProxy(new GetBookingsBookUseCase(bookingRepository)),
+  },
+  // -------------------------------- CONTACT -------------------------------------
+  {
+    inject: [ContactRepositoryTypeorm, NodemailerClient],
+    provide: UsecaseProxyEnum.CONTACT_USECASE_PROXY,
+    useFactory: (contactRepository: ContactRepositoryTypeorm, nodemailer: NodemailerClient) =>
+      new UseCaseProxy(new ContactUseCase(contactRepository, nodemailer)),
   },
 ];
 

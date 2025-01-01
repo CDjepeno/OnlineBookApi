@@ -1,8 +1,8 @@
 import { User } from 'src/domaine/entities/User.entity';
 import { InvalidPhoneNumberException, NotFoundError } from 'src/domaine/errors/book.error';
-import { UsersRepository } from '../../../../domaine/repositories/user.repository';
 import { UpdateUserRequest } from './update.user.request';
 import { UpdateUserResponse } from './update.user.response';
+import { UsersRepository } from 'src/repositories/user.repository';
 
 export class UpdateUserUseCase {
   constructor(
