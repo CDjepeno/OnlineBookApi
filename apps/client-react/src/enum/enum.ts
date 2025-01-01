@@ -37,4 +37,5 @@ export enum RouterEnum {
   DASHBOARD = '/bookings/user/:id',
   PROFILE = '/books/user/:id',
   HOME = '/',
+  CONTACT = '/contact',
 }

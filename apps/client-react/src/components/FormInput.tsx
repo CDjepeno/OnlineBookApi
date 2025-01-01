@@ -1,10 +1,14 @@
 import TextField, { TextFieldProps } from "@mui/material/TextField";
+import React from "react";
 import {
   Control,
   Controller,
+  ControllerFieldState,
+  ControllerRenderProps,
   FieldErrors,
   FieldValues,
   Path,
+  UseFormStateReturn,
 } from "react-hook-form";
 
 interface FormInputProps<T extends FieldValues>
@@ -14,7 +18,12 @@ interface FormInputProps<T extends FieldValues>
   control: Control<T>;
   errors: FieldErrors<T>;
   type?: string;
-  onblur?: () => void;
+  onBlur?: () => void;
+  customField?: (fieldProps: {
+    field: ControllerRenderProps<T, Path<T>>;
+    fieldState: ControllerFieldState;
+    formState: UseFormStateReturn<T>;
+  }) => React.ReactNode;
 }
 
 function FormInput<T extends FieldValues>({
@@ -23,26 +32,41 @@ function FormInput<T extends FieldValues>({
   control,
   errors,
   type = "text",
-  onblur,
+  onBlur,
+  customField,
   ...props
 }: FormInputProps<T>) {
   return (
     <Controller
       name={name}
       control={control}
-      render={({ field }) => (
-        <TextField
-          {...field}
-          {...props}
-          label={label}
-          fullWidth
-          required
-          type={type}
-          error={!!errors[name]}
-          helperText={errors[name] ? (errors[name]?.message as string) : null}
-          onBlur={onblur}
-        />
-      )}
+      render={({ field, fieldState, formState }) => {
+        if (customField) {
+          const customFieldResult = customField({ field, fieldState, formState });
+          if (React.isValidElement(customFieldResult)) {
+            return customFieldResult;
+          }
+
+          // Si customField ne retourne pas un élément valide
+          console.error("The customField function must return a valid React element.");
+          return <></>; // Retourne un fragment vide comme fallback
+        }
+
+        // Retourner toujours un élément React valide
+        return (
+          <TextField
+            {...field}
+            {...props}
+            label={label}
+            fullWidth
+            required
+            type={type}
+            error={!!errors[name]}
+            helperText={errors[name] ? (errors[name]?.message as string) : null}
+            onBlur={onBlur}
+          />
+        );
+      }}
     />
   );
 }

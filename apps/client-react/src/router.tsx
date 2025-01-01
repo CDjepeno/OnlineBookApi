@@ -9,6 +9,7 @@ import Profile from "./pages/profile/profile";
 import Login from "./pages/user/Login/Login";
 import Register from "./pages/user/Register/Register";
 import PrivateRoute from "./Private-route";
+import Contact from "./pages/contact/Contact";
 
 type CustomRouteObject = RouteObject & {
   element: JSX.Element;
@@ -22,6 +23,7 @@ const routes: CustomRouteObject[] = [
       { path: RouterEnum.HOME, element: <HomePage /> },
       { path: RouterEnum.REGISTER, element: <Register /> },
       { path: RouterEnum.LOGIN, element: <Login /> },
+      { path: RouterEnum.CONTACT, element: <Contact /> },
       {
         path: RouterEnum.ADD_BOOK,
         element: <PrivateRoute element={<AddBook />} />,

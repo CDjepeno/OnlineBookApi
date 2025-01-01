@@ -6,6 +6,7 @@ export const REFRESH_TOKEN_ROUTE = "/auth/refresh-token";
 export const LOGIN_ROUTE = "/auth/login";
 export const LOGOUT_ROUTE = "/auth/logout";
 export const REGISTER_ROUTE = "/register";
+export const CONTACT_ROUTE = "/contact";
 export const USER_ROUTE = "/user";
 export const BOOKS_ROUTE = "/books";
 export const BOOK_ROUTE = "/book";

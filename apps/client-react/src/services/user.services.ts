@@ -1,3 +1,4 @@
+import { UserFormInput } from "src/types/user/input.types";
 import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useApiRequest";
 import {
@@ -6,11 +7,10 @@ import {
   REGISTER_ROUTE,
   USER_ROUTE,
 } from "../request/route-http/route-http";
-import { RegisterFormInput, RegisterResponse, UpdateUserFormInput } from "../types/user/form.types";
-import { CurrentUserResponse, GetUserByIdResponse, UpdateUserResponse } from "../types/user/response.types";
+import { CurrentUserResponse, GetUserByIdResponse, RegisterResponse, UpdateUserResponse } from "../types/user/response.types";
 
 export const registerUser = async (
-  input: RegisterFormInput
+  input: UserFormInput
 ): Promise<RegisterResponse> => {
   const params = input;
   return await UseRequestApi({
@@ -23,7 +23,7 @@ export const registerUser = async (
 
 export const updateUser = async (
   id: number,
-  data: UpdateUserFormInput ,
+  data: UserFormInput ,
 ): Promise<UpdateUserResponse> => {
   return await UseRequestApi({
     method: MethodHttpEnum.PUT,

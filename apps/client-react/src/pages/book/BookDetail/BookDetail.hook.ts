@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useParams } from "react-router-dom";
+import { ErrorResponse } from "src/types/book/response.types";
+import { BookingBookFormType } from "src/types/booking/form.types";
 import {
   BookingsQueriesKeysEnum,
   BookQueriesKeysEnum,
@@ -11,8 +13,6 @@ import {
   BookingBook,
   getBookingsBook,
 } from "../../../services/booking.services";
-import { ErrorResponse } from "../../../types/book/input.types";
-import { BookingBookFormInput } from "../../../types/user/form.types";
 
 function BookDetailHook() {
   const { id: bookId } = useParams<{ id: string }>();
@@ -37,7 +37,7 @@ function BookDetailHook() {
   const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
 
   const { mutateAsync: BookingBookMutation } = useMutation({
-    mutationFn: (input: BookingBookFormInput) => BookingBook(input),
+    mutationFn: (input: BookingBookFormType) => BookingBook(input),
 
     onSuccess: () => {
       onSuccessCommon("Le livre a été réserver avec succès");
@@ -64,7 +64,7 @@ function BookDetailHook() {
     },
   });
 
-  const onSubmit = (input: BookingBookFormInput) => {
+  const onSubmit = (input: BookingBookFormType) => {
     return BookingBookMutation(input);
   };
 
