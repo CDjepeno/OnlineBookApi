@@ -19,6 +19,7 @@ services:
       DATABASE_NAME: ${DB_NAME}
       NODE_ENV: development
       KAFKA_BROKER: kafka:9094
+    user: "${UID}:${GID}"
     depends_on:
       - db
   ############################# Frontend REACTJS
