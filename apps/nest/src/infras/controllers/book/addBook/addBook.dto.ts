@@ -5,7 +5,7 @@ export class CreateBookDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  name!: string;
+  title!: string;
 
   @ApiProperty()
   @IsNotEmpty()

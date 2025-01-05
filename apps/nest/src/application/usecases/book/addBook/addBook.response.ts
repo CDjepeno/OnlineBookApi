@@ -1,5 +1,5 @@
 export type AddBookResponse =  {
-  name: string,
+  title: string,
   description: string,
   author: string,
   releaseAt: Date,

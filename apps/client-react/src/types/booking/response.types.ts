@@ -4,7 +4,7 @@ export type GetBookingsBookResponse = {
 }
 
 export type BookingBookResponse = {
-  bookId: number;
+  msg: string;
 }
 
 export type GetBookingUserResponse = {

@@ -1,6 +1,6 @@
 export type AddBookRequest = {
   id?: number,
-  name: string,
+  title: string,
   description: string,
   author: string,
   releaseAt: Date;

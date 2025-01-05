@@ -1,5 +1,5 @@
 export type AddBookForm = {
-  name: string;
+  title: string;
   description: string;
   author: string;
   releaseAt: string;
@@ -8,7 +8,7 @@ export type AddBookForm = {
 
 export type BookForm = {
   id?: number;
-  name: string;
+  title: string;
   description: string;
   author: string;
   releaseAt: string;

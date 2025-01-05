@@ -1,6 +1,6 @@
 export type GetBookingUserResponse = {
   BookId: number;
-  name: string;
+  title: string;
   coverUrl: string;
   startAt: string;
   endAt: string;

@@ -54,12 +54,12 @@ export const getBooksByUser = async (
 
 export const createBook = async (
   formData: FormData,
-  userId: number | null
+  userId: number
 ): Promise<AddBookResponse> => {
   if (userId) {
     formData.append("userId", userId.toString());
   }
-
+  
   return await UseRequestApi<AddBookResponse, FormData>({
     method: MethodHttpEnum.POST,
     path: BOOK_ROUTE,

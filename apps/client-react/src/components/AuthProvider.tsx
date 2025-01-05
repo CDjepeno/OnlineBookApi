@@ -1,15 +1,15 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context";
 import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useApiRequest";
 import { LOGIN_ROUTE, LOGOUT_ROUTE } from "../request/route-http/route-http";
 import { getCurrentUser } from "../services/user.services";
-import { AuthFormInput } from "../types/user/input.types";
 import {
   CurrentUserResponse,
   SigninResponse,
 } from "../types/user/response.types";
+import { LoginFormInput } from "src/types/user/input.types";
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -24,11 +24,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const currentUser = await getCurrentUser();
       setUser(currentUser);
     } catch (error) {
+      setUser(null)
       console.error("Error getting current user:", error);
     }
   };
 
-  const signin = async (credentials: AuthFormInput) => {
+  useEffect(() => {
+    // Vérifiez le token dans localStorage au chargement
+    const token = localStorage.getItem("BookToken");
+    if (token) {
+      getUser();
+    }
+  }, []);
+
+  const signin = async (credentials: LoginFormInput) => {
     const response = await UseRequestApi<SigninResponse, unknown>({
       method: MethodHttpEnum.POST,
       path: LOGIN_ROUTE,

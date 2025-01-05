@@ -36,7 +36,7 @@ export class BookRepositoryTypeorm implements BookRepository {
       }
 
       const book = new Book();
-      book.name = addBookRequest.name;
+      book.title = addBookRequest.title;
       book.description = addBookRequest.description;
       book.author = addBookRequest.author;
       book.releaseAt = addBookRequest.releaseAt;
@@ -44,9 +44,9 @@ export class BookRepositoryTypeorm implements BookRepository {
       book.userId = addBookRequest.userId;
 
       const result = await this.repository.save(book);
-      const { name, description, author, releaseAt, coverUrl } = result;
+      const { title , description, author, releaseAt, coverUrl } = result;
       return {
-        name,
+        title,
         description,
         author,
         releaseAt,
@@ -191,7 +191,7 @@ export class BookRepositoryTypeorm implements BookRepository {
 
   async getBookByName(nameBook: string): Promise<GetBookByNameResponse> {
     try {
-      const book = await this.repository.findOneBy({ name: nameBook });
+      const book = await this.repository.findOneBy({ title: nameBook });
 
       if (!book) {
         throw new NotFoundException(

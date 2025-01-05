@@ -1,3 +1,4 @@
+
 export type BookingBookResponse = {
-  bookId: number
+  msg: string
 }

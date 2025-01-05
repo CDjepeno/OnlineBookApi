@@ -42,7 +42,7 @@ export default function Profile() {
 
   const [book, setBook] = useState<BookForm>({
     id: 0,
-    name: "",
+    title: "",
     description: "",
     author: "",
     releaseAt: "",
@@ -87,7 +87,7 @@ export default function Profile() {
   const rows =
     books?.map((book) => ({
       cells: [
-        book.name,
+        book.title,
         book.author,
         book.description,
         formatDate(book.releaseAt),

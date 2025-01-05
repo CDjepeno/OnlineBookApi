@@ -26,9 +26,9 @@ function BookUpdateAddHook(setIsFormOpen?: (value: boolean) => void) {
   const { mutateAsync: updateBookMutation } = useMutation<
     UpdateBookResponse,
     AxiosError<unknown>,
-    { id: number; data: FormData | Record<string, unknown> }
+    { userId: number; data: FormData | Record<string, unknown> }
   >({
-    mutationFn: async ({ id, data }) => updateBook(id, data),
+    mutationFn: async ({ userId:id, data }) => updateBook(id, data),
 
     onSuccess: () => {
       if (setIsFormOpen) {
@@ -65,7 +65,7 @@ function BookUpdateAddHook(setIsFormOpen?: (value: boolean) => void) {
   const userId = user && user.id;
 
   const bookSchema = yup.object({
-    name: yup.string().required("Le nom doit être renseigné"),
+    title: yup.string().required("Le titre doit être renseigné"),
     description: yup.string().required("La description doit être renseignée"),
     author: yup.string().required("L'auteur doit être renseigné"),
     releaseAt: yup.string().required("La date de sortie doit être renseignée"),
@@ -82,7 +82,7 @@ function BookUpdateAddHook(setIsFormOpen?: (value: boolean) => void) {
     AxiosError<unknown>,
     FormData
   >({
-    mutationFn: async (data: FormData) => createBook(data, userId),
+    mutationFn: async (data: FormData) => createBook(data, userId!),
 
     onSuccess: () => {
       onSuccessCommon("Votre livre a bien été créé", RouterEnum.HOME);
@@ -111,23 +111,23 @@ function BookUpdateAddHook(setIsFormOpen?: (value: boolean) => void) {
   const submit = async (data: BookForm) => {
     try {
       if (data.id) {
-        const { id, name, description, author, releaseAt, coverUrl } = data;
+        const { id, title, description, author, releaseAt, coverUrl } = data;
 
         if (coverUrl instanceof FileList) {
           const data = new FormData();
 
           data.append("coverUrl", coverUrl[0]);
-          data.append("name", name);
+          data.append("title", title);
           data.append("description", description);
           data.append("author", author);
           data.append("releaseAt", releaseAt ? releaseAt.toString() : "");
 
-          await updateBookMutation({ id, data });
+          await updateBookMutation({ userId:id, data });
         }
-        await updateBookMutation({ id, data });
+        await updateBookMutation({ userId:id, data });
       } else {
         const formData = new FormData();
-        formData.append("name", data.name);
+        formData.append("title", data.title);
         formData.append("description", data.description);
         formData.append("author", data.author);
         formData.append("releaseAt", data.releaseAt.toString());

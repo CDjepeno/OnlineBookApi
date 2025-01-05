@@ -18,11 +18,14 @@ import { RefreshTokenUseCase } from 'src/application/usecases/user/auth/refreshT
 import { UpdateUserUseCase } from 'src/application/usecases/user/updateUser/update.user.usecase';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
+import { ConsumerKafkajsClient } from '../clients/kafka/consumer.client';
+import { ProducerKafkaClient } from '../clients/kafka/producer.client';
 import { BookRepositoryTypeorm } from '../services/book.repository.typeorm';
 import { BookingRepositoryTypeorm } from '../services/booking.repository.typeorm';
 import { ContactRepositoryTypeorm } from '../services/contact.repository.typeorm';
 import { UserRepositoryTypeorm } from '../services/user.repository.typeorm';
 import { UseCaseProxy } from './usecase-proxy';
+import { SocketClient } from '../clients/socket/socket.client';
 
 export enum UsecaseProxyEnum {
   CREATE_USER_USECASE_PROXY = 'createUserUsecaseProxy',
@@ -145,10 +148,30 @@ export const useCasesConfig = [
 
   // -------------------------------- BOOKING -------------------------------------
   {
-    inject: [BookingRepositoryTypeorm],
+    inject: [
+      BookingRepositoryTypeorm,
+      ProducerKafkaClient,
+      ConsumerKafkajsClient,
+      NodemailerClient,
+      SocketClient
+    ],
     provide: UsecaseProxyEnum.BOOKING_BOOK_USECASE_PROXY,
-    useFactory: (bookingRepository: BookingRepositoryTypeorm) =>
-      new UseCaseProxy(new BookingBookUseCase(bookingRepository)),
+    useFactory: (
+      bookingRepository: BookingRepositoryTypeorm,
+      producerKafkaClient: ProducerKafkaClient,
+      consumerKafkaClient: ConsumerKafkajsClient,
+      nodeMailerClient: NodemailerClient,
+      socketClient: SocketClient,
+    ) =>
+      new UseCaseProxy(
+        new BookingBookUseCase(
+          bookingRepository,
+          producerKafkaClient,
+          consumerKafkaClient,
+          nodeMailerClient,
+          socketClient
+        ),
+      ),
   },
   {
     inject: [BookingRepositoryTypeorm],
@@ -166,8 +189,10 @@ export const useCasesConfig = [
   {
     inject: [ContactRepositoryTypeorm, NodemailerClient],
     provide: UsecaseProxyEnum.CONTACT_USECASE_PROXY,
-    useFactory: (contactRepository: ContactRepositoryTypeorm, nodemailer: NodemailerClient) =>
-      new UseCaseProxy(new ContactUseCase(contactRepository, nodemailer)),
+    useFactory: (
+      contactRepository: ContactRepositoryTypeorm,
+      nodemailer: NodemailerClient,
+    ) => new UseCaseProxy(new ContactUseCase(contactRepository, nodemailer)),
   },
 ];
 

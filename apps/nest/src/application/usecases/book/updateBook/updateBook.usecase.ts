@@ -28,7 +28,7 @@ export class UpdateBookUseCase {
 
       const updatedBook = new BookEntity(
         request.id,
-        request.name ?? existingBook.name,
+        request.title ?? existingBook.title,
         request.description ?? existingBook.description,
         request.author ?? existingBook.author,
         request.releaseAt ?? existingBook.releaseAt,

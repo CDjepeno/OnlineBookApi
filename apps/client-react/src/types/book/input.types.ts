@@ -1,9 +1,9 @@
 export type GetBookByNameInput = {
-  name: string;
+  title: string;
 }
 
 export type AddBookInput = {
-  name: string;
+  title: string;
   description: string;
   author: string;
   releaseAt: string;

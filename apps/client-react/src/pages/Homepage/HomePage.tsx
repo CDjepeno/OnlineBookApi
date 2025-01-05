@@ -19,7 +19,6 @@ export function HomePage() {
     currentPage,
     limit
   );
-  console.log(books);
   
   const { data: book } = useQuery({
     queryKey: [BookQueriesKeysEnum.Book, activeSearchTerm],
@@ -50,7 +49,7 @@ export function HomePage() {
       ? [book]
       : []
     : books?.filter((b) =>
-        b.name.toLowerCase().startsWith(searchTerm.toLowerCase())
+        b.title.toLowerCase().startsWith(searchTerm.toLowerCase())
       ) || [];
 
   return (
@@ -72,7 +71,7 @@ export function HomePage() {
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", mt: 3 }}>
             <FormInput
-              name="name"
+              name="title"
               label="Nom du livre"
               control={control}
               errors={errors}
@@ -104,7 +103,7 @@ export function HomePage() {
                   key={book.id}
                   id={book.id}
                   coverUrl={book.coverUrl}
-                  name={book.name}
+                  name={book.title}
                   author={book.author}
                   description={book.description}
                   releaseAt={book.releaseAt}

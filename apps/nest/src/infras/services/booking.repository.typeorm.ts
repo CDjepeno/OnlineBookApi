@@ -26,9 +26,9 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       newBooking.userId = bookReserved.userId;
       newBooking.bookId = bookReserved.bookId;
 
-      const result = await this.repository.save(newBooking);
+      await this.repository.save(newBooking);
 
-      return { bookId: result.bookId };
+      return { msg: 'Le livre a été réserver avec succès' };
     } catch (error) {
       console.error("Erreur lors de l'ajout du livre :", error);
       throw new InternalServerErrorException(
@@ -76,7 +76,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       .where('booking.userId = :userId', { userId })
       .select([
         'book.id AS bookId',
-        'book.name AS name',
+        'book.title AS title',
         'book.coverUrl AS coverUrl',
         'booking.startAt AS startAt',
         'booking.endAt AS endAt',
@@ -90,7 +90,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
     
     const bookings: GetBookingUserResponse[] = raw.map((booking) => ({
       BookId: booking.bookId,
-      name: booking.name,
+      title: booking.name,
       coverUrl: booking.coverUrl,
       startAt: booking.startAt,
       endAt: booking.endAt,

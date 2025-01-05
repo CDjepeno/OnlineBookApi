@@ -4,9 +4,11 @@ import { generateProviders } from './usecase-proxy-config';
 import { NodemailerModules } from '../clients/nodemailer/nodemailer.module';
 import { RepositoriesModule } from '../services/repositories.module';
 import { useCasesConfig } from './usecase-proxy-config';
+import { ConfigKafkaModule } from '../clients/kafka/kafka.module';
+import { SocketModules } from '../clients/socket/socket.module';
 
 @Module({
-  imports: [RepositoriesModule, NodemailerModules, AwsS3Module],
+  imports: [RepositoriesModule, NodemailerModules, AwsS3Module, ConfigKafkaModule, SocketModules],
 })
 export class UsecaseProxyModule {
 

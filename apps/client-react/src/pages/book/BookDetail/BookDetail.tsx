@@ -62,7 +62,7 @@ function BookDetail() {
       endAt,
     };
 
-    onSubmit(inputForm);
+    onSubmit({...inputForm, name:user!.name, title:book!.title, email: user!.email});
   };
 
   if (isPending) {
@@ -126,7 +126,7 @@ function BookDetail() {
             component="img"
             height="400"
             image={book.coverUrl}
-            alt={book.name}
+            alt={book.title}
           />
           <CardContent sx={{ flexGrow: 1 }}>
             <Box
@@ -154,7 +154,7 @@ function BookDetail() {
                   component="h2"
                   color="primary"
                 >
-                  {book.name}
+                  {book.title}
                 </Typography>
                 <Typography variant="subtitle1" color="text.secondary">
                   {book.author}

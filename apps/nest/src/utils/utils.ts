@@ -13,3 +13,7 @@ export const MESSAGES = {
 };
 
 export const regexPhone = /^(\+336|\+337)\d{8}$/;
+
+export const sleep = (timeout: number) => {
+  return new Promise<void>((resolve) => setTimeout(resolve, timeout));
+};

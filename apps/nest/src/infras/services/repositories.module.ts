@@ -16,6 +16,7 @@ import { BookingRepositoryTypeorm } from './booking.repository.typeorm';
 import { UserRepositoryTypeorm } from './user.repository.typeorm';
 import { ContactRepositoryTypeorm } from './contact.repository.typeorm';
 import { Contact } from '../models/contact.model';
+import { ConfigKafkaModule } from '../clients/kafka/kafka.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { Contact } from '../models/contact.model';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '24h' },
     }),
+    ConfigKafkaModule
   ],
   providers: [
     BookRepositoryTypeorm,

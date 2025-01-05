@@ -16,7 +16,7 @@ export class AddBookUseCase {
 
       const book = new BookEntity(
         request.id!,
-        request.name,
+        request.title,
         request.description,
         request.author,
         request.releaseAt,

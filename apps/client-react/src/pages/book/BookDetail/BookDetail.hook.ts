@@ -39,8 +39,8 @@ function BookDetailHook() {
   const { mutateAsync: BookingBookMutation } = useMutation({
     mutationFn: (input: BookingBookFormType) => BookingBook(input),
 
-    onSuccess: () => {
-      onSuccessCommon("Le livre a été réserver avec succès");
+    onSuccess: (res) => {
+      onSuccessCommon(res.msg);
       queryClient.invalidateQueries({
         queryKey: [BookingsQueriesKeysEnum.GetBookingsBook],
       });

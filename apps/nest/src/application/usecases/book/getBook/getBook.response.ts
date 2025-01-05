@@ -1,6 +1,6 @@
 export type GetBookResponse = {
   id?: number,
-  name: string,
+  title: string,
   description: string,
   author: string,
   releaseAt: Date,

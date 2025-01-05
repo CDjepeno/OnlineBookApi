@@ -12,7 +12,7 @@ export type ErrorResponse = {
 
 export interface GetBookResponse {
   id: number;
-  name: string;
+  title: string;
   description: string;
   author: string;
   releaseAt: string;
@@ -21,7 +21,7 @@ export interface GetBookResponse {
 
 export interface GetBooksResponse {
   id: number;
-  name: string;
+  title: string;
   description: string;
   author: string;
   releaseAt: string;

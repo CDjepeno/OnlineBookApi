@@ -5,7 +5,7 @@ export class GetBookDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ description: 'Nom du livre' })
-  name!: string;
+  title!: string;
 
   @IsString()
   @IsNotEmpty()

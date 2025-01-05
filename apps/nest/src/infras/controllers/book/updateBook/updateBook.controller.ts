@@ -57,10 +57,10 @@ export class UpdateBookController {
         .getInstance()
         .execute(dataToUpdate);
 
-      const { name, description, author, releaseAt } = result;
+      const { title, description, author, releaseAt } = result;
 
       return {
-        name,
+        title,
         description,
         author,
         releaseAt,

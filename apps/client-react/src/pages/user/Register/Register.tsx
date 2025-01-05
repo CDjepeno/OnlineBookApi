@@ -129,7 +129,7 @@ export default function Register() {
                 label="password"
                 type="password"
                 control={control}
-                onblur={() => handleConfirmPasswordChange}
+                onBlur={() => handleConfirmPasswordChange}
                 errors={errors}
               />
             </Grid>
