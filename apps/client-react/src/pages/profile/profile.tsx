@@ -2,12 +2,19 @@ import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import {
   Box,
+  Button,
   CircularProgress,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   Modal,
   Pagination,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useState } from "react";
@@ -34,7 +41,10 @@ export default function Profile() {
   const [isFormUpdateBookOpen, setIsFormUpdateBookOpen] = useState(false);
   const [isFormUpdateUserOpen, setIsFormUpdateUserOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [openBookId, setOpenBookId] = useState<number | null>(null);
+
   const limit = 6;
+
   const { books, isPending, error, deleteBookMutation, user } = ProfileHook(
     currentPage,
     limit
@@ -59,9 +69,18 @@ export default function Profile() {
     sexe: user?.sexe || "",
   });
 
+  const handleDialogClose = () => {
+    setOpenBookId(null); // Ferme la boîte de dialogue
+  };
+
+  const handleDialogOpen = (bookId: number) => {
+    setOpenBookId(bookId); // Ouvre la boîte de dialogue pour le livre sélectionné
+  };
+
   const DeleteBook = async (id: number) => {
     try {
       await deleteBookMutation(id);
+      handleDialogClose();
     } catch (error) {
       console.error("Error deleting book:", error);
     }
@@ -100,9 +119,45 @@ export default function Profile() {
           <IconButton aria-label="edit" onClick={() => editBook(book)}>
             <EditTwoToneIcon />
           </IconButton>
-          <IconButton onClick={() => DeleteBook(book.id)} aria-label="delete">
-            <DeleteTwoToneIcon />
-          </IconButton>
+          <Tooltip title={book.hasFuturReservations ? "Suppression désactivée pour ce livre": "Supprimer ce livre"} arrow disableInteractive>
+          <span>
+            <IconButton
+              onClick={() => handleDialogOpen(book.id)}
+              aria-label="delete"
+              disabled={book.hasFuturReservations}
+            >
+              <DeleteTwoToneIcon />
+            </IconButton>
+          </span>
+          </Tooltip>
+          <Dialog
+            open={openBookId === book.id}
+            onClose={handleDialogClose}
+            aria-labelledby="delete-dialog-title"
+            aria-describedby="delete-dialog-description"
+          >
+            <DialogTitle id="delete-dialog-title">
+              Confirmer la suppression
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="delete-dialog-description">
+                Êtes-vous sûr de vouloir supprimer {book.title} ? Cette action
+                est irréversible.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDialogClose} color="primary">
+                Annuler
+              </Button>
+              <Button
+                onClick={() => DeleteBook(book.id)}
+                color="error"
+                autoFocus
+              >
+                Supprimer
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Stack>,
       ],
     })) || [];

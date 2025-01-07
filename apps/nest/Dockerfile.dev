@@ -1,6 +1,8 @@
 # Étape 1 : Utiliser une image Node.js légère
 FROM node:20 as development
 
+# Étape de nettoyage avant la construction
+RUN rm -rf /app/dist/*
 
 # Définir le répertoire de travail dans le conteneur
 WORKDIR /app

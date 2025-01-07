@@ -29,6 +29,7 @@ export interface GetBooksResponse {
   userId: number;
   created_At: string;
   updated_At: string;
+  hasFuturReservations: boolean;
 
 }
 

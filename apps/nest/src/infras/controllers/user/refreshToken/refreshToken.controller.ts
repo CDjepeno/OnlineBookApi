@@ -16,7 +16,7 @@ export class RefreshTokenController {
 
   @Post('refresh-token')
   @ApiOperation({
-    summary: 'Get a current user',
+    summary: 'Get a refresh-token',
   })
   async getRefreshToken(@Body() request: RefreshTokenDto) {
     return await this.refreshTokenUseCase.getInstance().execute(request);

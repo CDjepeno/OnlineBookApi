@@ -2,10 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useParams } from "react-router-dom";
 import { getUserById } from "src/services/user.services";
+import { ErrorResponse } from "src/types/book/response.types";
 import { BookQueriesKeysEnum, UserQueriesKeysEnum } from "../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflowCallback";
 import { deleteBook, getBooksByUser } from "../../services/book.services";
-import { ErrorResponse } from "src/types/book/response.types";
 
 function ProfileHook(page: number, limit: number) {
   const { id: userId } = useParams<{ id: string }>();

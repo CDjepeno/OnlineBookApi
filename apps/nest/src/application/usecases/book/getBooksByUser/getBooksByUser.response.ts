@@ -9,6 +9,7 @@ export type GetBooksByUserResponse = {
   userId: number;
   created_at?: Date;
   update_at?: Date;
+  hasFuturReservations: boolean
 };
 
 export type GetBooksByUserPaginationResponse = {

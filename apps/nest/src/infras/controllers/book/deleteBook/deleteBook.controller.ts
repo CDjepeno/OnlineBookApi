@@ -2,8 +2,6 @@ import {
   Controller,
   Delete,
   Inject,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   ParseIntPipe,
 } from '@nestjs/common';
@@ -27,17 +25,7 @@ export class DeleteBookController {
   async deleteBook(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<{ message: string }> {
-    try {
-      await this.deleteBookUsecaseProxy.getInstance().execute(id);
-      return { message: `Le livre avec l'id ${id} a bien été supprimé.` };
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new NotFoundException(error.message);
-      } else {
-        throw new InternalServerErrorException(
-          'Impossible de supprimer le livre.',
-        );
-      }
-    }
+    await this.deleteBookUsecaseProxy.getInstance().execute(id);
+    return { message: `Le livre avec l'id ${id} a bien été supprimé.` };
   }
 }

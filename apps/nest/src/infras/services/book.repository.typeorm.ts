@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
@@ -12,7 +13,7 @@ import {
 } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
 import { UpdateBookResponse } from 'src/application/usecases/book/updateBook/updateBook.response';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
 import { BookRepository } from 'src/repositories/book.repository';
@@ -105,6 +106,7 @@ export class BookRepositoryTypeorm implements BookRepository {
         where: { userId },
         take,
         skip,
+        relations: ['bookings'],
       });
 
       if (!books) {
@@ -112,8 +114,16 @@ export class BookRepositoryTypeorm implements BookRepository {
           `Aucun livre trouve pour l'utilisateur avec l'userId ${userId} `,
         );
       }
+
+      const booksWithReservations = books.map((book) => ({
+        ...book,
+        hasFuturReservations: book.bookings.some(
+          (booking) => new Date(booking.startAt) > new Date(),
+        ),
+      }));
+
       return {
-        books,
+        books: booksWithReservations,
         pagination: {
           totalBooks,
           currentPage: page,
@@ -181,8 +191,11 @@ export class BookRepositoryTypeorm implements BookRepository {
         throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
       }
     } catch (error) {
-      console.error(error);
-
+      if(error instanceof QueryFailedError) {
+        throw new BadRequestException(
+          'Impossible de supprimer le livre : il est référencé par d’autres entités.',
+        );
+      }
       throw new InternalServerErrorException(
         'Impossible de supprimer le livre.',
       );
