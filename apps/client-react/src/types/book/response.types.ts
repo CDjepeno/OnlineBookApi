@@ -19,6 +19,10 @@ export interface GetBookResponse {
   coverUrl: string;
 }
 
+export interface DeleteBooksResponse {
+  message: string;
+}
+
 export interface GetBooksResponse {
   id: number;
   title: string;

@@ -4,9 +4,11 @@ import {
   Inject,
   Param,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DeleteBookUsecase } from 'src/application/usecases/book/deleteBook/deleteBook.usecase';
+import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 
@@ -19,6 +21,7 @@ export class DeleteBookController {
   ) {}
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Delete Book',
   })

@@ -12,7 +12,7 @@ import {
 import { ReactNode } from "react";
 
 export interface TableListProps extends TableContainerProps {
-  headCells: string[];
+  headCells: ReactNode[];
   rows: {
     cells: ReactNode[];
   }[];

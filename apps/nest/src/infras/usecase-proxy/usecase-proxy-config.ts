@@ -26,6 +26,7 @@ import { ContactRepositoryTypeorm } from '../services/contact.repository.typeorm
 import { UserRepositoryTypeorm } from '../services/user.repository.typeorm';
 import { UseCaseProxy } from './usecase-proxy';
 import { SocketClient } from '../clients/socket/socket.client';
+import { DeleteBooksUsecase } from 'src/application/usecases/book/deleteBooks/deleteBooks.usecase';
 
 export enum UsecaseProxyEnum {
   CREATE_USER_USECASE_PROXY = 'createUserUsecaseProxy',
@@ -41,13 +42,14 @@ export enum UsecaseProxyEnum {
   GET_BOOKS_BY_USER_USECASE_PROXY = 'getBookByUserUsecaseProxy',
   GET_BOOK_USECASE_PROXY = 'getBookUsecaseProxy',
   GET_BOOK_BY_NAME_USECASE_PROXY = 'getBookByNameUsecaseProxy',
+  DELETE_BOOK_USECASE_PROXY = 'deleteBookUsecaseProxy',
+  DELETE_BOOKS_USECASE_PROXY = 'deleteBooksUsecaseProxy',
+  UPDATE_BOOK_USECASE_PROXY = 'updateBookUsecaseProxy',
 
   BOOKING_BOOK_USECASE_PROXY = 'BookingBookUsecaseProxy',
   GET_BOOKINGS_BOOK_USECASE_PROXY = 'getBookingBookUsecaseProxy',
   GET_BOOKINGS_USER_USECASE_PROXY = 'getBookingUserUsecaseProxy',
 
-  DELETE_BOOK_USECASE_PROXY = 'deleteBookUsecaseProxy',
-  UPDATE_BOOK_USECASE_PROXY = 'updateBookUsecaseProxy',
 
   CONTACT_USECASE_PROXY = 'contactUseCaseProxy',
 }
@@ -144,6 +146,13 @@ export const useCasesConfig = [
       bookRepository: BookRepositoryTypeorm,
       awsS3Client: AwsS3Client,
     ) => new UseCaseProxy(new UpdateBookUseCase(bookRepository, awsS3Client)),
+  },
+  {
+    inject: [BookRepositoryTypeorm],
+    provide: UsecaseProxyEnum.DELETE_BOOKS_USECASE_PROXY,
+    useFactory: (
+      bookRepository: BookRepositoryTypeorm,
+    ) => new UseCaseProxy(new DeleteBooksUsecase(bookRepository)),
   },
 
   // -------------------------------- BOOKING -------------------------------------

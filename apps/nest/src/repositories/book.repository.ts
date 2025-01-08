@@ -24,4 +24,5 @@ export interface BookRepository {
     book: Partial<BookEntity>,
   ): Promise<UpdateBookResponse>;
   deleteBook(id: number): Promise<void>;
+  deleteBooks(id: Array<string>): Promise<void>;
 }

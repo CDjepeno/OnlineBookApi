@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,15 +9,13 @@ import { AddBookResponse } from 'src/application/usecases/book/addBook/addBook.r
 import { GetAllBookResponsePagination } from 'src/application/usecases/book/getAllBook/getAllBook.response';
 import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
 import { GetBookByNameResponse } from 'src/application/usecases/book/getBookByName/getBookByName.response';
-import {
-  GetBooksByUserPaginationResponse,
-} from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
+import { GetBooksByUserPaginationResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
 import { UpdateBookResponse } from 'src/application/usecases/book/updateBook/updateBook.response';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
+import { BookRepository } from 'src/repositories/book.repository';
 import { QueryFailedError, Repository } from 'typeorm';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
-import { BookRepository } from 'src/repositories/book.repository';
 
 export class BookRepositoryTypeorm implements BookRepository {
   constructor(
@@ -45,7 +44,7 @@ export class BookRepositoryTypeorm implements BookRepository {
       book.userId = addBookRequest.userId;
 
       const result = await this.repository.save(book);
-      const { title , description, author, releaseAt, coverUrl } = result;
+      const { title, description, author, releaseAt, coverUrl } = result;
       return {
         title,
         description,
@@ -101,7 +100,7 @@ export class BookRepositoryTypeorm implements BookRepository {
       const totalBooks = await this.repository.count({
         where: { userId },
       });
-      
+
       const books = await this.repository.find({
         where: { userId },
         take,
@@ -191,13 +190,39 @@ export class BookRepositoryTypeorm implements BookRepository {
         throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
       }
     } catch (error) {
-      if(error instanceof QueryFailedError) {
+      if (error instanceof QueryFailedError) {
         throw new BadRequestException(
           'Impossible de supprimer le livre : il est référencé par d’autres entités.',
         );
       }
       throw new InternalServerErrorException(
         'Impossible de supprimer le livre.',
+      );
+    }
+  }
+
+  async deleteBooks(ids: Array<string>): Promise<void> {
+    try {
+      const deletionPromises = ids.map((id) => this.repository.delete(id));
+
+      const results = await Promise.all(deletionPromises);
+
+      results.forEach((result, index) => {
+        if (result.affected === 0) {
+          throw new NotFoundException(
+            `Aucun livre trouvé avec l'id "${ids[index]}"`,
+          );
+        }
+      });
+    } catch (error) {
+      Logger.log(error)
+      if (error instanceof QueryFailedError) {
+        throw new BadRequestException(
+          'Impossible de supprimer le livre : il est référencé par d’autres entités.',
+        );
+      }
+      throw new InternalServerErrorException(
+        'Impossible de supprimer le livreeeeeee.',
       );
     }
   }

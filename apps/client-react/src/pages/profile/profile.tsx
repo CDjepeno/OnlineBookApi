@@ -3,6 +3,7 @@ import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import {
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   Container,
   Dialog,
@@ -28,27 +29,24 @@ import { TableList } from "../book/components/TableList";
 import UserUpdateForm from "../user/Update-User/UserUpdateForm";
 import ProfileHook from "./profile.hook";
 
-const headCells = [
-  "Name",
-  "Auteur",
-  "Description",
-  "Date de parution",
-  "Couverture",
-  "Actions",
-];
-
 export default function Profile() {
   const [isFormUpdateBookOpen, setIsFormUpdateBookOpen] = useState(false);
   const [isFormUpdateUserOpen, setIsFormUpdateUserOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [openBookId, setOpenBookId] = useState<number | null>(null);
+  const [selectedBookIds, setSelectedBookIds] = useState<number[]>([]);
+  const [isBulkDelete, setIsBulkDelete] = useState(false);
 
   const limit = 6;
 
-  const { books, isPending, error, deleteBookMutation, user } = ProfileHook(
-    currentPage,
-    limit
-  );
+  const {
+    books,
+    isPending,
+    error,
+    deleteBookMutation,
+    user,
+    deleteBooksMutation,
+  } = ProfileHook(currentPage, limit);
 
   const [book, setBook] = useState<BookForm>({
     id: 0,
@@ -103,9 +101,90 @@ export default function Profile() {
     setCurrentPage(page);
   };
 
+  // Suppresion multiple
+  // Gestion de la sélection/déselection
+  const toggleSelectBook = (id: number) => {
+    setSelectedBookIds((prev) =>
+      prev.includes(id) ? prev.filter((bookId) => bookId !== id) : [...prev, id]
+    );
+  };
+
+  // Suppression en masse
+  const deleteSelectedBooks = async () => {
+    if (selectedBookIds.length === 0) return;
+
+    await deleteBooksMutation(selectedBookIds);
+    setSelectedBookIds([]); // Réinitialise la sélection
+  };
+
+  const handleBulkDeleteDialogOpen = () => {
+    setIsBulkDelete(true);
+    setOpenBookId(null); // Pas d'ID spécifique pour une suppression multiple
+  };
+
+  const handleBulkDeleteDialogClose = () => {
+    setIsBulkDelete(false);
+    setOpenBookId(null);
+  };
+
+  const deleteBooksConfirmation = async () => {
+    try {
+      if (isBulkDelete) {
+        // Suppression en masse
+        await deleteSelectedBooks();
+      } else if (openBookId !== null) {
+        // Suppression individuelle
+        await DeleteBook(openBookId);
+      }
+      handleBulkDeleteDialogClose();
+    } catch (error) {
+      console.error("Error during deletion:", error);
+    }
+  };
+
+  const toggleSelectAllBooks = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      // Sélectionne tous les livres disponibles
+      const allSelectableBookIds =
+        books
+          ?.filter((book) => !book.hasFuturReservations)
+          .map((book) => book.id) || [];
+      setSelectedBookIds(allSelectableBookIds);
+    } else {
+      // Désélectionne tous les livres
+      setSelectedBookIds([]);
+    }
+  };
+
+  const isAllSelected =
+    books && books.length > 0 &&
+    selectedBookIds.length ===
+      books!.filter((book) => !book.hasFuturReservations).length;
+
+  const isIndeterminate = selectedBookIds.length > 0 && !isAllSelected;
+
+  const headCells = [
+    <Checkbox
+      indeterminate={isIndeterminate}
+      checked={isAllSelected}
+      onChange={toggleSelectAllBooks}
+    />,
+    "Name",
+    "Auteur",
+    "Description",
+    "Date de parution",
+    "Couverture",
+    "Actions",
+  ];
+
   const rows =
     books?.map((book) => ({
       cells: [
+        <Checkbox
+          checked={selectedBookIds.includes(book.id)}
+          onChange={() => toggleSelectBook(book.id)}
+          disabled={book.hasFuturReservations} // Désactiver si la suppression est impossible
+        />,
         book.title,
         book.author,
         book.description,
@@ -119,20 +198,28 @@ export default function Profile() {
           <IconButton aria-label="edit" onClick={() => editBook(book)}>
             <EditTwoToneIcon />
           </IconButton>
-          <Tooltip title={book.hasFuturReservations ? "Suppression désactivée pour ce livre": "Supprimer ce livre"} arrow disableInteractive>
-          <span>
-            <IconButton
-              onClick={() => handleDialogOpen(book.id)}
-              aria-label="delete"
-              disabled={book.hasFuturReservations}
-            >
-              <DeleteTwoToneIcon />
-            </IconButton>
-          </span>
+          <Tooltip
+            title={
+              book.hasFuturReservations
+                ? "Suppression désactivée pour ce livre"
+                : "Supprimer ce livre"
+            }
+            arrow
+            disableInteractive
+          >
+            <span>
+              <IconButton
+                onClick={() => handleDialogOpen(book.id)}
+                aria-label="delete"
+                disabled={book.hasFuturReservations}
+              >
+                <DeleteTwoToneIcon />
+              </IconButton>
+            </span>
           </Tooltip>
           <Dialog
-            open={openBookId === book.id}
-            onClose={handleDialogClose}
+            open={isBulkDelete || openBookId !== null}
+            onClose={handleBulkDeleteDialogClose}
             aria-labelledby="delete-dialog-title"
             aria-describedby="delete-dialog-description"
           >
@@ -141,19 +228,16 @@ export default function Profile() {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="delete-dialog-description">
-                Êtes-vous sûr de vouloir supprimer {book.title} ? Cette action
-                est irréversible.
+                {isBulkDelete
+                  ? `Êtes-vous sûr de vouloir supprimer les ${selectedBookIds.length} livres sélectionnés ? Cette action est irréversible.`
+                  : `Êtes-vous sûr de vouloir supprimer ${book.title} ? Cette action est irréversible.`}
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleDialogClose} color="primary">
+              <Button onClick={handleBulkDeleteDialogClose} color="primary">
                 Annuler
               </Button>
-              <Button
-                onClick={() => DeleteBook(book.id)}
-                color="error"
-                autoFocus
-              >
+              <Button onClick={deleteBooksConfirmation} color="error" autoFocus>
                 Supprimer
               </Button>
             </DialogActions>
@@ -244,6 +328,16 @@ export default function Profile() {
       >
         Livre de {user?.name}
       </Typography>
+      <div>
+        <Button
+          onClick={handleBulkDeleteDialogOpen}
+          color="error"
+          variant="contained"
+          disabled={selectedBookIds.length === 0} // Désactiver si aucune sélection
+        >
+          Supprimer les livres sélectionnés
+        </Button>
+      </div>
       <TableList headCells={headCells} rows={rows} />
       <Box
         sx={{

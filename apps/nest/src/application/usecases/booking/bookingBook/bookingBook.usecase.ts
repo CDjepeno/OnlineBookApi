@@ -70,7 +70,8 @@ export class BookingBookUseCase {
         // const reminderDate = new Date(endDate.getTime() - 9 * 60 * 60 * 1000); // 9 heures en millisecondes; 
         // const reminderDate = new Date(endDate.getTime() - (23 * 60 * 60 * 1000 + 30 * 60 * 1000)); // 23h30hours
         const now = new Date();
-        const reminderDate = new Date(now.getTime() + 2 * 60 * 1000); // 1min
+        const reminderDate = new Date(now.getTime() + 1 * 60 * 1000); // 1min
+        // const reminderDate = new Date(now.getTime() + 30 * 1000); // 30 secondes
 
         if(reminderDate > now) {
           const cronExpression = `0 ${reminderDate.getMinutes()} ${reminderDate.getHours()} ${reminderDate.getDate()} ${reminderDate.getMonth() + 1} *`;

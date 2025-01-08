@@ -5,10 +5,12 @@ import { getUserById } from "src/services/user.services";
 import { ErrorResponse } from "src/types/book/response.types";
 import { BookQueriesKeysEnum, UserQueriesKeysEnum } from "../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflowCallback";
-import { deleteBook, getBooksByUser } from "../../services/book.services";
+import { deleteBook, deleteBooks, getBooksByUser } from "../../services/book.services";
 
 function ProfileHook(page: number, limit: number) {
   const { id: userId } = useParams<{ id: string }>();
+  const queryClient = useQueryClient();
+  const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
 
   const {
     data: booksPagination,
@@ -30,8 +32,6 @@ function ProfileHook(page: number, limit: number) {
     enabled: !!userId,
   });
 
-  const queryClient = useQueryClient();
-  const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
 
   const { mutateAsync: deleteBookMutation } = useMutation<
     void,
@@ -61,10 +61,41 @@ function ProfileHook(page: number, limit: number) {
             .message;
         }
       }
+      onErrorCommon(errorMessage);
+    },
+  });
+
+  const { mutateAsync: deleteBooksMutation } = useMutation({
+    mutationFn: (ids: number[]) => deleteBooks(ids),
+
+    onSuccess: async (res) => {
+      onSuccessCommon(res.message);
+      queryClient.invalidateQueries({
+        queryKey: [BookQueriesKeysEnum.BooksUser],
+      });
+    },
+
+    onError: (error: Error | AxiosError<unknown>) => {
+      let errorMessage =
+        "Une erreur est survenue lors de la suppression des livre";
+
+      if ((error as AxiosError<unknown>).isAxiosError) {
+        if (
+          (error as AxiosError).response &&
+          (error as AxiosError).response!.data &&
+          ((error as AxiosError).response!.data as ErrorResponse)
+        ) {
+          errorMessage = ((error as AxiosError).response!.data as ErrorResponse)
+            .message;
+        }
+      }
 
       onErrorCommon(errorMessage);
     },
   });
+
+
+
   const books = booksPagination?.books;
 
   return {
@@ -72,6 +103,7 @@ function ProfileHook(page: number, limit: number) {
     isPending,
     error,
     deleteBookMutation,
+    deleteBooksMutation,
     user,
     isPendingUser,
     errorUser,
