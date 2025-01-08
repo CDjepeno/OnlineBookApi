@@ -7,9 +7,11 @@ import {
   GetBookingUserPaginationResponse,
   GetBookingUserResponse,
 } from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.response';
+import { UpdateBookingUserRequest } from 'src/application/usecases/booking/updateBooking/updateBookingUser.request';
+import { UpdateBookingUserResponse } from 'src/application/usecases/booking/updateBooking/updateBookingUser.response';
+import { BookingRepository } from 'src/repositories/bookingBook.repository';
 import { Between, Repository } from 'typeorm';
 import { Booking } from '../models/booking.model';
-import { BookingRepository } from 'src/repositories/bookingBook.repository';
 
 export class BookingRepositoryTypeorm implements BookingRepository {
   constructor(
@@ -49,7 +51,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       ],
     });
 
-    return !!existingBooking; 
+    return !!existingBooking;
   }
 
   async getBookingsDatesByBookId(
@@ -69,8 +71,8 @@ export class BookingRepositoryTypeorm implements BookingRepository {
     const currentPage = Math.max(0, page - 1);
     const take = limit > 0 ? limit : 6;
     const skip = currentPage * take;
-    
-    const raw  = await this.repository
+
+    const raw = await this.repository
       .createQueryBuilder('booking')
       .leftJoinAndSelect('booking.book', 'book')
       .where('booking.userId = :userId', { userId })
@@ -81,13 +83,12 @@ export class BookingRepositoryTypeorm implements BookingRepository {
         'booking.startAt AS startAt',
         'booking.endAt AS endAt',
       ])
-      .skip(skip) 
-      .take(take) 
+      .skip(skip)
+      .take(take)
       .getRawMany();
 
     console.log(raw);
-    
-    
+
     const bookings: GetBookingUserResponse[] = raw.map((booking) => ({
       BookId: booking.bookId,
       title: booking.name,
@@ -95,11 +96,11 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       startAt: booking.startAt,
       endAt: booking.endAt,
     }));
-    
+
     const totalBooks = await this.repository
-    .createQueryBuilder('booking')
-    .where('booking.userId = :userId', { userId })
-    .getCount();
+      .createQueryBuilder('booking')
+      .where('booking.userId = :userId', { userId })
+      .getCount();
 
     return {
       bookings,
@@ -109,5 +110,19 @@ export class BookingRepositoryTypeorm implements BookingRepository {
         totalPages: Math.ceil(totalBooks / take),
       },
     };
+  }
+
+  async updateBookingUser(
+    updateBooking: UpdateBookingUserRequest,
+  ): Promise<UpdateBookingUserResponse> {
+    try {
+      await this.repository.update(updateBooking.id, updateBooking);
+      return { msg: 'votre reservation a bien été modifier' };
+    } catch (error) {
+      console.error("Erreur lors de l'ajout du livre :", error);
+      throw new InternalServerErrorException(
+        'Impossible de reserver le livre.',
+      );
+    }
   }
 }
