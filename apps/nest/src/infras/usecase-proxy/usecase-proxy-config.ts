@@ -28,6 +28,7 @@ import { UseCaseProxy } from './usecase-proxy';
 import { SocketClient } from '../clients/socket/socket.client';
 import { DeleteBooksUsecase } from 'src/application/usecases/book/deleteBooks/deleteBooks.usecase';
 import { UpdateBookingUserUseCase } from 'src/application/usecases/booking/updateBooking/updateBookingUser.usecase';
+import { DeleteBookingUserUsecase } from 'src/application/usecases/booking/deleteBookingUser/deleteBookingUser.usecase';
 
 export enum UsecaseProxyEnum {
   CREATE_USER_USECASE_PROXY = 'createUserUsecaseProxy',
@@ -51,6 +52,7 @@ export enum UsecaseProxyEnum {
   GET_BOOKINGS_BOOK_USECASE_PROXY = 'getBookingBookUsecaseProxy',
   GET_BOOKINGS_USER_USECASE_PROXY = 'getBookingUserUsecaseProxy',
   UPDATE_BOOKING_USER_USECASE_PROXY = 'updateBookingUserUsecaseProxy',
+  DELETE_BOOKING_USER_USECASE_PROXY = 'deleteBookingUserUsecaseProxy',
 
 
   CONTACT_USECASE_PROXY = 'contactUseCaseProxy',
@@ -201,6 +203,12 @@ export const useCasesConfig = [
     provide: UsecaseProxyEnum.UPDATE_BOOKING_USER_USECASE_PROXY,
     useFactory: (updateBookingRepository: BookingRepositoryTypeorm) =>
       new UseCaseProxy(new UpdateBookingUserUseCase(updateBookingRepository)),
+  },
+  {
+    inject: [BookingRepositoryTypeorm],
+    provide: UsecaseProxyEnum.DELETE_BOOKING_USER_USECASE_PROXY,
+    useFactory: (deleteBookingRepository: BookingRepositoryTypeorm) =>
+      new UseCaseProxy(new DeleteBookingUserUsecase(deleteBookingRepository)),
   },
   // -------------------------------- CONTACT -------------------------------------
   {

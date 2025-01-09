@@ -1,4 +1,4 @@
-import { InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookingBookRequest } from 'src/application/usecases/booking/bookingBook/bookingBook.request';
 import { BookingBookResponse } from 'src/application/usecases/booking/bookingBook/bookingBook.response';
@@ -10,7 +10,7 @@ import {
 import { UpdateBookingUserRequest } from 'src/application/usecases/booking/updateBooking/updateBookingUser.request';
 import { UpdateBookingUserResponse } from 'src/application/usecases/booking/updateBooking/updateBookingUser.response';
 import { BookingRepository } from 'src/repositories/bookingBook.repository';
-import { Between, Repository } from 'typeorm';
+import { Between, QueryFailedError, Repository } from 'typeorm';
 import { Booking } from '../models/booking.model';
 
 export class BookingRepositoryTypeorm implements BookingRepository {
@@ -124,5 +124,23 @@ export class BookingRepositoryTypeorm implements BookingRepository {
         'Impossible de reserver le livre.',
       );
     }
+  }
+
+  async deleteBooking(id: number): Promise<void> {
+     try {
+          const result = await this.repository.delete(id);
+          if (result.affected === 0) {
+            throw new NotFoundException(`Aucune réservation trouvé avec l'id "${id}"`);
+          }
+        } catch (error) {
+          if (error instanceof QueryFailedError) {
+            throw new BadRequestException(
+              'Impossible de supprimer la réservation : elle est référencé par d\'autres entités.',
+            );
+          }
+          throw new InternalServerErrorException(
+            'Impossible de supprimer le livre.',
+          );
+        }
   }
 }

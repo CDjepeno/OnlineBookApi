@@ -15,4 +15,5 @@ export interface BookingRepository {
   ): Promise<GetBookingUserPaginationResponse>;
   Order(bookReserved: BookingBookRequest): Promise<BookingBookResponse>;
   updateBookingUser(updateBooking: UpdateBookingUserRequest): Promise<UpdateBookingUserResponse>;
+  deleteBooking(id: number): Promise<void>;
 }
