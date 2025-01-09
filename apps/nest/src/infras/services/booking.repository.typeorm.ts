@@ -96,7 +96,6 @@ export class BookingRepositoryTypeorm implements BookingRepository {
         startAt: booking.startAt,
         endAt: booking.endAt,
       }));
-      console.log(bookings);
 
     const totalBooks = await this.repository
       .createQueryBuilder('booking')

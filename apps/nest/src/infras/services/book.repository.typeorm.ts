@@ -142,7 +142,6 @@ export class BookRepositoryTypeorm implements BookRepository {
 
   async getBook(id: number): Promise<GetBookResponse> {
     try {
-      console.log(`Recherche de livres avec l'id : ${id}`);
       const book = await this.repository.findOne({
         where: { id },
       });

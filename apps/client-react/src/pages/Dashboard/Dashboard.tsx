@@ -32,8 +32,6 @@ export default function Dashboard() {
     limit
   );
 
-  console.log(bookingsUser);
-
   const bookings = bookingsUser?.map((booking) => ({
     startAt: dayjs(booking.startAt),
     endAt: dayjs(booking.endAt),
@@ -134,9 +132,8 @@ export default function Dashboard() {
             width: "50%",
             borderRadius: 2,
             boxShadow: 24,
-            display: "flex", // Utilisation de Flexbox
-            flexDirection: "column", // S'assurer que les éléments s'alignent verticalement
-            alignItems: "center", // Centrer horizontalement
+            display: "flex", 
+            alignItems: "center", 
             justifyContent: "center",
           }}
         >
@@ -147,6 +144,7 @@ export default function Dashboard() {
             onActionClick={handleclick}
             actionLabel="Réserver"
             user={user ? true : false}
+            justifyContent="center"
           />
         </Box>
       </Modal>

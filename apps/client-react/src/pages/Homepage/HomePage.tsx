@@ -34,8 +34,6 @@ export function HomePage() {
     _event: React.ChangeEvent<unknown>,
     page: number
   ) => {
-    console.log(page);
-    
     setCurrentPage(page); 
   };
 

@@ -1,10 +1,10 @@
-import React from "react";
 import { Box, Button } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateRange, DateRangeCalendar } from "@mui/x-date-pickers-pro";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import dayjs, { Dayjs } from "dayjs";
+import React from "react";
 
 interface CalendarGenericProps {
   value: DateRange<dayjs.Dayjs>;
@@ -15,6 +15,8 @@ interface CalendarGenericProps {
   width?: string;
   showAction?: boolean;
   user?: boolean;
+  display?: string;
+  justifyContent?: string;
 }
 
 const CalendarGeneric: React.FC<CalendarGenericProps> = ({
@@ -23,12 +25,21 @@ const CalendarGeneric: React.FC<CalendarGenericProps> = ({
   shouldDisableDate,
   onActionClick,
   actionLabel = "Submit",
-  width = "100%",
+  width = "70%",
   showAction = true,
   user = false,
+  display,
+  justifyContent,
 }) => {
   return (
-    <Box sx={{ width }}>
+    <Box
+      sx={{
+        width,
+        display,
+        justifyContent,
+        margin: "auto",
+      }}
+    >
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={["DateRangeCalendar"]}>
           <DateRangeCalendar
