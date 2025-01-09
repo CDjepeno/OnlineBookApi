@@ -1,10 +1,18 @@
+import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import {
   Box,
+  Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   Modal,
   Pagination,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { DateRange } from "@mui/x-date-pickers-pro";
@@ -23,14 +31,17 @@ export default function Dashboard() {
   const [isFormUpdateBookingUserOpen, setIsFormUpdateBookingUserOpen] =
     useState(false);
   const [dateRange, setDateRange] = useState<DateRange<Dayjs>>([null, null]);
-  const [bookingId, setbookingId] = useState<number>();
+  const [bookingId, setbookingId] = useState<number | null>(null);
+  const [openBookingId, setOpenBookingId] = useState<number | null>(null);
 
   const limit = 6;
 
-  const { bookingsUser, totalPages, updateBookingMutation } = DashboardHook(
-    currentPage,
-    limit
-  );
+  const {
+    bookingsUser,
+    totalPages,
+    updateBookingMutation,
+    deleteBookingMutation,
+  } = DashboardHook(currentPage, limit);
 
   const bookings = bookingsUser?.map((booking) => ({
     startAt: dayjs(booking.startAt),
@@ -62,6 +73,27 @@ export default function Dashboard() {
     setCurrentPage(page);
   };
 
+  const handleDialogOpen = (bookingId: number) => {
+    setbookingId(bookingId);
+    setOpenBookingId(bookingId);
+  };
+  
+  const handleDialogClose = () => {
+    setbookingId(null);
+    setOpenBookingId(null);
+  };
+
+  const deleteBookingConfirmation = async () => {
+    try {
+      await deleteBookingMutation(openBookingId!);
+      handleDialogClose()
+    } catch (error) {
+      console.error(error);
+      
+    }
+    
+  };
+
   const headCells = [
     "Name",
     "Couverture",
@@ -81,12 +113,61 @@ export default function Dashboard() {
         />,
         formatDate(bookingUser.startAt),
         formatDate(bookingUser.endAt),
-        <IconButton
-          aria-label="edit"
-          onClick={() => editUser(bookingUser.bookingId)}
-        >
-          <EditTwoToneIcon />
-        </IconButton>,
+        <>
+          <IconButton
+            aria-label="edit"
+            onClick={() => editUser(bookingUser.bookingId)}
+          >
+            <EditTwoToneIcon />
+          </IconButton>
+          <Tooltip
+            title={
+              bookingUser.hasFuturReservations
+                ? "Ce livre a des reservation futures"
+                : "Supprimer ce livre"
+            }
+            arrow
+            disableInteractive
+          >
+            <span>
+              <IconButton
+                onClick={() => handleDialogOpen(bookingUser.bookingId)}
+                aria-label="delete"
+                disabled={bookingUser.hasFuturReservations}
+              >
+                <DeleteTwoToneIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+          <Dialog
+            open={openBookingId !== null}
+            onClose={handleDialogClose}
+            aria-labelledby="delete-dialog-title"
+            aria-describedby="delete-dialog-description"
+          >
+            <DialogTitle id="delete-dialog-title">
+              Confirmer la suppression
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="delete-dialog-description">
+                `Êtes-vous sûr de vouloir supprimer ${bookingUser.name} ? Cette
+                action est irréversible.`
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDialogClose} color="primary">
+                Annuler
+              </Button>
+              <Button
+                onClick={deleteBookingConfirmation}
+                color="error"
+                autoFocus
+              >
+                Supprimer
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>,
       ],
     })) || [];
 
@@ -96,13 +177,12 @@ export default function Dashboard() {
   };
 
   const handleclick = () => {
-    const [startAt, endAt] = dateRange.map(
-      (date, index) =>
-        dayjs(date)
-          .set("hour", index === 0 ? 0 : 23) 
-          .set("minute", index === 0 ? 0 : 59)
-          .set("second", index === 0 ? 0 : 59)
-          .toISOString() 
+    const [startAt, endAt] = dateRange.map((date, index) =>
+      dayjs(date)
+        .set("hour", index === 0 ? 0 : 23)
+        .set("minute", index === 0 ? 0 : 59)
+        .set("second", index === 0 ? 0 : 59)
+        .toISOString()
     );
     const inputForm = {
       id: bookingId!,
@@ -110,7 +190,7 @@ export default function Dashboard() {
       endAt,
     };
     updateBookingMutation(inputForm);
-    setIsFormUpdateBookingUserOpen(false)
+    setIsFormUpdateBookingUserOpen(false);
   };
 
   return (
@@ -132,8 +212,8 @@ export default function Dashboard() {
             width: "50%",
             borderRadius: 2,
             boxShadow: 24,
-            display: "flex", 
-            alignItems: "center", 
+            display: "flex",
+            alignItems: "center",
             justifyContent: "center",
           }}
         >

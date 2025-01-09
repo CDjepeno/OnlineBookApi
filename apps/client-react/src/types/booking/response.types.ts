@@ -14,6 +14,7 @@ export type GetBookingUserResponse = {
   coverUrl: string;
   startAt: string;
   endAt: string;
+  hasFuturReservations: boolean;
 }
 
 export type GetBookingUserPaginationResponse = {
@@ -26,5 +27,9 @@ export type GetBookingUserPaginationResponse = {
 }
 
 export type UpdateBookingUserResponse = {
+  msg: string;
+}
+
+export type DeleteBookingUserResponse = {
   msg: string;
 }

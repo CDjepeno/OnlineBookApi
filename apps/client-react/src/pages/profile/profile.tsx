@@ -194,7 +194,7 @@ export default function Profile() {
           alt="couverture du book"
           style={{ width: "50px", height: "30px", objectFit: "cover" }}
         />,
-        <Stack direction="row" justifyContent="end">
+        <Stack direction="row" justifyContent="start">
           <IconButton aria-label="edit" onClick={() => editBook(book)}>
             <EditTwoToneIcon />
           </IconButton>

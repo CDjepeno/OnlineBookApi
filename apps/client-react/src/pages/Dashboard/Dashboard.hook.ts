@@ -4,11 +4,15 @@ import { useContext } from "react";
 import { UseQueryWorkflowCallback } from "src/request/commons/useQueryWorkflowCallback";
 import { ErrorResponse } from "src/types/book/response.types";
 import { UpdateBookingUserFormType } from "src/types/booking/form.types";
-import { UpdateBookingUserResponse } from "src/types/booking/response.types";
+import {
+  DeleteBookingUserResponse,
+  UpdateBookingUserResponse,
+} from "src/types/booking/response.types";
 import { AuthContext } from "../../context";
 import { BookingsQueriesKeysEnum } from "../../enum/enum";
 import { AuthContextValue } from "../../interfaces/auth.context.value";
 import {
+  DeleteBookingUser,
   GetBookingsUser,
   UpdateBookingUser,
 } from "../../services/booking.services";
@@ -64,7 +68,47 @@ function DashboardHook(page: number, limit: number) {
     },
   });
 
-  return { bookingsUser, isPending, error, totalPages, updateBookingMutation };
+  const { mutateAsync: deleteBookingMutation } = useMutation<
+    DeleteBookingUserResponse,
+    AxiosError<unknown>,
+    number
+  >({
+    mutationFn: async (id: number) => DeleteBookingUser(id),
+
+    onSuccess: async (res) => {
+      onSuccessCommon(res.msg);
+      queryClient.invalidateQueries({
+        queryKey: [BookingsQueriesKeysEnum.GetBookingsUser],
+      });
+    },
+
+    onError: (error: Error | AxiosError<unknown>) => {
+      let errorMessage =
+        "Une erreur est survenue lors de la suppression de la reservation";
+
+      if ((error as AxiosError<unknown>).isAxiosError) {
+        if (
+          (error as AxiosError).response &&
+          (error as AxiosError).response!.data &&
+          ((error as AxiosError).response!.data as ErrorResponse)
+        ) {
+          errorMessage = ((error as AxiosError).response!.data as ErrorResponse)
+            .message;
+        }
+      }
+
+      onErrorCommon(errorMessage);
+    },
+  });
+
+  return {
+    bookingsUser,
+    isPending,
+    error,
+    totalPages,
+    updateBookingMutation,
+    deleteBookingMutation,
+  };
 }
 
 export default DashboardHook;

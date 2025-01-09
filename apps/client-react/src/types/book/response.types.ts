@@ -23,6 +23,10 @@ export interface DeleteBooksResponse {
   message: string;
 }
 
+export interface DeleteBookResponse {
+  message: string;
+}
+
 export interface GetBooksResponse {
   id: number;
   title: string;

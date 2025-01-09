@@ -12,6 +12,7 @@ import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useApiRequest";
 import {
   BOOKING_BOOK_ROUTE,
+  DELETE_BOOKING_USER_ROUTE,
   GET_BOOKINGS_BOOK_ROUTE,
   GET_BOOKINGS_USER_ROUTE,
   UPDATE_BOOKING_USER_ROUTE,
@@ -57,11 +58,22 @@ export const UpdateBookingUser = async (
 ): Promise<UpdateBookingUserResponse> => {
   return await UseRequestApi<
     UpdateBookingUserResponse,
-    UpdateBookingUserFormType 
+    UpdateBookingUserFormType
   >({
     path: UPDATE_BOOKING_USER_ROUTE,
     method: MethodHttpEnum.PUT,
     params: updatedBookinkUser,
+    includeAuthorizationHeader: true,
+  });
+};
+
+export const DeleteBookingUser = async (
+  id: number
+): Promise<UpdateBookingUserResponse> => {
+  return await UseRequestApi<UpdateBookingUserResponse, { id: number }>({
+    path: `${DELETE_BOOKING_USER_ROUTE}/${id}`,
+    method: MethodHttpEnum.DELETE,
+    params: { id },
     includeAuthorizationHeader: true,
   });
 };

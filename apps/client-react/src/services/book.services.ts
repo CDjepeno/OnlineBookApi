@@ -1,5 +1,6 @@
 import {
   AddBookResponse,
+  DeleteBookResponse,
   DeleteBooksResponse,
   GetAllBookResponsePagination,
   GetBookByUserPaginationResponse,
@@ -72,8 +73,8 @@ export const createBook = async (
   });
 };
 
-export const deleteBook = async (id: number): Promise<void> => {
-  await UseRequestApi({
+export const deleteBook = async (id: number): Promise<DeleteBookResponse> => {
+  return await UseRequestApi({
     method: MethodHttpEnum.DELETE,
     path: `${BOOK_ROUTE}/${id}`,
     params: { id },

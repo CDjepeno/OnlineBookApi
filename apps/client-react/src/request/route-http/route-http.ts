@@ -15,3 +15,4 @@ export const GET_BOOKINGS_BOOK_ROUTE = "/bookings/book";
 export const GET_BOOKINGS_USER_ROUTE = "/bookings/user";
 export const UPDATE_BOOKING_USER_ROUTE = "/booking/user";
 export const BOOKING_BOOK_ROUTE = "/booking/book";
+export const DELETE_BOOKING_USER_ROUTE = "/booking/user";
