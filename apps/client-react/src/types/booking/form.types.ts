@@ -7,3 +7,9 @@ export type BookingBookFormType = {
   name: string
   email: string
 };
+
+export type UpdateBookingUserFormType = {
+  id: number,
+  startAt: string,
+  endAt: string,
+};

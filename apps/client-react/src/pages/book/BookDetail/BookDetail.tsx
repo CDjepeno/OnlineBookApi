@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Card,
   CardContent,
   CardMedia,
@@ -9,13 +8,10 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { DateRangeCalendar } from "@mui/x-date-pickers-pro/DateRangeCalendar";
 import { DateRange } from "@mui/x-date-pickers-pro/models";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import dayjs, { Dayjs } from "dayjs";
 import { useContext, useState } from "react";
+import CalendarGeneric from "src/components/CalendarGenericForm";
 import { AuthContext } from "../../../context";
 import { AuthContextValue } from "../../../interfaces/auth.context.value";
 import { formatDate } from "../../../utils/formatDate";
@@ -62,7 +58,12 @@ function BookDetail() {
       endAt,
     };
 
-    onSubmit({...inputForm, name:user!.name, title:book!.title, email: user!.email});
+    onSubmit({
+      ...inputForm,
+      name: user!.name,
+      title: book!.title,
+      email: user!.email,
+    });
   };
 
   if (isPending) {
@@ -166,29 +167,14 @@ function BookDetail() {
                   {truncateDescription(book.description, 100)}
                 </Typography>
               </Box>
-
-              <Box sx={{ width: "60%" }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DateRangeCalendar"]}>
-                    <DateRangeCalendar
-                      value={dateRange}
-                      onChange={(newValue) => setDateRange(newValue)}
-                      shouldDisableDate={shouldDisableDate}
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
-                {user && (
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                    onClick={handleclick}
-                  >
-                    Réserver
-                  </Button>
-                )}
-              </Box>
+              <CalendarGeneric
+                value={dateRange}
+                onChange={(newValue) => setDateRange(newValue)}
+                shouldDisableDate={shouldDisableDate}
+                onActionClick={handleclick}
+                actionLabel="Réserver"
+                user={user ? true : false}
+              />
             </Box>
           </CardContent>
         </Card>

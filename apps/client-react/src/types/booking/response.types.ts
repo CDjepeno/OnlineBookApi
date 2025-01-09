@@ -8,6 +8,7 @@ export type BookingBookResponse = {
 }
 
 export type GetBookingUserResponse = {
+  bookingId: number;
   bookId: number;
   name: string;
   coverUrl: string;
@@ -22,4 +23,8 @@ export type GetBookingUserPaginationResponse = {
       currentPage: number,
       totalPages: number,
     },
+}
+
+export type UpdateBookingUserResponse = {
+  msg: string;
 }

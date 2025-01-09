@@ -1,13 +1,21 @@
-import { BookingBookFormType } from "src/types/booking/form.types";
+import {
+  BookingBookFormType,
+  UpdateBookingUserFormType,
+} from "src/types/booking/form.types";
+import {
+  BookingBookResponse,
+  GetBookingsBookResponse,
+  GetBookingUserPaginationResponse,
+  UpdateBookingUserResponse,
+} from "src/types/booking/response.types";
 import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useApiRequest";
 import {
   BOOKING_BOOK_ROUTE,
   GET_BOOKINGS_BOOK_ROUTE,
   GET_BOOKINGS_USER_ROUTE,
+  UPDATE_BOOKING_USER_ROUTE,
 } from "../request/route-http/route-http";
-import { BookingBookResponse, GetBookingsBookResponse, GetBookingUserPaginationResponse } from "src/types/booking/response.types";
-
 
 export const getBookingsBook = async (
   id: string
@@ -34,12 +42,26 @@ export const BookingBook = async (
 export const GetBookingsUser = async (
   id: string,
   page: number,
-  limit: number,
+  limit: number
 ): Promise<GetBookingUserPaginationResponse> => {
   return await UseRequestApi<GetBookingUserPaginationResponse, { id: string }>({
     path: `${GET_BOOKINGS_USER_ROUTE}/${id}?page=${page}?limit=${limit}`,
     method: MethodHttpEnum.GET,
     params: { id },
+    includeAuthorizationHeader: true,
+  });
+};
+
+export const UpdateBookingUser = async (
+  updatedBookinkUser: UpdateBookingUserFormType
+): Promise<UpdateBookingUserResponse> => {
+  return await UseRequestApi<
+    UpdateBookingUserResponse,
+    UpdateBookingUserFormType 
+  >({
+    path: UPDATE_BOOKING_USER_ROUTE,
+    method: MethodHttpEnum.PUT,
+    params: updatedBookinkUser,
     includeAuthorizationHeader: true,
   });
 };

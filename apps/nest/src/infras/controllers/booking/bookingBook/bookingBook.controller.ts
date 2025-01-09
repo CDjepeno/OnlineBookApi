@@ -44,8 +44,6 @@ export class BookingBookController {
     } catch (error) {
       console.error('Error occurred while booking book:', typeof error);
       if (error instanceof BadRequestException || error instanceof ConflictException) {
-        console.log("BadRequestException !!!!!!!!!!!");
-        
         throw error;
       }
      

@@ -77,6 +77,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       .leftJoinAndSelect('booking.book', 'book')
       .where('booking.userId = :userId', { userId })
       .select([
+        'booking.id AS bookingId',
         'book.id AS bookId',
         'book.title AS title',
         'book.coverUrl AS coverUrl',
@@ -86,16 +87,16 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       .skip(skip)
       .take(take)
       .getRawMany();
-
-    console.log(raw);
-
-    const bookings: GetBookingUserResponse[] = raw.map((booking) => ({
-      BookId: booking.bookId,
-      title: booking.name,
-      coverUrl: booking.coverUrl,
-      startAt: booking.startAt,
-      endAt: booking.endAt,
-    }));
+      
+      const bookings: GetBookingUserResponse[] = raw.map((booking) => ({
+        bookingId: booking.bookingId,
+        BookId: booking.bookId,
+        title: booking.name,
+        coverUrl: booking.coverUrl,
+        startAt: booking.startAt,
+        endAt: booking.endAt,
+      }));
+      console.log(bookings);
 
     const totalBooks = await this.repository
       .createQueryBuilder('booking')
