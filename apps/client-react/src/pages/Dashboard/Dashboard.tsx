@@ -49,6 +49,12 @@ export default function Dashboard() {
   }));
 
   const shouldDisableDate = (date: Dayjs) => {
+    // Désactiver les dates avant aujourd'hui
+    const today = dayjs();
+    if (date.isBefore(today, "day")) {
+      return true;
+    }
+
     if (!bookings) {
       return false;
     }
@@ -77,7 +83,7 @@ export default function Dashboard() {
     setbookingId(bookingId);
     setOpenBookingId(bookingId);
   };
-  
+
   const handleDialogClose = () => {
     setbookingId(null);
     setOpenBookingId(null);
@@ -86,12 +92,10 @@ export default function Dashboard() {
   const deleteBookingConfirmation = async () => {
     try {
       await deleteBookingMutation(openBookingId!);
-      handleDialogClose()
+      handleDialogClose();
     } catch (error) {
       console.error(error);
-      
     }
-    
   };
 
   const headCells = [

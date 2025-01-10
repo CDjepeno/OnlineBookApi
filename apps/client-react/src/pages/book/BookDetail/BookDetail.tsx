@@ -30,6 +30,12 @@ function BookDetail() {
   }));
 
   const shouldDisableDate = (date: Dayjs) => {
+    // Désactiver les dates avant aujourd'hui
+    const today = dayjs();
+    if (date.isBefore(today, "day")) {
+      return true;
+    }
+
     if (!bookings) {
       return false;
     }
