@@ -16,4 +16,5 @@ export interface BookingRepository {
   Order(bookReserved: BookingBookRequest): Promise<BookingBookResponse>;
   updateBookingUser(updateBooking: UpdateBookingUserRequest): Promise<UpdateBookingUserResponse>;
   deleteBooking(id: number): Promise<void>;
+  deleteBookings(id: Array<string>): Promise<void>;
 }

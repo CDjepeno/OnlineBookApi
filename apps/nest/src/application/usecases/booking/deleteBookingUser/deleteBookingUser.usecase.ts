@@ -6,6 +6,6 @@ export class DeleteBookingUserUsecase {
 
   async execute(id: number): Promise<DeleteBookingUserResponse> {
     await this.bookingRepository.deleteBooking(id);
-    return {msg:`Le livre a bien été supprimé.`};
+    return {msg:`La réservation a bien été supprimé.`};
   }
 }

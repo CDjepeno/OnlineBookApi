@@ -1,34 +1,35 @@
 import { AddBookUseCase } from 'src/application/usecases/book/addBook/addBook.usecase';
 import { DeleteBookUsecase } from 'src/application/usecases/book/deleteBook/deleteBook.usecase';
+import { DeleteBooksUsecase } from 'src/application/usecases/book/deleteBooks/deleteBooks.usecase';
 import { GetAllBookUsecase } from 'src/application/usecases/book/getAllBook/getAllBook.usecase';
 import { GetBookUsecase } from 'src/application/usecases/book/getBook/getBook.usecase';
 import { GetBookByNameUsecase } from 'src/application/usecases/book/getBookByName/getBookByName.usecase';
 import { GetBooksByUserUsecase } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.usecase';
 import { UpdateBookUseCase } from 'src/application/usecases/book/updateBook/updateBook.usecase';
 import { BookingBookUseCase } from 'src/application/usecases/booking/bookingBook/bookingBook.usecase';
+import { DeleteBookingsUserUsecase } from 'src/application/usecases/booking/deleteBookingssUser/deleteBookingsUser.usecase';
+import { DeleteBookingUserUsecase } from 'src/application/usecases/booking/deleteBookingUser/deleteBookingUser.usecase';
 import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsBook.usecase';
 import { GetBookingsUserUseCase } from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.usecase';
+import { UpdateBookingUserUseCase } from 'src/application/usecases/booking/updateBooking/updateBookingUser.usecase';
 import { ContactUseCase } from 'src/application/usecases/contact/contact.usecase';
-import { GetUserByIdUseCase } from 'src/application/usecases/user/GetUserById/get.user_by_id.usecase';
 import { AddUserUseCase } from 'src/application/usecases/user/adduser/add.user.usecase';
 import { GetCurrentUserUseCase } from 'src/application/usecases/user/auth/GetCurrentUser/get.current.user.usecase';
 import { LoginUserUseCase } from 'src/application/usecases/user/auth/login/login.user.usecase';
 import { LogoutUserUseCase } from 'src/application/usecases/user/auth/logout/logout.user.usecase';
 import { RefreshTokenUseCase } from 'src/application/usecases/user/auth/refreshToken/refresh.token.usecase';
+import { GetUserByIdUseCase } from 'src/application/usecases/user/GetUserById/get.user_by_id.usecase';
 import { UpdateUserUseCase } from 'src/application/usecases/user/updateUser/update.user.usecase';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { ConsumerKafkajsClient } from '../clients/kafka/consumer.client';
 import { ProducerKafkaClient } from '../clients/kafka/producer.client';
+import { SocketClient } from '../clients/socket/socket.client';
 import { BookRepositoryTypeorm } from '../services/book.repository.typeorm';
 import { BookingRepositoryTypeorm } from '../services/booking.repository.typeorm';
 import { ContactRepositoryTypeorm } from '../services/contact.repository.typeorm';
 import { UserRepositoryTypeorm } from '../services/user.repository.typeorm';
 import { UseCaseProxy } from './usecase-proxy';
-import { SocketClient } from '../clients/socket/socket.client';
-import { DeleteBooksUsecase } from 'src/application/usecases/book/deleteBooks/deleteBooks.usecase';
-import { UpdateBookingUserUseCase } from 'src/application/usecases/booking/updateBooking/updateBookingUser.usecase';
-import { DeleteBookingUserUsecase } from 'src/application/usecases/booking/deleteBookingUser/deleteBookingUser.usecase';
 
 export enum UsecaseProxyEnum {
   CREATE_USER_USECASE_PROXY = 'createUserUsecaseProxy',
@@ -53,7 +54,7 @@ export enum UsecaseProxyEnum {
   GET_BOOKINGS_USER_USECASE_PROXY = 'getBookingUserUsecaseProxy',
   UPDATE_BOOKING_USER_USECASE_PROXY = 'updateBookingUserUsecaseProxy',
   DELETE_BOOKING_USER_USECASE_PROXY = 'deleteBookingUserUsecaseProxy',
-
+  DELETE_BOOKINGS_USER_USECASE_PROXY = 'deleteBookingsUserUsecaseProxy',
 
   CONTACT_USECASE_PROXY = 'contactUseCaseProxy',
 }
@@ -154,9 +155,8 @@ export const useCasesConfig = [
   {
     inject: [BookRepositoryTypeorm],
     provide: UsecaseProxyEnum.DELETE_BOOKS_USECASE_PROXY,
-    useFactory: (
-      bookRepository: BookRepositoryTypeorm,
-    ) => new UseCaseProxy(new DeleteBooksUsecase(bookRepository)),
+    useFactory: (bookRepository: BookRepositoryTypeorm) =>
+      new UseCaseProxy(new DeleteBooksUsecase(bookRepository)),
   },
 
   // -------------------------------- BOOKING -------------------------------------
@@ -166,7 +166,7 @@ export const useCasesConfig = [
       ProducerKafkaClient,
       ConsumerKafkajsClient,
       NodemailerClient,
-      SocketClient
+      SocketClient,
     ],
     provide: UsecaseProxyEnum.BOOKING_BOOK_USECASE_PROXY,
     useFactory: (
@@ -182,7 +182,7 @@ export const useCasesConfig = [
           producerKafkaClient,
           consumerKafkaClient,
           nodeMailerClient,
-          socketClient
+          socketClient,
         ),
       ),
   },
@@ -209,6 +209,12 @@ export const useCasesConfig = [
     provide: UsecaseProxyEnum.DELETE_BOOKING_USER_USECASE_PROXY,
     useFactory: (deleteBookingRepository: BookingRepositoryTypeorm) =>
       new UseCaseProxy(new DeleteBookingUserUsecase(deleteBookingRepository)),
+  },
+  {
+    inject: [BookingRepositoryTypeorm],
+    provide: UsecaseProxyEnum.DELETE_BOOKINGS_USER_USECASE_PROXY,
+    useFactory: (deleteBookingsRepository: BookingRepositoryTypeorm) =>
+      new UseCaseProxy(new DeleteBookingsUserUsecase(deleteBookingsRepository)),
   },
   // -------------------------------- CONTACT -------------------------------------
   {

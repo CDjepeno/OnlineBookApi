@@ -19,11 +19,9 @@ export class DeleteBooksController {
   @ApiOperation({
     summary: 'Delete several Books',
   })
-  async deleteBooks(@Body() ids: DeleteBooksDto): Promise<{ message: string }> {
+  async deleteBooks(@Body() ids: DeleteBooksDto): Promise<void> {
     try {
       await this.deleteBooksUsecaseProxy.getInstance().execute(ids.ids);
-      return { message: `Les livres on bien été supprimé.` };
-      
     } catch (error) {
       Logger.error(error);
       throw new InternalServerErrorException()

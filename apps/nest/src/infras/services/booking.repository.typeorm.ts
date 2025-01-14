@@ -1,4 +1,9 @@
-import { BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookingBookRequest } from 'src/application/usecases/booking/bookingBook/bookingBook.request';
 import { BookingBookResponse } from 'src/application/usecases/booking/bookingBook/bookingBook.response';
@@ -87,28 +92,28 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       .skip(skip)
       .take(take)
       .getRawMany();
-      
-      // Calcul de hasFuturReservation pour chaque réservation
-  const bookings: GetBookingUserResponse[] = await Promise.all(
-    raw.map(async (booking) => {
-      // Vérification des futures réservations pour ce livre
-      const hasFuturReservation = await this.repository
-        .createQueryBuilder('futurBooking')
-        .where('futurBooking.bookId = :bookId', { bookId: booking.bookId })
-        .andWhere('futurBooking.startAt > CURRENT_TIMESTAMP') // Réservations futures uniquement
-        .getCount();
 
-      return {
-        bookingId: booking.bookingId,
-        BookId: booking.bookId,
-        title: booking.title,
-        coverUrl: booking.coverUrl,
-        startAt: booking.startAt,
-        endAt: booking.endAt,
-        hasFuturReservations: hasFuturReservation > 0, // Retourne true si des réservations futures existent
-      };
-    })
-  );
+    // Calcul de hasFuturReservation pour chaque réservation
+    const bookings: GetBookingUserResponse[] = await Promise.all(
+      raw.map(async (booking) => {
+        // Vérification des futures réservations pour ce livre
+        const hasFuturReservation = await this.repository
+          .createQueryBuilder('futurBooking')
+          .where('futurBooking.bookId = :bookId', { bookId: booking.bookId })
+          .andWhere('futurBooking.startAt > CURRENT_TIMESTAMP') // Réservations futures uniquement
+          .getCount();
+
+        return {
+          bookingId: booking.bookingId,
+          BookId: booking.bookId,
+          title: booking.title,
+          coverUrl: booking.coverUrl,
+          startAt: booking.startAt,
+          endAt: booking.endAt,
+          hasFuturReservations: hasFuturReservation > 0, // Retourne true si des réservations futures existent
+        };
+      }),
+    );
 
     const totalBooks = await this.repository
       .createQueryBuilder('booking')
@@ -140,20 +145,48 @@ export class BookingRepositoryTypeorm implements BookingRepository {
   }
 
   async deleteBooking(id: number): Promise<void> {
-     try {
-          const result = await this.repository.delete(id);
-          if (result.affected === 0) {
-            throw new NotFoundException(`Aucune réservation trouvé avec l'id "${id}"`);
-          }
-        } catch (error) {
-          if (error instanceof QueryFailedError) {
-            throw new BadRequestException(
-              'Impossible de supprimer la réservation : elle est référencé par d\'autres entités.',
-            );
-          }
-          throw new InternalServerErrorException(
-            'Impossible de supprimer le livre.',
+    try {
+      const result = await this.repository.delete(id);
+      if (result.affected === 0) {
+        throw new NotFoundException(
+          `Aucune réservation trouvé avec l'id "${id}"`,
+        );
+      }
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new BadRequestException(
+          "Impossible de supprimer la réservation : elle est référencé par d'autres entités.",
+        );
+      }
+      throw new InternalServerErrorException(
+        'Impossible de supprimer le livre.',
+      );
+    }
+  }
+
+  async deleteBookings(ids: Array<string>): Promise<void> {
+    try {
+      const deletionPromises = ids.map((id) => this.repository.delete(id));
+
+      const results = await Promise.all(deletionPromises);
+
+      results.forEach((result, index) => {
+        if (result.affected === 0) {
+          throw new NotFoundException(
+            `Aucune réservation trouvé avec l'id "${ids[index]}"`,
           );
         }
+      });
+    } catch (error) {
+      Logger.log(error);
+      if (error instanceof QueryFailedError) {
+        throw new BadRequestException(
+          'Impossible de supprimer les reservation : il est référencé par d’autres entités.',
+        );
+      }
+      throw new InternalServerErrorException(
+        'Impossible de supprimer les reservations.',
+      );
+    }
   }
 }
