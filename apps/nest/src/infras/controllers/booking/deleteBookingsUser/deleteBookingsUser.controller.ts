@@ -32,8 +32,6 @@ export class DeleteBookingsController {
     @Body() data: DeleteBookingsDto,
   ): Promise<DeleteBookingsUserResponse> {
     try {
-      console.log(typeof data.ids[0]);
-      
       return await this.deleteBookingsUserUsecaseProxy
         .getInstance()
         .execute(data.ids);

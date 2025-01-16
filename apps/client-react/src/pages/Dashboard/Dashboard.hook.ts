@@ -5,6 +5,7 @@ import { UseQueryWorkflowCallback } from "src/request/commons/useQueryWorkflowCa
 import { ErrorResponse } from "src/types/book/response.types";
 import { UpdateBookingUserFormType } from "src/types/booking/form.types";
 import {
+  DeleteBookingsUserResponse,
   DeleteBookingUserResponse,
   UpdateBookingUserResponse,
 } from "src/types/booking/response.types";
@@ -12,6 +13,7 @@ import { AuthContext } from "../../context";
 import { BookingsQueriesKeysEnum } from "../../enum/enum";
 import { AuthContextValue } from "../../interfaces/auth.context.value";
 import {
+  DeleteBookingsUser,
   DeleteBookingUser,
   GetBookingsUser,
   UpdateBookingUser,
@@ -101,6 +103,39 @@ function DashboardHook(page: number, limit: number) {
     },
   });
 
+  const { mutateAsync: deleteBookingsMutation } = useMutation<
+    DeleteBookingsUserResponse,
+    AxiosError<unknown>,
+    number[]
+  >({
+    mutationFn: async (id: number[]) => DeleteBookingsUser(id),
+
+    onSuccess: async (res) => {
+      onSuccessCommon(res.msg);
+      queryClient.invalidateQueries({
+        queryKey: [BookingsQueriesKeysEnum.GetBookingsUser],
+      });
+    },
+
+    onError: (error: Error | AxiosError<unknown>) => {
+      let errorMessage =
+        "Une erreur est survenue lors de la suppression de la reservation";
+
+      if ((error as AxiosError<unknown>).isAxiosError) {
+        if (
+          (error as AxiosError).response &&
+          (error as AxiosError).response!.data &&
+          ((error as AxiosError).response!.data as ErrorResponse)
+        ) {
+          errorMessage = ((error as AxiosError).response!.data as ErrorResponse)
+            .message;
+        }
+      }
+
+      onErrorCommon(errorMessage);
+    },
+  });
+
   return {
     bookingsUser,
     isPending,
@@ -108,6 +143,7 @@ function DashboardHook(page: number, limit: number) {
     totalPages,
     updateBookingMutation,
     deleteBookingMutation,
+    deleteBookingsMutation
   };
 }
 

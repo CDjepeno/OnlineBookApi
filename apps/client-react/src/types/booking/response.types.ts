@@ -10,7 +10,7 @@ export type BookingBookResponse = {
 export type GetBookingUserResponse = {
   bookingId: number;
   bookId: number;
-  name: string;
+  title: string;
   coverUrl: string;
   startAt: string;
   endAt: string;
@@ -31,5 +31,9 @@ export type UpdateBookingUserResponse = {
 }
 
 export type DeleteBookingUserResponse = {
+  msg: string;
+}
+
+export type DeleteBookingsUserResponse = {
   msg: string;
 }

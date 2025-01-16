@@ -3,6 +3,7 @@ import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import {
   Box,
   Button,
+  Checkbox,
   Container,
   Dialog,
   DialogActions,
@@ -12,6 +13,7 @@ import {
   IconButton,
   Modal,
   Pagination,
+  Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -33,6 +35,9 @@ export default function Dashboard() {
   const [dateRange, setDateRange] = useState<DateRange<Dayjs>>([null, null]);
   const [bookingId, setbookingId] = useState<number | null>(null);
   const [openBookingId, setOpenBookingId] = useState<number | null>(null);
+  const [selectedBookingsIds, setSelectedBookingsIds] = useState<number[]>([]);
+  const [isBulkDelete, setIsBulkDelete] = useState(false);
+  const [openBookingTitle, setOpenBookingTitle] = useState("");
 
   const limit = 6;
 
@@ -41,6 +46,7 @@ export default function Dashboard() {
     totalPages,
     updateBookingMutation,
     deleteBookingMutation,
+    deleteBookingsMutation
   } = DashboardHook(currentPage, limit);
 
   const bookings = bookingsUser?.map((booking) => ({
@@ -79,26 +85,75 @@ export default function Dashboard() {
     setCurrentPage(page);
   };
 
-  const handleDialogOpen = (bookingId: number) => {
-    setbookingId(bookingId);
+  const handleDialogOpen = (bookingId: number, title: string) => {
+    setOpenBookingTitle(title);
     setOpenBookingId(bookingId);
   };
 
   const handleDialogClose = () => {
-    setbookingId(null);
+    setOpenBookingId(null);
+    setIsBulkDelete(false)
+  };
+
+  const handleBulkDeleteDialogOpen = () => {
+    setIsBulkDelete(true);
+    setOpenBookingId(null); // Pas d'ID spécifique pour une suppression multiple
+  };
+
+  const handleBulkDeleteDialogClose = () => {
+    setIsBulkDelete(false);
     setOpenBookingId(null);
   };
 
-  const deleteBookingConfirmation = async () => {
+  const toggleSelectAllBookings = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.checked) {
+      // Sélectionne tous les livres disponibles
+      const allSelectableBookIds =
+        bookingsUser?.map((bookingUser) => bookingUser.bookingId) || [];
+        setSelectedBookingsIds(allSelectableBookIds);
+    } else {
+      // Désélectionne tous les livres
+      setSelectedBookingsIds([]);
+    }
+  };
+
+  const isAllSelected =
+    bookingsUser &&
+    bookingsUser.length > 0 &&
+    selectedBookingsIds.length ===
+      bookingsUser!.map((bookingUser) => !bookingUser.bookingId).length;
+
+  const isIndeterminate = selectedBookingsIds.length > 0 && !isAllSelected;
+
+  const toggleSelectBooking = (id: number) => {
+    setSelectedBookingsIds((prev) =>
+      prev.includes(id) ? prev.filter((bookId) => bookId !== id) : [...prev, id]
+    );
+  };
+
+  const deleteBookingsConfirmation = async () => {
     try {
-      await deleteBookingMutation(openBookingId!);
-      handleDialogClose();
+      if (isBulkDelete) {
+        // Suppression en masse
+        await deleteBookingsMutation(selectedBookingsIds);
+      } else if (openBookingId !== null) {
+        // Suppression individuelle
+        await deleteBookingMutation(openBookingId!);
+      }
+      handleDialogClose(); 
     } catch (error) {
-      console.error(error);
+      console.error("Error during deletion:", error);
     }
   };
 
   const headCells = [
+    <Checkbox
+      onChange={toggleSelectAllBookings}
+      checked={isAllSelected}
+      indeterminate={isIndeterminate}
+    />,
     "Name",
     "Couverture",
     "Date de début",
@@ -109,7 +164,12 @@ export default function Dashboard() {
   const rows =
     bookingsUser?.map((bookingUser) => ({
       cells: [
-        bookingUser.name,
+        <Checkbox
+          checked={selectedBookingsIds.includes(bookingUser.bookingId)}
+          onChange={() => toggleSelectBooking(bookingUser.bookingId)}
+          // disabled={bookingUser.hasFuturReservations} // Désactiver si la suppression est impossible
+        />,
+        bookingUser.title,
         <img
           src={bookingUser.coverUrl}
           alt="couverture du book"
@@ -117,7 +177,7 @@ export default function Dashboard() {
         />,
         formatDate(bookingUser.startAt),
         formatDate(bookingUser.endAt),
-        <>
+        <Stack direction="row" justifyContent="start">
           <IconButton
             aria-label="edit"
             onClick={() => editUser(bookingUser.bookingId)}
@@ -135,17 +195,16 @@ export default function Dashboard() {
           >
             <span>
               <IconButton
-                onClick={() => handleDialogOpen(bookingUser.bookingId)}
+                onClick={() => handleDialogOpen(bookingUser.bookingId, bookingUser.title)}
                 aria-label="delete"
-                disabled={bookingUser.hasFuturReservations}
               >
                 <DeleteTwoToneIcon />
               </IconButton>
             </span>
           </Tooltip>
           <Dialog
-            open={openBookingId !== null}
-            onClose={handleDialogClose}
+            open={isBulkDelete || openBookingId !== null}
+            onClose={handleBulkDeleteDialogClose}
             aria-labelledby="delete-dialog-title"
             aria-describedby="delete-dialog-description"
           >
@@ -154,16 +213,17 @@ export default function Dashboard() {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="delete-dialog-description">
-                `Êtes-vous sûr de vouloir supprimer ${bookingUser.name} ? Cette
-                action est irréversible.`
+              {isBulkDelete
+                  ? `Êtes-vous sûr de vouloir supprimer les ${selectedBookingsIds.length} livres sélectionnés ? Cette action est irréversible.`
+                  : `Êtes-vous sûr de vouloir supprimer ${openBookingTitle} ? Cette action est irréversible.`}
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleDialogClose} color="primary">
+              <Button onClick={handleBulkDeleteDialogClose} color="primary">
                 Annuler
               </Button>
               <Button
-                onClick={deleteBookingConfirmation}
+                onClick={deleteBookingsConfirmation}
                 color="error"
                 autoFocus
               >
@@ -171,7 +231,7 @@ export default function Dashboard() {
               </Button>
             </DialogActions>
           </Dialog>
-        </>,
+        </Stack>,
       ],
     })) || [];
 
@@ -197,11 +257,22 @@ export default function Dashboard() {
     setIsFormUpdateBookingUserOpen(false);
   };
 
+
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">
       <Typography component="h1" variant="h5" mb="30px">
         Réservation de {user?.name}
       </Typography>
+      <div>
+        <Button
+          onClick={handleBulkDeleteDialogOpen}
+          color="error"
+          variant="contained"
+          disabled={selectedBookingsIds.length === 0} // Désactiver si aucune sélection
+        >
+          Supprimer les réservations sélectionnés
+        </Button>
+      </div>
       <TableList headCells={headCells} rows={rows} />
       <Modal
         open={isFormUpdateBookingUserOpen}

@@ -77,25 +77,27 @@ export class BookingRepositoryTypeorm implements BookingRepository {
     const take = limit > 0 ? limit : 6;
     const skip = currentPage * take;
 
-    const raw = await this.repository
-      .createQueryBuilder('booking')
-      .leftJoinAndSelect('booking.book', 'book')
-      .where('booking.userId = :userId', { userId })
-      .select([
-        'booking.id AS bookingId',
-        'book.id AS bookId',
-        'book.title AS title',
-        'book.coverUrl AS coverUrl',
-        'booking.startAt AS startAt',
-        'booking.endAt AS endAt',
-      ])
-      .skip(skip)
-      .take(take)
-      .getRawMany();
+    const raw = await this.repository.query(
+      `
+    SELECT 
+      booking.id AS bookingId,
+      book.id AS bookId,
+      book.title AS title,
+      book.coverUrl AS coverUrl,
+      booking.startAt AS startAt,
+      booking.endAt AS endAt
+    FROM booking
+    LEFT JOIN book ON booking.bookId = book.id
+    WHERE booking.userId = ?
+    ORDER BY booking.startAt ASC
+    LIMIT ${take} OFFSET ${skip}
+  `,
+      [userId],
+    );
 
     // Calcul de hasFuturReservation pour chaque réservation
     const bookings: GetBookingUserResponse[] = await Promise.all(
-      raw.map(async (booking) => {
+      raw.map(async (booking: GetBookingUserResponse) => {
         // Vérification des futures réservations pour ce livre
         const hasFuturReservation = await this.repository
           .createQueryBuilder('futurBooking')

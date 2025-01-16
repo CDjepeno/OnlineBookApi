@@ -97,6 +97,7 @@ function ProfileHook(page: number, limit: number) {
 
 
   const books = booksPagination?.books;
+  const totalPage = booksPagination?.pagination.totalPages;
 
   return {
     books,
@@ -107,6 +108,7 @@ function ProfileHook(page: number, limit: number) {
     user,
     isPendingUser,
     errorUser,
+    totalPage
   };
 }
 

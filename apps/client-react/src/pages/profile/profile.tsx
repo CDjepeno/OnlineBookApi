@@ -46,6 +46,7 @@ export default function Profile() {
     deleteBookMutation,
     user,
     deleteBooksMutation,
+    totalPage 
   } = ProfileHook(currentPage, limit);
 
   const [book, setBook] = useState<BookForm>({
@@ -149,14 +150,14 @@ export default function Profile() {
         books
           ?.filter((book) => !book.hasFuturReservations)
           .map((book) => book.id) || [];
-      setSelectedBookIds(allSelectableBookIds);
+      setSelectedBookIds(allSelectableBookIds);   
     } else {
       // Désélectionne tous les livres
       setSelectedBookIds([]);
     }
   };
 
-  const isAllSelected =
+  const isAllSelected =  
     books && books.length > 0 &&
     selectedBookIds.length ===
       books!.filter((book) => !book.hasFuturReservations).length;
@@ -351,7 +352,7 @@ export default function Profile() {
         }}
       >
         <Pagination
-          count={2}
+          count={totalPage}
           page={currentPage}
           onChange={handlePageChange}
           color="primary"

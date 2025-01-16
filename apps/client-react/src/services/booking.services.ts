@@ -4,6 +4,8 @@ import {
 } from "src/types/booking/form.types";
 import {
   BookingBookResponse,
+  DeleteBookingsUserResponse,
+  DeleteBookingUserResponse,
   GetBookingsBookResponse,
   GetBookingUserPaginationResponse,
   UpdateBookingUserResponse,
@@ -13,6 +15,7 @@ import { UseRequestApi } from "../request/commons/useApiRequest";
 import {
   BOOKING_BOOK_ROUTE,
   DELETE_BOOKING_USER_ROUTE,
+  DELETE_BOOKINGS_USER_ROUTE,
   GET_BOOKINGS_BOOK_ROUTE,
   GET_BOOKINGS_USER_ROUTE,
   UPDATE_BOOKING_USER_ROUTE,
@@ -69,11 +72,22 @@ export const UpdateBookingUser = async (
 
 export const DeleteBookingUser = async (
   id: number
-): Promise<UpdateBookingUserResponse> => {
+): Promise<DeleteBookingUserResponse> => {
   return await UseRequestApi<UpdateBookingUserResponse, { id: number }>({
     path: `${DELETE_BOOKING_USER_ROUTE}/${id}`,
     method: MethodHttpEnum.DELETE,
     params: { id },
+    includeAuthorizationHeader: true,
+  });
+};
+
+export const DeleteBookingsUser = async (
+  ids: number[]
+): Promise<DeleteBookingsUserResponse> => {
+  return await UseRequestApi<DeleteBookingsUserResponse, { ids: number[] }>({
+    path: DELETE_BOOKINGS_USER_ROUTE,
+    method: MethodHttpEnum.DELETE,
+    params: { ids },
     includeAuthorizationHeader: true,
   });
 };
