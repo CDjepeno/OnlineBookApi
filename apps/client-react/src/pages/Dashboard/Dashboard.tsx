@@ -46,7 +46,7 @@ export default function Dashboard() {
     totalPages,
     updateBookingMutation,
     deleteBookingMutation,
-    deleteBookingsMutation
+    deleteBookingsMutation,
   } = DashboardHook(currentPage, limit);
 
   const bookings = bookingsUser?.map((booking) => ({
@@ -92,7 +92,7 @@ export default function Dashboard() {
 
   const handleDialogClose = () => {
     setOpenBookingId(null);
-    setIsBulkDelete(false)
+    setIsBulkDelete(false);
   };
 
   const handleBulkDeleteDialogOpen = () => {
@@ -102,6 +102,7 @@ export default function Dashboard() {
 
   const handleBulkDeleteDialogClose = () => {
     setIsBulkDelete(false);
+    setSelectedBookingsIds([]);
     setOpenBookingId(null);
   };
 
@@ -112,7 +113,7 @@ export default function Dashboard() {
       // Sélectionne tous les livres disponibles
       const allSelectableBookIds =
         bookingsUser?.map((bookingUser) => bookingUser.bookingId) || [];
-        setSelectedBookingsIds(allSelectableBookIds);
+      setSelectedBookingsIds(allSelectableBookIds);
     } else {
       // Désélectionne tous les livres
       setSelectedBookingsIds([]);
@@ -138,11 +139,12 @@ export default function Dashboard() {
       if (isBulkDelete) {
         // Suppression en masse
         await deleteBookingsMutation(selectedBookingsIds);
+        setSelectedBookingsIds([]);
       } else if (openBookingId !== null) {
         // Suppression individuelle
         await deleteBookingMutation(openBookingId!);
       }
-      handleDialogClose(); 
+      handleDialogClose();
     } catch (error) {
       console.error("Error during deletion:", error);
     }
@@ -195,7 +197,9 @@ export default function Dashboard() {
           >
             <span>
               <IconButton
-                onClick={() => handleDialogOpen(bookingUser.bookingId, bookingUser.title)}
+                onClick={() =>
+                  handleDialogOpen(bookingUser.bookingId, bookingUser.title)
+                }
                 aria-label="delete"
               >
                 <DeleteTwoToneIcon />
@@ -213,9 +217,9 @@ export default function Dashboard() {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="delete-dialog-description">
-              {isBulkDelete
-                  ? `Êtes-vous sûr de vouloir supprimer les ${selectedBookingsIds.length} livres sélectionnés ? Cette action est irréversible.`
-                  : `Êtes-vous sûr de vouloir supprimer ${openBookingTitle} ? Cette action est irréversible.`}
+                {isBulkDelete
+                  ? `Êtes-vous sûr de vouloir supprimer les ${selectedBookingsIds.length} réservations sélectionnés ? Cette action est irréversible.`
+                  : `Êtes-vous sûr de vouloir supprimer la réservation du livre ${openBookingTitle} ? Cette action est irréversible.`}
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -256,7 +260,6 @@ export default function Dashboard() {
     updateBookingMutation(inputForm);
     setIsFormUpdateBookingUserOpen(false);
   };
-
 
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">
