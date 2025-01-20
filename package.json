@@ -9,7 +9,7 @@
   "scripts": {
     "lint:nest": "cd apps/nest && npm run lint",
     "lint:react": "cd apps/client-react && npm run lint",
-    "test": "npm run lint-frontend && npm run lint-backend",
+    "test": "npm run lint:react && npm run lint:nest",
     "prepare": "husky install",
     "build:react": "cd apps/client-react && npm run build",
     "build:nest": "cd apps/nest && npm run build",
