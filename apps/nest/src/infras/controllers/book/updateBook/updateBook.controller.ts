@@ -48,7 +48,6 @@ export class UpdateBookController {
       if (!coverFile && !updateBookDto.coverUrl) {
         throw new BadRequestException('Cover file is required');
       }
-
       const result = await this.updateUsecaseProxy
         .getInstance()
         .execute({ ...updateBookDto, id, coverUrl: coverFile });
@@ -64,6 +63,7 @@ export class UpdateBookController {
       };
     } catch (error) {
       console.error('Error occurred while updating book:', error);
+      console.log('error', error);
 
       if (error instanceof badrequestexception) {
         throw new badrequestexception(error.message);

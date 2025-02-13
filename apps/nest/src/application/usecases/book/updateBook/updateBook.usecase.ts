@@ -13,6 +13,7 @@ export class UpdateBookUseCase {
 
   async execute(request: UpdateBookRequest): Promise<UpdateBookResponse> {
     try {
+      
       const existingBook = await this.bookRepository.getBook(request.id);
 
       if (!existingBook) {
@@ -30,6 +31,7 @@ export class UpdateBookUseCase {
         request.description ?? existingBook.description,
         request.author ?? existingBook.author,
         request.releaseAt ?? existingBook.releaseAt,
+        // request.coverUrl ?? existingBook.coverUrl,
         coverUrl,
         request.userId,
       );

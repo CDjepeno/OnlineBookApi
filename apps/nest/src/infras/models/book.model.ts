@@ -31,7 +31,7 @@ export class Book {
   @IsDateFormat()
   releaseAt: Date;
 
-  @Column()
+  @Column({ length: 512 })
   @IsString()
   coverUrl: string;
 
