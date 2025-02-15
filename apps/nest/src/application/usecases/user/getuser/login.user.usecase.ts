@@ -1,4 +1,4 @@
-import { UsersRepository } from 'src/domaine/repositories/user.repository';
+import { UsersRepository } from 'src/repositories/user.repository';
 import { LoginUserRequest } from './login.user.request';
 import { LoginUserResponse } from './login.user.response';
 

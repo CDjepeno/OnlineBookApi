@@ -13,7 +13,7 @@ import { CurrentUserResponse } from 'src/application/usecases/user/auth/current.
 import { LoginUserRequest } from 'src/application/usecases/user/getuser/login.user.request';
 import { LoginUserResponse } from 'src/application/usecases/user/getuser/login.user.response';
 import { Repository } from 'typeorm';
-import { UsersRepository } from '../../domaine/repositories/user.repository';
+import { UsersRepository } from '../../repositories/user.repository';
 import { User } from '../models/user.model';
 
 @Injectable()
