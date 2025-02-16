@@ -1,5 +1,5 @@
 import { NotFoundError } from 'src/domaine/errors/book.error';
-import { BookRepository } from 'src/domaine/repositories/book.repository';
+import { BookRepository } from 'src/repositories/book.repository';
 import { GetBooksByUserResponse } from './getBooksByUser.response';
 
 export class GetBooksByUserUsecase {
