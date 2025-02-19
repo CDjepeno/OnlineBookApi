@@ -18,9 +18,10 @@ services:
       DATABASE_NAME: ${DB_NAME}
       NODE_ENV: development
       KAFKA_BROKER: kafka:9094
-    user: "${UID}:${GID}"
     depends_on:
       - db
+    networks:
+      - onelineBook_network
   ############################# Frontend REACTJS
   frontend:
     build:
@@ -35,9 +36,11 @@ services:
     environment:
       NODE_ENV: development 
     command: npm run dev 
+    networks:
+      - onelineBook_network
   ############################# Database MYSQL
   db:
-    image: mysql
+    image: mysql:8.0 
     container_name: mysql_db
     restart: always
     ports:
@@ -47,6 +50,8 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - onelineBook_network
   ############################# Zookeeper
   zookeeper:
     container_name: zookeeper
@@ -57,6 +62,8 @@ services:
       - "zookeeper_data:/bitnami"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - onelineBook_network
   ############################# Message Broker KAFKA
   kafka:
     container_name: kafka
@@ -74,6 +81,8 @@ services:
       - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
     depends_on:
       - zookeeper
+    networks:
+      - onelineBook_network
   ############################# Message Broker KAFKA
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -83,7 +92,10 @@ services:
     environment:
       - KAFKA_CLUSTERS_0_NAME=local
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9094
-    
+    networks:
+      - onelineBook_network
+     
+     
 
 volumes:
   db_data:
@@ -93,3 +105,7 @@ volumes:
     driver: local
   kafka_data:
     driver: local
+
+networks:
+  onelineBook_network:  # 🔥 Définition du réseau
+    driver: bridge
