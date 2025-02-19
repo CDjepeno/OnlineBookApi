@@ -16,7 +16,8 @@ COPY . .
 # Installer les dépendances nécessaires pour le développement
 RUN npm install
 
-ENV NODE_ENV developement
+
+ENV NODE_ENV development
 
 
 # Exposer le port utilisé par votre application NestJS (par défaut 3000)
