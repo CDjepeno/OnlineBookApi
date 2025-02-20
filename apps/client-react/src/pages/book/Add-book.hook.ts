@@ -42,7 +42,6 @@ function AddBookHook() {
 
   const {
     register,
-    reset,
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
@@ -55,10 +54,11 @@ function AddBookHook() {
   const userId = user && user.id;
 
   const { mutateAsync: addBook } = useMutation({
-    mutationFn: async (data: FormData) => createBook(data, userId, reset),
+    mutationFn: async (data: FormData) => createBook(data, userId),
 
-    onSuccess: () => {
-      onSuccessCommon("Votre livre a bien été créé", RouterEnum.HOME);
+    onSuccess: (response) => {
+      console.log(response);
+      onSuccessCommon(response.message, RouterEnum.HOME);
       queryClient.invalidateQueries({
         queryKey: [BookQueriesKeysEnum.GetBooks],
       });

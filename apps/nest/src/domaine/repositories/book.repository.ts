@@ -6,7 +6,7 @@ import { BookEntity } from '../entities/Book.entity';
 import { UpdateBookResponse } from 'src/application/usecases/book/updateBook/updateBook.response';
 
 export interface BookRepository {
-  addBook(book: BookEntity): Promise<AddBookResponse>;
+  addBook(book: BookEntity): Promise<void>;
   getAllBook(): Promise<GetAllBookResponse[]>;
   getBooksByUser(userId: number): Promise<GetBooksByUserResponse[]>;
   getBook(id: number): Promise<GetBookResponse>;

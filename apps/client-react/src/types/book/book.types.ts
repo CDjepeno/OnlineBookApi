@@ -44,3 +44,7 @@ export type AddBookFormType = {
   releaseAt: Date;
   coverFile: FileList;
 };
+
+export type AddBookResponses = {
+message : string;
+}

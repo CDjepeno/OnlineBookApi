@@ -3,7 +3,6 @@ import { BookRepository } from 'src/domaine/repositories/book.repository';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
 import { AddBookRequest } from './addBook.request';
 import { AddBookResponse } from './addBook.response';
-
 export class AddBookUseCase {
   constructor(
     private readonly bookRepository: BookRepository,
@@ -23,9 +22,9 @@ export class AddBookUseCase {
         coverUrl,
         request.userId,
       );
-      const res = await this.bookRepository.addBook(book);
+      await this.bookRepository.addBook(book);
 
-      return res;
+      return { message: 'Votre livre a bien été créé ' };
     } catch (error) {
       console.error("Erreur lors de l'ajout du livre :", error);
       throw new Error(error);

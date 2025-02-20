@@ -39,7 +39,7 @@ export class AddBookController {
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: /.(png|jpe?g)$/ })
-        .addMaxSizeValidator({ maxSize: 3 * 1024 * 1024  })
+        .addMaxSizeValidator({ maxSize: 3 * 1024 * 1024 })
         .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
     )
     coverFile: Express.Multer.File,
@@ -55,12 +55,7 @@ export class AddBookController {
 
       console.log('Book created successfully:', result);
 
-      return {
-        status: 'Created',
-        code: 201,
-        message: 'Data inserted successfully',
-        data: result,
-      };
+      return result;
     } catch (error) {
       console.error('Error occurred while creating book:', error);
 

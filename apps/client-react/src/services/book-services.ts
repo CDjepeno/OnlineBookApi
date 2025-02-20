@@ -1,8 +1,11 @@
-import { AxiosResponse } from "axios";
 import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useApiRequest";
 import { BOOKS_ROUTE, BOOK_ROUTE } from "../request/route-http/route-http";
-import { GetBookResponse, GetBooksResponse } from "../types/book/book.types";
+import {
+  AddBookResponses,
+  GetBookResponse,
+  GetBooksResponse,
+} from "../types/book/book.types";
 
 export const getBooks = async (): Promise<GetBooksResponse[]> => {
   return await UseRequestApi<GetBooksResponse[], null>({
@@ -34,14 +37,13 @@ export const getBooksByUser = async (
 
 export const createBook = async (
   formData: FormData,
-  userId: number | null,
-  reset: () => void
-): Promise<AxiosResponse> => {
+  userId: number | null
+): Promise<AddBookResponses> => {
   if (userId) {
     formData.append("userId", userId.toString());
   }
 
-  const response: AxiosResponse = await UseRequestApi({
+  const response: AddBookResponses = await UseRequestApi({
     method: MethodHttpEnum.POST,
     path: BOOK_ROUTE,
     params: formData,
@@ -51,7 +53,6 @@ export const createBook = async (
     },
   });
 
-  reset();
   return response;
 };
 
