@@ -6,7 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { GetAllBookResponse } from 'src/application/usecases/book/getAllBook/getAllBook.response';
 import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
 import { GetBooksByUserResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
-import { UpdateBookResponse } from 'src/application/usecases/book/updateBook/updateBook.response';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
 import { BookRepository } from 'src/domaine/repositories/book.repository';
 import { Repository } from 'typeorm';
@@ -98,17 +97,13 @@ export class BookRepositoryTyperom implements BookRepository {
     }
   }
 
-  async updateBook(
-    id: number,
-    book: Partial<BookEntity>,
-  ): Promise<UpdateBookResponse> {
+  async updateBook(id: number, book: Partial<BookEntity>): Promise<void> {
     try {
       await this.repository.update(id, book);
       const updatedBook = await this.repository.findOneBy({ id });
       if (!updatedBook) {
         throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
       }
-      return updatedBook;
     } catch (error) {
       console.error("Erreur lors de la modification d'un livre :", error);
       if (error instanceof NotFoundException) {
