@@ -10,7 +10,6 @@ import { CurrentUserResponse } from "../types/user/response.types";
 
 export const registerUser = async (
   input: RegisterFormInput,
-  reset: () => void
 ) => {
   const params = input;
   const response: AxiosResponse = await UseRequestApi({
@@ -19,7 +18,6 @@ export const registerUser = async (
     params,
     includeAuthorizationHeader: true,
   });
-  reset();
   return response;
 };
 

@@ -1,4 +1,4 @@
-export class AddUserResponse {
+export type AddUserResponse = {
   id?: number;
   name: string;
   email: string;
@@ -7,3 +7,8 @@ export class AddUserResponse {
   created_at?: Date;
   updated_at?: Date;
 }
+
+export type AddUserResponseType = {
+  message: string;
+};
+
