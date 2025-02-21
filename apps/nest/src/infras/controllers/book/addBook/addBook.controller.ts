@@ -53,9 +53,7 @@ export class AddBookController {
         .getInstance()
         .execute({ ...createBookDto, coverUrl });
 
-      console.log('Book created successfully:', result);
-
-      return result;
+      return { data: result };
     } catch (error) {
       console.error('Error occurred while creating book:', error);
 

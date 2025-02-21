@@ -63,8 +63,6 @@ export class UpdateBookController {
       };
     } catch (error) {
       console.error('Error occurred while updating book:', error);
-      console.log('error', error);
-
       if (error instanceof badrequestexception) {
         throw new badrequestexception(error.message);
       }

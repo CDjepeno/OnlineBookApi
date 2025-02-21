@@ -29,14 +29,6 @@ const bookSchema = yup.object({
   description: yup.string().required("La description doit être renseignée"),
   author: yup.string().required("L'auteur doit être renseigné"),
   releaseAt: yup.string().required("La date de sortie doit être renseignée"),
-
-  // coverUrl: yup
-  //   .mixed<FileList>()
-  //   .required("L'image de couverture est requise")
-  //   .test("fileSize", "L'image doit faire moins de 5MB", (value) =>
-  //     value ? value[0].size <= 5000000 : false
-  //   ),
-
   coverUrl: yup
     .mixed<File>()
     .required("L'image de couverture est requise")

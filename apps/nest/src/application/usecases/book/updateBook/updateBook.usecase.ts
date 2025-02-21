@@ -31,7 +31,6 @@ export class UpdateBookUseCase {
         request.description ?? existingBook.description,
         request.author ?? existingBook.author,
         request.releaseAt ?? existingBook.releaseAt,
-        // request.coverUrl ?? existingBook.coverUrl,
         coverUrl,
         request.userId,
       );
