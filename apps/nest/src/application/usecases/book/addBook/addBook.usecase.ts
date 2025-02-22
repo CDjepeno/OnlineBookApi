@@ -1,6 +1,6 @@
 import { BookEntity } from 'src/domaine/entities/Book.entity';
-import { BookRepository } from 'src/domaine/repositories/book.repository';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
+import { BookRepository } from 'src/repositories/book.repository';
 import { AddBookRequest } from './addBook.request';
 import { AddBookResponse } from './addBook.response';
 export class AddBookUseCase {
