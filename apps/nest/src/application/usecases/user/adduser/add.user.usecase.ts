@@ -3,7 +3,7 @@ import { InvalidPhoneNumberException } from 'src/domaine/errors/book.error';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { UsersRepository } from '../../../../repositories/user.repository';
 import { AddUserRequest } from './add.user.request';
-import { AddUserResponse } from './add.user.response';
+import { AddUserResponseType } from './add.user.response';
 
 export class AddUserUseCase {
   constructor(
@@ -11,7 +11,7 @@ export class AddUserUseCase {
     private nodemailerClient: NodemailerClient,
   ) {}
 
-  async execute(request: AddUserRequest): Promise<AddUserResponse> {
+  async execute(request: AddUserRequest): Promise<AddUserResponseType> {
     try {
       const regexPhone = /^((\+)33)|(0)[6-7](\d{2}){4}$/;
       if (!regexPhone.test(request.phone)) {
@@ -32,7 +32,9 @@ export class AddUserUseCase {
         request.phone,
       );
 
-      return await this.usersRepository.signUp(user);
+      await this.usersRepository.signUp(user);
+
+      return { message: 'Votre compte a bien été crée' };
     } catch (error) {
       throw error;
     }

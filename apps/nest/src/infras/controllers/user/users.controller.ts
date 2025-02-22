@@ -25,9 +25,6 @@ export class UsersController {
         .getInstance()
         .execute(createUserDto);
       return {
-        status: 'Created',
-        code: 201,
-        message: 'Insert data success',
         data: result,
       };
     } catch (err) {

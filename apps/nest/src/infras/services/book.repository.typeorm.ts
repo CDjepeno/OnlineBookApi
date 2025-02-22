@@ -3,11 +3,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AddBookResponse } from 'src/application/usecases/book/addBook/addBook.response';
 import { GetAllBookResponse } from 'src/application/usecases/book/getAllBook/getAllBook.response';
 import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
 import { GetBooksByUserResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
-import { UpdateBookResponse } from 'src/application/usecases/book/updateBook/updateBook.response';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
 import { BookRepository } from 'src/repositories/book.repository';
 import { Repository } from 'typeorm';
@@ -22,7 +20,7 @@ export class BookRepositoryTyperom implements BookRepository {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async addBook(addBookRequest: BookEntity): Promise<AddBookResponse> {
+  async addBook(addBookRequest: BookEntity): Promise<void> {
     try {
       const user = await this.userRepository.findOne({
         where: { id: addBookRequest.userId },
@@ -40,7 +38,7 @@ export class BookRepositoryTyperom implements BookRepository {
       book.coverUrl = addBookRequest.coverUrl;
       book.userId = addBookRequest.userId;
 
-      return this.repository.save(book);
+      this.repository.save(book);
     } catch (error) {
       console.error("Erreur lors de l'ajout du livre :", error);
       throw new InternalServerErrorException("Impossible d'ajouter le livre.");
@@ -99,17 +97,13 @@ export class BookRepositoryTyperom implements BookRepository {
     }
   }
 
-  async updateBook(
-    id: number,
-    book: Partial<BookEntity>,
-  ): Promise<UpdateBookResponse> {
+  async updateBook(id: number, book: Partial<BookEntity>): Promise<void> {
     try {
       await this.repository.update(id, book);
       const updatedBook = await this.repository.findOneBy({ id });
       if (!updatedBook) {
         throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
       }
-      return updatedBook;
     } catch (error) {
       console.error("Erreur lors de la modification d'un livre :", error);
       if (error instanceof NotFoundException) {

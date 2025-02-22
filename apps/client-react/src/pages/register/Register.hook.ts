@@ -7,6 +7,7 @@ import { RouterEnum } from "../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflowCallback";
 import { registerUser } from "../../services/user-services";
 import { RegisterFormInput } from "../../types/user/form.types";
+import { AxiosResponse } from "axios";
 
 export default function RegisterHook() {
   const navigate = useNavigate();
@@ -50,7 +51,6 @@ export default function RegisterHook() {
     setError,
     watch,
     control,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm({ defaultValues, resolver: yupResolver(signupSchema) });
 
@@ -61,10 +61,11 @@ export default function RegisterHook() {
   const { onSuccessCommon } = UseQueryWorkflowCallback();
 
   const { mutateAsync: submit } = useMutation({
-    mutationFn: (input: RegisterFormInput) => registerUser(input, reset),
-    onSuccess: () => {
+    mutationFn: (input: RegisterFormInput) => registerUser(input),
+    onSuccess: (response: AxiosResponse) => {
       onSuccessCommon(
-        "Votre compte a bien ete cree!, un mail vous a été envoyer"
+        response.data.message,
+        RouterEnum.LOGIN,
       );
       navigate(RouterEnum.LOGIN);
     },
