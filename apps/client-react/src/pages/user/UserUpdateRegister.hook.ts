@@ -91,16 +91,30 @@ function UserUpdateRegisterHook(setIsFormOpen?: (value: boolean) => void) {
       );
       navigate(RouterEnum.LOGIN);
     },
+    onError: (error: Error | AxiosError<unknown>) => {
+      let errorMessage =
+        "Une erreur est survenue lors de la mise à jour de l'utilisateur";
+
+      if ((error as AxiosError<unknown>).isAxiosError) {
+        if (
+          (error as AxiosError).response &&
+          (error as AxiosError).response!.data &&
+          ((error as AxiosError).response!.data as ErrorResponse)
+        ) {
+          errorMessage = ((error as AxiosError).response!.data as ErrorResponse)
+            .message;
+        }
+      }
+
+      onErrorCommon(errorMessage);
+    },
   });
 
   const onSubmit = async (formData: UserFormInput) => {
     try {
       if (formData.id) {
-        console.log('upadateeeeeeeeeee');
-        
         await updateUserMutation({ id: formData.id, data: formData });
       } else {
-        console.log('createeeeeeeeeeee');
         await createUserMutation(formData);
       }
     } catch (error) {

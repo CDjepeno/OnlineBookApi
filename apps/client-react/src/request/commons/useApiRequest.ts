@@ -52,10 +52,10 @@ export async function UseRequestApi<TData, T>({
       headersApiNest,
       params
     );
-
+    
     return response;
   } catch (error) {
-    if (error instanceof AxiosError && error.status === 401) {
+    if (error instanceof AxiosError && error.response?.data.message === "Token invalide") {
       try {
         const refreshToken: RefreshRequest = {
           refreshToken: localStorage.getItem("RefreshToken"),

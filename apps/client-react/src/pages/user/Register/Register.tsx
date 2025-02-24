@@ -1,21 +1,25 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Controller, useForm } from "react-hook-form";
 import { UserForm } from "src/types/user/form.types";
 import FormInput from "../../../components/FormInput";
 import UserUpdateRegisterHook from "../UserUpdateRegister.hook";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useState } from "react";
 
 export default function Register() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { onSubmit, signupSchema } = UserUpdateRegisterHook();
+
 
   const {
     handleSubmit,
@@ -127,31 +131,38 @@ export default function Register() {
               <FormInput
                 name="password"
                 label="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 control={control}
                 onBlur={() => handleConfirmPasswordChange}
                 errors={errors}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
             <Grid item xs={12}>
-              <Controller
+              <FormInput
                 name="confirmPassword"
+                label="Confirm Password"
+                type={showConfirmPassword ? "text" : "password"} 
                 control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    required
-                    fullWidth
-                    label="Confirm Password"
-                    type="password"
-                    error={!isPasswordMatch}
-                    helperText={
-                      !isPasswordMatch
-                        ? "Les mots de passe ne correspondent pas."
-                        : ""
-                    }
-                  />
-                )}
+                errors={errors}
+                onBlur={handleConfirmPasswordChange}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
+                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
           </Grid>

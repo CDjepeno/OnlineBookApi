@@ -16,7 +16,7 @@ export class JwtAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('token manquant');
     }
     try {
       const payload = await this.jwtService.verifyAsync(token, {
@@ -24,7 +24,7 @@ export class JwtAuthGuard implements CanActivate {
       });
       request['user'] = payload;
     } catch {
-      throw new UnauthorizedException();
+        throw new UnauthorizedException('Token invalide');
     }
     return true;
   }
