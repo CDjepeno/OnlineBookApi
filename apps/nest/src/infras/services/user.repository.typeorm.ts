@@ -85,7 +85,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
 
     const token = await this.jwtService.signAsync(payload, {
       secret: this.configService.get('JWT_SECRET'),
-      expiresIn: '1h',
+      expiresIn: '30s',
     });
 
     const refreshToken: string| null = await this.jwtService.signAsync(refreshPayload, {
@@ -163,7 +163,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
 
       const newAccessToken = this.jwtService.sign(payload, {
         secret: process.env.JWT_SECRET,
-        expiresIn: '30m',
+        expiresIn: '4d',
       });
 
       const newRefreshToken = this.jwtService.sign(payload, {

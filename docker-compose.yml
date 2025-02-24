@@ -18,6 +18,10 @@ services:
       DATABASE_NAME: ${DB_NAME}
       NODE_ENV: development
       KAFKA_BROKER: kafka:9094
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+      AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}
     depends_on:
       - db
     networks:

@@ -26,7 +26,7 @@ export class AwsS3Client {
   async uploadFile(file: Express.Multer.File): Promise<string> {
     if (!file || !file.buffer) {
       this.logger.error('File ou file buffer est manquant');
-      throw new BadRequestException('File or file buffer is missing');
+      throw new BadRequestException('File or file buffer is missing')
     }
 
     const { originalname, buffer, mimetype } = file;
