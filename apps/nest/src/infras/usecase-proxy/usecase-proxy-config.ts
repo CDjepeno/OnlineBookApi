@@ -30,10 +30,13 @@ import { BookingRepositoryTypeorm } from '../services/booking.repository.typeorm
 import { ContactRepositoryTypeorm } from '../services/contact.repository.typeorm';
 import { UserRepositoryTypeorm } from '../services/user.repository.typeorm';
 import { UseCaseProxy } from './usecase-proxy';
+import { RedisClient } from '../clients/redis/redis.client';
+import { VerifyOtpUseCase } from 'src/application/usecases/user/auth/verifyOtp/VerifyOtp.usecase';
 
 export enum UsecaseProxyEnum {
   CREATE_USER_USECASE_PROXY = 'createUserUsecaseProxy',
   LOGIN_USER_USECASE_PROXY = 'loginUserUseCaseProxy',
+  VERIFY_OTP = 'VefifyOtp',
   LOGOUT_USER_USECASE_PROXY = 'logoutUserUseCaseProxy',
   REFRESH_TOKEN_USECASE_PROXY = 'refreshTokenUseCaseProxy',
   GET_CURRENT_USER_USECASE_PROXY = 'getCurrentUserUseCaseProxy',
@@ -88,16 +91,22 @@ export const useCasesConfig = [
       new UseCaseProxy(new LogoutUserUseCase(userRepository)),
   },
   {
-    inject: [UserRepositoryTypeorm],
+    inject: [UserRepositoryTypeorm, NodemailerClient, RedisClient],
     provide: UsecaseProxyEnum.LOGIN_USER_USECASE_PROXY,
-    useFactory: (userRepository: UserRepositoryTypeorm) =>
-      new UseCaseProxy(new LoginUserUseCase(userRepository)),
+    useFactory: (userRepository: UserRepositoryTypeorm, nodeMailerClient: NodemailerClient, redisClient: RedisClient) =>
+      new UseCaseProxy(new LoginUserUseCase(userRepository,redisClient, nodeMailerClient)),
   },
   {
     inject: [UserRepositoryTypeorm],
     provide: UsecaseProxyEnum.GET_CURRENT_USER_USECASE_PROXY,
     useFactory: (userRepository: UserRepositoryTypeorm) =>
       new UseCaseProxy(new GetCurrentUserUseCase(userRepository)),
+  },
+  {
+    inject: [UserRepositoryTypeorm, RedisClient],
+    provide: UsecaseProxyEnum.VERIFY_OTP,
+    useFactory: (userRepository: UserRepositoryTypeorm, redisClient: RedisClient) =>
+      new UseCaseProxy(new VerifyOtpUseCase(userRepository, redisClient)),
   },
   {
     inject: [UserRepositoryTypeorm],

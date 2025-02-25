@@ -7,7 +7,6 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LoginUserResponse } from 'application/usecases/user/auth/login/login.user.response';
 import * as bcrypt from 'bcrypt';
 import { AddUserRequest } from 'src/application/usecases/user/adduser/add.user.request';
 import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.response';
@@ -24,6 +23,7 @@ import { QueryFailedError, Repository } from 'typeorm';
 import { User } from '../models/user.model';
 import { CurrentUserByIdResponse } from 'src/application/usecases/user/GetUserById/current.user.response';
 import { UsersRepository } from 'src/repositories/user.repository';
+import { VerifyOtpResponse } from 'src/application/usecases/user/auth/verifyOtp/verifyOtp.response';
 
 @Injectable()
 export class UserRepositoryTypeorm implements UsersRepository {
@@ -54,7 +54,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
     }
   }
 
-  async signIn(siginIn: LoginUserRequest): Promise<LoginUserResponse> {
+  async signIn(siginIn: LoginUserRequest): Promise<{email: string}> {
     const { email, password } = siginIn;
     const user = await this.repository.findOne({
       where: { email },
@@ -70,6 +70,18 @@ export class UserRepositoryTypeorm implements UsersRepository {
 
     if (!match) {
       throw new UnauthorizedException('Le mot de passe est invalide.');
+    }
+
+   
+    return { email: user.email };
+  }
+
+  async createJwt(email: string): Promise<VerifyOtpResponse> {
+    const user = await this.repository.findOne({
+      where: { email },
+    });
+    if (!user) {
+      throw new NotFoundException("L'utilisateur n'existe pas.");
     }
 
     const payload = {
@@ -97,7 +109,9 @@ export class UserRepositoryTypeorm implements UsersRepository {
 
     await this.repository.update(user.id, { refreshToken: hashedRefreshToken });
 
-    return { name: user.name, email: user.email, token, refreshToken };
+    return { email: user.email, name: user.name, refreshToken, token };
+
+
   }
 
   async signOut(request: LogoutUserRequest): Promise<void> {
