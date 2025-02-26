@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { LoginFormInput } from "src/types/user/input.types";
+import { LoginFormInput, VerifyOtpFormInput } from "src/types/user/input.types";
 import * as yup from "yup";
 import { AuthContext } from "../../../context";
 import { RouterEnum } from "../../../enum/enum";
@@ -12,7 +12,7 @@ import { AuthContextValue } from "../../../interfaces/auth.context.value";
 import { UseQueryWorkflowCallback } from "../../../request/commons/useQueryWorkflowCallback";
 
 export default function LoginHook() {
-  const { signin } = useContext(AuthContext) as AuthContextValue;
+  const { signin, verifyOtp } = useContext(AuthContext) as AuthContextValue;
 
   const validationSchema = yup.object({
     email: yup
@@ -33,33 +33,53 @@ export default function LoginHook() {
     control,
   } = useForm<LoginFormInput>({ resolver: yupResolver(validationSchema) });
 
-  const { onErrorCommon } = UseQueryWorkflowCallback();
+  const { onErrorCommon, onSuccessCommon } = UseQueryWorkflowCallback();
   const navigate = useNavigate();
 
-  const { mutateAsync: submit } = useMutation({
+  const { mutateAsync: submitLogin } = useMutation({
     mutationFn: async (input: LoginFormInput) => signin(input),
+    onSuccess: async (response) => {
+      onSuccessCommon(response.msg);
+    },
     onError: (error) => {
       if (
         (error as AxiosError).response &&
         (error as AxiosError).response!.status === 401
       ) {
-        onErrorCommon("Mauvais email/mot de passe!");
+        onErrorCommon(error.message);
         clearErrors();
       }
-    },
-    onSuccess: async () => {
-      navigate(RouterEnum.HOME);
-    },
+    }
   });
 
-  const onSubmit = (input: LoginFormInput) => {
-    return submit(input);
+  const { mutateAsync: submitVerifyOtp } = useMutation({
+    mutationFn: async (input: VerifyOtpFormInput) => verifyOtp(input),
+    onSuccess: async () => {
+      navigate(RouterEnum.HOME)
+    },
+    onError: (error) => {
+      if (
+        (error as AxiosError).response &&
+        (error as AxiosError).response!.status === 401
+      ) {
+        onErrorCommon(error.message);
+        clearErrors();
+      }
+    }
+  });
+
+  const onSubmitLogin = (input: LoginFormInput) => {
+      return submitLogin(input);
+  };
+  const onSubmitVerifyOtp = (input: VerifyOtpFormInput) => {
+    return submitVerifyOtp(input)
   };
 
   return {
     handleSubmit,
     register,
-    onSubmit,
+    onSubmitLogin,
+    onSubmitVerifyOtp,
     errors,
     isSubmitting,
     control,

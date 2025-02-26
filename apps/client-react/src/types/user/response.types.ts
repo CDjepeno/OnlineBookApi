@@ -1,4 +1,8 @@
 export type SigninResponse = {
+  msg: string;
+};
+
+export type VerifyOtpResponse = {
   name: string;
   email: string;
   token: string;
