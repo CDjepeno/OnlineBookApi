@@ -3,6 +3,11 @@ export type LoginFormInput = {
   password: string;
 }
 
+export type VerifyOtpFormInput = {
+  email: string;
+  otp: string;
+}
+
 export type UserFormInput = {
   id?: number
   email: string;

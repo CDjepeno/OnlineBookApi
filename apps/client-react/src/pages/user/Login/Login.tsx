@@ -10,11 +10,35 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import LoginHook from "./Login.hook";
 import FormInput from "../../../components/FormInput";
+import OtpModal from "src/components/OtpModal";
+import { useState } from "react";
+import { LoginFormInput } from "src/types/user/input.types";
 
 export default function Login() {
-  const { onSubmit, handleSubmit, errors, isSubmitting, control } = LoginHook();
+  const { onSubmitLogin, onSubmitVerifyOtp, handleSubmit, errors, isSubmitting, control } = LoginHook();
+  const [openOtp, setOpenOtp] = useState(false); // État pour la modal OTP
+  const [email, setEmail] = useState(""); // Sauvegarde l'email pour l'OTP
+
+  const handleLogin = async (data: LoginFormInput) => {
+    try {
+      setEmail(data.email);
+      onSubmitLogin(data)
+
+      setOpenOtp(true); // Ouvrir la modal OTP
+
+    } catch (error) {
+      console.error(error);
+      alert("Erreur de connexion ❌");
+    }
+  };
+
+  const handleVerifyOtp = async (otp: string) => {
+      onSubmitVerifyOtp({otp, email})
+      setOpenOtp(false); // Fermer la modal après succès
+  };
 
   return (
+    <>
     <Grid container component="main" sx={{ height: "100vh" }} maxWidth="xs">
       <Grid
         item
@@ -51,7 +75,7 @@ export default function Login() {
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(handleLogin)}
             sx={{ mt: 3 }}
           >
             <FormInput
@@ -100,5 +124,7 @@ export default function Login() {
         </Box>
       </Grid>
     </Grid>
+    <OtpModal open={openOtp} handleClose={() => setOpenOtp(false)} onVerify={handleVerifyOtp} />   
+    </>
   );
 }

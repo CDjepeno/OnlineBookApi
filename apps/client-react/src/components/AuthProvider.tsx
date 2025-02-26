@@ -1,15 +1,20 @@
-import { ReactNode, useState, useEffect } from 'react';
+import { ReactNode, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context";
 import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useApiRequest";
-import { LOGIN_ROUTE, LOGOUT_ROUTE } from "../request/route-http/route-http";
+import {
+  LOGIN_ROUTE,
+  LOGOUT_ROUTE,
+  VERIFY_OTP_ROUTE,
+} from "../request/route-http/route-http";
 import { getCurrentUser } from "../services/user.services";
 import {
   CurrentUserResponse,
   SigninResponse,
+  VerifyOtpResponse,
 } from "../types/user/response.types";
-import { LoginFormInput } from "src/types/user/input.types";
+import { LoginFormInput, VerifyOtpFormInput } from "src/types/user/input.types";
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -24,7 +29,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const currentUser = await getCurrentUser();
       setUser(currentUser);
     } catch (error) {
-      setUser(null)
+      setUser(null);
       console.error("Error getting current user:", error);
     }
   };
@@ -38,9 +43,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const signin = async (credentials: LoginFormInput) => {
-    const response = await UseRequestApi<SigninResponse, unknown>({
+    return await UseRequestApi<SigninResponse, unknown>({
       method: MethodHttpEnum.POST,
       path: LOGIN_ROUTE,
+      params: credentials,
+      includeAuthorizationHeader: false,
+    });
+
+  
+  };
+
+  const verifyOtp = async (credentials: VerifyOtpFormInput) => {
+    const response = await UseRequestApi<VerifyOtpResponse, unknown>({
+      method: MethodHttpEnum.POST,
+      path: VERIFY_OTP_ROUTE,
       params: credentials,
       includeAuthorizationHeader: false,
     });
@@ -58,9 +74,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     await UseRequestApi<unknown, unknown>({
       method: MethodHttpEnum.POST,
       path: LOGOUT_ROUTE,
-      params: {id: user?.id},
+      params: { id: user?.id },
       includeAuthorizationHeader: false,
-    })
+    });
     localStorage.removeItem("BookToken");
     localStorage.removeItem("RefreshToken");
     setUser(null);
@@ -68,7 +84,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, signin, signout }}>
+    <AuthContext.Provider value={{ user, signin, signout, verifyOtp }}>
       {children}
     </AuthContext.Provider>
   );

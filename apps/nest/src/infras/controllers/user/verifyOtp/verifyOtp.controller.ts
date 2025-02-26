@@ -5,6 +5,7 @@ import {
   Inject,
   InternalServerErrorException,
   Post,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { VerifyOtpUseCase } from 'src/application/usecases/user/auth/verifyOtp/VerifyOtp.usecase';
@@ -28,12 +29,11 @@ export class LoginController {
     try {
       return await this.verifyOtpUsecaseProxy.getInstance().execute(req);
     } catch (error) {
-      console.error('Error occurred while updating user:', error);
-
-      if (error instanceof BadRequestException) {
+      if (error instanceof UnauthorizedException) {
+        
         throw new BadRequestException(error.message);
       }
-      throw new InternalServerErrorException('Failed to update user');
+      throw new InternalServerErrorException(error);
     }
   }
 }
