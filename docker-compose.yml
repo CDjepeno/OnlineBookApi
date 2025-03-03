@@ -47,6 +47,23 @@ services:
     command: npm run dev 
     networks:
       - onelineBook_network
+  ############################# Frontend NEXT.JS
+  nextjs:
+    build:
+      context: ./apps/client-next
+      dockerfile: Dockerfile
+    container_name: next_frontend
+    ports:
+      - "3001:3000"  # 🔥 On mappe le port 3000 du conteneur vers 3001 sur l'hôte
+    volumes:
+      - ./apps/client-next:/app
+      - next_node_modules:/apps/client-next/node_modules
+    environment:
+      NODE_ENV: development
+    command: npm run dev
+    networks:
+      - onelineBook_network
+
   ############################# Database MYSQL
   db:
     image: mysql:8.0 
@@ -126,6 +143,7 @@ volumes:
   db_data:
   react_node_modules:
   nest_node_modules:
+  next_node_modules:
   zookeeper_data:
     driver: local
   kafka_data:
