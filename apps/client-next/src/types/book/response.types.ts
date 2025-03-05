@@ -10,7 +10,7 @@ export type ErrorResponse = {
   message: string;
 }
 
-export interface GetBookResponse {
+export type GetBookResponse = {
   id: number;
   title: string;
   description: string;
@@ -19,25 +19,25 @@ export interface GetBookResponse {
   coverUrl: string;
 }
 
-export interface DeleteBooksResponse {
+export type DeleteBooksResponse = {
   message: string;
 }
 
-export interface DeleteBookResponse {
+export type DeleteBookResponse = {
   message: string;
 }
 
-export interface GetBooksResponse {
+export type GetBooksResponse = {
   id: number;
   title: string;
   description: string;
   author: string;
   releaseAt: string;
   coverUrl: string;
-  userId: number;
-  created_At: string;
-  updated_At: string;
-  hasFuturReservations: boolean;
+  userId?: number;
+  created_At?: string;
+  updated_At?: string;
+  hasFuturReservations?: boolean;
 
 }
 
@@ -59,7 +59,7 @@ export type GetBookByUserPaginationResponse = {
   },
 }
 
-export interface AddBookResponse {
+export type AddBookResponse = {
   name: string;
   description: string;
   author: string;
