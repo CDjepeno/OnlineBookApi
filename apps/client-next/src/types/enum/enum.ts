@@ -1,0 +1,43 @@
+export enum BookQueriesKeysEnum {
+  GetBooks = 'getbooks',
+  BooksUser = 'booksUser',
+  Deletebook = 'DeleteBook',
+  Deletebooks = 'DeleteBooks',
+  Login = 'login',
+  addBook = 'addBook',
+  Book = 'book'
+}
+
+export enum BookingsQueriesKeysEnum {
+  GetBookingsBook = 'getbookingsBook',
+  GetBookingsUser = 'getBookingsUser',
+  BookingBook = 'bookingBook',
+}
+
+export enum UserQueriesKeysEnum {
+  Login = 'login',
+  UpdateUser = 'updateUser',
+  GetCurrentUser = 'getcurrentuser',
+  GetUserByID = 'getUserById',
+}
+
+// Method HTTP
+export enum MethodHttpEnum {
+  GET = 'get',
+  PUT = 'put',
+  POST = 'post',
+  DELETE = 'delete',
+  PATCH = 'patch',
+}
+
+// Router
+export enum RouterEnum {
+  LOGIN = '/Login',
+  REGISTER = '/Register',
+  ADD_BOOK = '/add-book',
+  BOOK = '/book/:id',
+  DASHBOARD = '/bookings/user/:id',
+  PROFILE = '/books/user/:id',
+  HOME = '/',
+  CONTACT = '/contact',
+}
