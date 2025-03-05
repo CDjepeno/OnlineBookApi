@@ -3,6 +3,7 @@
 import "@/styles/global.css";
 import Header from "@/components/header";
 import { AuthProvider } from "@/context/AuthProvider";
+import Footer from "@/components/Footer";
 
 export default function RootLayout({
   children,
@@ -17,6 +18,9 @@ export default function RootLayout({
             <Header />
           </header>
           {children}
+          <footer>
+            <Footer/>
+          </footer>
         </body>
       </html>
     </AuthProvider>
