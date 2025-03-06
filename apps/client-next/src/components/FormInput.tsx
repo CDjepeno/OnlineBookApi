@@ -49,15 +49,14 @@ function FormInput<T extends FieldValues>({
             return customFieldResult;
           }
 
-          // Si customField ne retourne pas un élément valide
           console.error("The customField function must return a valid React element.");
           return <></>; // Retourne un fragment vide comme fallback
         }
 
-        // Retourner toujours un élément React valide
         return (
           <TextField
             {...field}
+            value={field.value || ""} 
             {...props}
             label={label}
             fullWidth

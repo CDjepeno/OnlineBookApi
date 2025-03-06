@@ -23,6 +23,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  
   const [user, setUser] = useState<CurrentUserResponse | null>(null);
   const router = useRouter(); // Remplace useNavigate
 
@@ -47,6 +48,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const signin = async (credentials: LoginFormInput) => {
+    console.log("Signin Auth provider function called with:", credentials);
     return await UseRequestApi<SigninResponse, unknown>({
       method: MethodHttpEnum.POST,
       path: LOGIN_ROUTE,
