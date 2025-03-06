@@ -1,4 +1,6 @@
-import { useRouter } from "next/router";
+'use client'
+
+import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { useCallback } from "react";
 
