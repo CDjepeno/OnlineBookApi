@@ -24,7 +24,6 @@ function BookDetail() {
   const { user } = useContext(AuthContext) as AuthContextValue;
   const params = useParams();
   const id = params.id as string;
-  console.log(params.id);
 
   const { isPending, book, error, bookingsBook, onSubmit } = BookDetailHook(id);
 
