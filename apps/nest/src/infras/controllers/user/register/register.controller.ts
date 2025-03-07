@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Inject, InternalServerErrorException, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AddUserUseCase } from 'src/application/usecases/user/adduser/add.user.usecase';
 import { User } from 'src/infras/models/user.model';
@@ -20,15 +20,18 @@ export class RegisterController {
   })
   @ApiCreatedResponse({ description: 'User created.', type: User })
   async createUser(@Body() createUserDto: RegisterDto) {
-    const result = await this.createUserUsecaseProxy
-      .getInstance()
-      .execute(createUserDto);
-
-    const { name, email, phone } = result;
-    return {
-      name,
-      email,
-      phone,
-    };
+    try {
+      return await this.createUserUsecaseProxy
+        .getInstance()
+        .execute(createUserDto);
+    } catch (error) {
+      console.error('Error occurred while updating user:', error);
+      
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException(error.message);
+      }
+      throw new InternalServerErrorException('Failed create user');
+    }
   }
+
 }

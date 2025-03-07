@@ -40,8 +40,6 @@ export type GetUserByIdResponse = {
 };
 
 export type RegisterResponse = {
-  email: string;
-  name: string;
-  phone: string;
+  msg: string;
 };
 
