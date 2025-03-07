@@ -32,8 +32,7 @@ type LinkMap = {
 
 const formatLink = (page: string) => {
   const linkMap: LinkMap = {
-    "Ajouter un livre": "/Add-book",
-    Catégories: "/category",
+    "Ajouter un livre": "/add-book",
   };
   return linkMap[page];
 };
@@ -81,9 +80,9 @@ function Header() {
 
   const toggleNotifications = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
-    setOpenNotifications((prev) => !prev); // Bascule l'affichage du bloc
+    setOpenNotifications((prev) => !prev); 
     if (openNotifications) {
-      setNotificationCount(0); // Réinitialiser le compteur si on ferme le bloc
+      setNotificationCount(0); 
     }
   };
 
@@ -105,7 +104,7 @@ function Header() {
         console.log("Nouvelle notification reçue :", data);
         setNotifications((prev) => [...prev, data]);
 
-        setNotificationCount((prev) => prev! + 1); // Mettre à jour l'état des notifications
+        setNotificationCount((prev) => prev! + 1); 
       });
     }
 
@@ -114,7 +113,7 @@ function Header() {
     };
   }, [user]);
   if (!isMounted || currentPath === null) {
-    return null; // Ne rien rendre jusqu'à ce que le composant soit monté
+    return null; 
   }
 
   return (
@@ -205,8 +204,8 @@ function Header() {
             {user && (
               <IconButton color="inherit" onClick={toggleNotifications}>
                 <Badge
-                  badgeContent={notificationCount} // Affiche le numéro des notifications
-                  color="error" // Rouge pour indiquer une notification
+                  badgeContent={notificationCount} 
+                  color="error" 
                   overlap="circular"
                 >
                   <NotificationsIcon style={{ color: "white" }} />
@@ -222,8 +221,8 @@ function Header() {
                       maxHeight: "300px",
                       overflowY: "auto",
                       bgcolor: "background.paper",
-                      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)", // Ombre subtile
-                      borderRadius: 2, // Coins arrondis
+                      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)", 
+                      borderRadius: 2, 
                       zIndex: 1000,
                       padding: 2,
                     }}

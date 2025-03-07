@@ -31,8 +31,6 @@ export class UserRepositoryTypeorm implements UsersRepository {
     private readonly repository: Repository<User>,
     private readonly jwtService: JwtService,
     private configService: ConfigService,
-
-
   ) {}
 
   async signUp(addUserRequest: AddUserRequest): Promise<void> {

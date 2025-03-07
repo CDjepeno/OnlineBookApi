@@ -1,3 +1,4 @@
+"use client"
 import { LoginFormInput, VerifyOtpFormInput } from "@/types/user/input.types";
 import { CurrentUserResponse, SigninResponse } from "@/types/user/response.types";
 import { createContext } from "react";
