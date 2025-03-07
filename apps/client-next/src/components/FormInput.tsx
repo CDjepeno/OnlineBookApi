@@ -19,7 +19,7 @@ interface FormInputProps<T extends FieldValues>
   errors: FieldErrors<T>;
   type?: string;
   onBlur?: () => void;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement| HTMLTextAreaElement>) => void;
   customField?: (fieldProps: {
     field: ControllerRenderProps<T, Path<T>>;
     fieldState: ControllerFieldState;
@@ -67,7 +67,10 @@ function FormInput<T extends FieldValues>({
             error={!!errors[name]}
             helperText={errors[name] ? (errors[name]?.message as string) : null}
             onBlur={onBlur}
-            onChange={onChange}
+            onChange={(event) => {
+              field.onChange(event); // Appelle le onChange de react-hook-form
+              onChange?.(event); // Appelle le onChange passé en prop (s'il existe)
+            }}
             slots={slots}
             slotProps={slotProps}
           />
