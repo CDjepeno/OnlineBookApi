@@ -26,16 +26,16 @@ export class AddUserUseCase {
       request.sexe,
     );
 
-    const res = await this.usersRepository.signUp(user);
+    await this.usersRepository.signUp(user);
 
-    if(res) {
-      await this.nodemailerClient.sendMail({
-        to: request.email,
-        subject: `Confirmation de votre inscription`,
-        text: `Bonjour ${request.name}, \nVotre compte a bien été crée`,
-      });
-      return res
-    }
-    throw new Error("une erreur est survenue");
+    await this.nodemailerClient.sendMail({
+      to: request.email,
+      subject: `Confirmation de votre inscription`,
+      text: `Bonjour ${request.name}, \nVotre compte a bien été crée`,
+    });
+    
+    return {msg: "Votre compte a bien ete cree!, un mail vous a été envoyer"}
+    
   }
+
 }

@@ -9,7 +9,6 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { AddUserRequest } from 'src/application/usecases/user/adduser/add.user.request';
-import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.response';
 import {
   CurrentUserResponse,
 } from 'src/application/usecases/user/auth/GetCurrentUser/current.user.response';
@@ -36,7 +35,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
 
   ) {}
 
-  async signUp(addUserRequest: AddUserRequest): Promise<AddUserResponse> {
+  async signUp(addUserRequest: AddUserRequest): Promise<void> {
     try {
       const user = new User();
       user.email = addUserRequest.email;
@@ -45,7 +44,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
       user.phone = addUserRequest.phone;
       user.sexe = addUserRequest.sexe;
 
-      return await this.repository.save(user);
+      await this.repository.save(user);
     } catch (error) {
       if (error instanceof QueryFailedError && error.driverError.code === 'ER_DUP_ENTRY') {
         throw new UnauthorizedException('Cet email est deja utilise.');

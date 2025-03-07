@@ -8,7 +8,7 @@ export type VerifyOtpFormInput = {
   otp: string;
 }
 
-export type UserFormInput = {
+export type RegisterFormInput = {
   id?: number
   email: string;
   password: string;

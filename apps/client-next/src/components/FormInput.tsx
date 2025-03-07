@@ -36,6 +36,8 @@ function FormInput<T extends FieldValues>({
   onBlur,
   customField,
   onChange,
+  slots,
+  slotProps,
   ...props
 }: FormInputProps<T>) {
   return (
@@ -66,6 +68,8 @@ function FormInput<T extends FieldValues>({
             helperText={errors[name] ? (errors[name]?.message as string) : null}
             onBlur={onBlur}
             onChange={onChange}
+            slots={slots}
+            slotProps={slotProps}
           />
         );
       }}

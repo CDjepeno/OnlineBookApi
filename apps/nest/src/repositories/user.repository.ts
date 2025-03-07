@@ -1,5 +1,4 @@
 import { AddUserRequest } from 'src/application/usecases/user/adduser/add.user.request';
-import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.response';
 import {
   CurrentUserResponse,
 } from 'src/application/usecases/user/auth/GetCurrentUser/current.user.response';
@@ -13,7 +12,7 @@ import { UpdateUserRequest } from 'src/application/usecases/user/updateUser/upda
 import { UpdateUserResponse } from 'src/application/usecases/user/updateUser/update.user.response';
 
 export interface UsersRepository {
-  signUp(user: AddUserRequest): Promise<AddUserResponse>;
+  signUp(user: AddUserRequest): Promise<void>;
   updateUser(
     user: Partial<UpdateUserRequest>,
     existingUser: CurrentUserByIdResponse,
