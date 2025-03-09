@@ -54,7 +54,7 @@ function BookDetail() {
   return (
     <Container sx={{ py: 8 }}>
       <BookCardDetail
-        name={book.name}
+        name={book.title}
         author={book.author}
         description={book.description}
         releaseAt={book.releaseAt}

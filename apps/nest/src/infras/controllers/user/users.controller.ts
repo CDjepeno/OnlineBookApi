@@ -25,7 +25,6 @@ export class UsersController {
         .getInstance()
         .execute(createUserDto);
 
-      // const { name, email, phone } = result;
       return {
         data: result,
       };
