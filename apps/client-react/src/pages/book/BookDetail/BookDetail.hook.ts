@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { BookQueriesKeysEnum } from "../../enum/enum";
-import { getBook } from "../../services/book-services";
+import { BookQueriesKeysEnum } from "../../../enum/enum";
+import { getBook } from "../../../services/book.services";
 
 function BookDetailHook() {
   const { id } = useParams<{ id: string }>();

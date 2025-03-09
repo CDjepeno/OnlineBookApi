@@ -3,10 +3,10 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import { RouterEnum } from "../../enum/enum";
-import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflowCallback";
-import { registerUser } from "../../services/user-services";
-import { RegisterFormInput } from "../../types/user/form.types";
+import { RouterEnum } from "../../../enum/enum";
+import { UseQueryWorkflowCallback } from "../../../request/commons/useQueryWorkflowCallback";
+import { registerUser } from "../../../services/user.services";
+import { RegisterFormInput } from "../../../types/user/form.types";
 import { AxiosResponse } from "axios";
 
 export default function RegisterHook() {
@@ -62,7 +62,7 @@ export default function RegisterHook() {
 
   const { mutateAsync: submit } = useMutation({
     mutationFn: (input: RegisterFormInput) => registerUser(input),
-    onSuccess: (response: AxiosResponse) => {
+    onSuccess: (response: AxiosResponse<RegisterResponse>) => {
       onSuccessCommon(
         response.data.message,
         RouterEnum.LOGIN,

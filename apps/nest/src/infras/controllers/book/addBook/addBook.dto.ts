@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateBookDto {
   @ApiProperty()
@@ -24,4 +24,8 @@ export class CreateBookDto {
   @IsNotEmpty()
   @IsInt()
   userId: number;
+
+  @ApiProperty({ type: 'string', format: 'binary', required: true })
+  @IsOptional() 
+  coverUrl?: Express.Multer.File;
 }

@@ -4,7 +4,7 @@ import { AuthContext } from "../context";
 import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useApiRequest";
 import { LOGIN_ROUTE } from "../request/route-http/route-http";
-import { getCurrentUser } from "../services/user-services";
+import { getCurrentUser } from "../services/user.services";
 import { AuthFormInput } from "../types/user/input.types";
 import {
   CurrentUserResponse,

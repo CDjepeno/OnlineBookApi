@@ -13,6 +13,7 @@ export class UpdateBookUseCase {
 
   async execute(request: UpdateBookRequest): Promise<UpdateBookResponse> {
     try {
+      
       const existingBook = await this.bookRepository.getBook(request.id);
 
       if (!existingBook) {
@@ -20,8 +21,8 @@ export class UpdateBookUseCase {
       }
 
       let coverUrl = existingBook.coverUrl;
-      if (request.coverFile) {
-        coverUrl = await this.awsS3Client.uploadFile(request.coverFile);
+      if (request.coverUrl) {
+        coverUrl = await this.awsS3Client.uploadFile(request.coverUrl);
       }
 
       const updatedBook = new BookEntity(

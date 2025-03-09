@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useApiRequest";
 import { BOOKS_ROUTE, BOOK_ROUTE } from "../request/route-http/route-http";
@@ -5,6 +6,7 @@ import {
   AddBookResponses,
   GetBookResponse,
   GetBooksResponse,
+  UpdateBookResponse,
 } from "../types/book/book.types";
 
 export const getBooks = async (): Promise<GetBooksResponse[]> => {
@@ -43,7 +45,7 @@ export const createBook = async (
     formData.append("userId", userId.toString());
   }
 
-  const response: AddBookResponses = await UseRequestApi({
+  const response: AxiosResponse = await UseRequestApi({
     method: MethodHttpEnum.POST,
     path: BOOK_ROUTE,
     params: formData,
@@ -52,8 +54,9 @@ export const createBook = async (
       "Content-Type": "multipart/form-data",
     },
   });
+  console.log("Réponse brute du backend :", response);
 
-  return response;
+  return response.data;
 };
 
 export const deleteBook = async (id: string): Promise<void> => {
@@ -64,3 +67,16 @@ export const deleteBook = async (id: string): Promise<void> => {
     includeAuthorizationHeader: false,
   });
 };
+
+export const updateBook = async (
+  id: string,
+  data: FormData
+): Promise<UpdateBookResponse> => {
+  return await UseRequestApi({
+    method: MethodHttpEnum.PUT,
+    path: `${BOOK_ROUTE}/${id}`,
+    params: data,
+    includeAuthorizationHeader: true,
+  });
+};
+

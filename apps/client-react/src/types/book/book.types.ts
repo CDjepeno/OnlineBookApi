@@ -7,7 +7,7 @@ export interface GetBookResponse {
   name: string;
   description: string;
   author: string;
-  releaseAt: Date;
+  releaseAt: string;
   coverUrl: string;
 }
 
@@ -16,16 +16,15 @@ export interface GetBooksResponse {
   name: string;
   description: string;
   author: string;
-  releaseAt: Date;
+  releaseAt: string;
   coverUrl: string;
 }
 
 export interface AddBookResponse {
-  id: string;
   name: string;
   description: string;
   author: string;
-  releaseAt: Date;
+  releaseAt: string;
   coverUrl: string;
 }
 
@@ -33,16 +32,34 @@ export interface AddBookInput {
   name: string;
   description: string;
   author: string;
-  releaseAt: Date;
-  coverFile: FileList;
+  releaseAt: string;
+  coverUrl: File;
 }
 
 export type AddBookFormType = {
   name: string;
   description: string;
   author: string;
-  releaseAt: Date;
-  coverFile: FileList;
+  releaseAt: string;
+  coverUrl: File;
+};
+
+export interface UpdateBookResponse {
+  id: string;
+  name: string;
+  description: string;
+  author: string;
+  releaseAt: string;
+  coverUrl: string;
+}
+
+export type UpdateBookFormType = {
+  id: string;
+  name: string;
+  description: string;
+  author: string;
+  releaseAt: string;
+  coverUrl: FileList | string;
 };
 
 export type AddBookResponses = {

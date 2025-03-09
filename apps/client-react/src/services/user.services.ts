@@ -1,24 +1,22 @@
-import { AxiosResponse } from "axios";
+import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useApiRequest";
 import {
   CURRENT_USER_ROUTE,
   REGISTER_ROUTE,
 } from "../request/route-http/route-http";
-import { RegisterFormInput } from "../types/user/form.types";
-import { MethodHttpEnum } from "../enum/enum";
+import { RegisterFormInput, RegisterResponse } from "../types/user/form.types";
 import { CurrentUserResponse } from "../types/user/response.types";
 
 export const registerUser = async (
-  input: RegisterFormInput,
-) => {
+  input: RegisterFormInput
+): Promise<RegisterResponse> => {
   const params = input;
-  const response: AxiosResponse = await UseRequestApi({
+  return await UseRequestApi({
     method: MethodHttpEnum.POST,
     path: REGISTER_ROUTE,
     params,
     includeAuthorizationHeader: true,
   });
-  return response;
 };
 
 export const getCurrentUser = async () => {

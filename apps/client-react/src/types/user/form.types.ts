@@ -5,3 +5,9 @@ export type RegisterFormInput = {
   name: string;
   phone: string;
 };
+
+export type RegisterResponse = {
+  email: string;
+  name: string;
+  phone: string;
+};

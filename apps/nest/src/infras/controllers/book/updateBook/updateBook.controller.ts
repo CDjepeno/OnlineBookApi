@@ -29,7 +29,7 @@ export class UpdateBookController {
   ) {}
 
   @Put(':id')
-  @UseInterceptors(FileInterceptor('coverFile'))
+  @UseInterceptors(FileInterceptor('coverUrl'))
   @ApiOperation({
     summary: 'Update Book',
   })
@@ -46,22 +46,19 @@ export class UpdateBookController {
   ) {
     try {
       if (!coverFile && !updateBookDto.coverUrl) {
-        throw new BadRequestException('Cover file is required');
+        throw new BadRequestException('Cover file is required update book');
       }
-
       const result = await this.updateUsecaseProxy
         .getInstance()
-        .execute({ ...updateBookDto, id, coverFile });
+        .execute({ ...updateBookDto, id, coverUrl: coverFile });
+
+      // const { name, description, author, releaseAt, coverUrl } = result;
 
       return {
-        status: 'updated',
-        code: 201,
-        message: 'Data edited successfully',
         data: result,
       };
     } catch (error) {
       console.error('Error occurred while updating book:', error);
-
       if (error instanceof badrequestexception) {
         throw new badrequestexception(error.message);
       }
