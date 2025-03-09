@@ -46,7 +46,7 @@ export class AddBookController {
   ) {
     try {
       if (!coverUrl) {
-        throw new BadRequestException('Cover file is required');
+        throw new BadRequestException('Cover file is required to create book');
       }
 
       const result = await this.addBookUsecaseProxy

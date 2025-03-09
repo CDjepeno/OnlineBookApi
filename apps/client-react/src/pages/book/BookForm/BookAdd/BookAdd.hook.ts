@@ -20,7 +20,7 @@ const defaultValues: DefaultValues<AddBookFormType> = {
   name: "",
   description: "",
   author: "",
-  releaseAt: "",
+  releaseAt: new Date().toISOString(),
   coverUrl: undefined,
 };
 
@@ -61,9 +61,9 @@ function BookAddHook() {
   >({
     mutationFn: async (data: FormData) => createBook(data, userId),
 
-    onSuccess: (response) => {
-      console.log(response);
-      onSuccessCommon(response.message, RouterEnum.HOME);
+    onSuccess: (data) => {
+      console.log("data", data);
+      onSuccessCommon(data.message, RouterEnum.HOME);
       queryClient.invalidateQueries({
         queryKey: [BookQueriesKeysEnum.GetBooks],
       });
@@ -100,7 +100,8 @@ function BookAddHook() {
         return;
       }
 
-      await addBook(formData);
+      const response = await addBook(formData);
+      console.log("Reponse apres ajout du livre :", response);
     } catch (error) {
       console.error("error addbook", error);
     }

@@ -46,20 +46,16 @@ export class UpdateBookController {
   ) {
     try {
       if (!coverFile && !updateBookDto.coverUrl) {
-        throw new BadRequestException('Cover file is required');
+        throw new BadRequestException('Cover file is required update book');
       }
       const result = await this.updateUsecaseProxy
         .getInstance()
         .execute({ ...updateBookDto, id, coverUrl: coverFile });
 
-      const { name, description, author, releaseAt, coverUrl } = result;
+      // const { name, description, author, releaseAt, coverUrl } = result;
 
       return {
-        name,
-        description,
-        author,
-        releaseAt,
-        coverUrl,
+        data: result,
       };
     } catch (error) {
       console.error('Error occurred while updating book:', error);
