@@ -20,11 +20,11 @@ export type GetBookResponse = {
 }
 
 export type DeleteBooksResponse = {
-  message: string;
+  msg: string;
 }
 
 export type DeleteBookResponse = {
-  message: string;
+  msg: string;
 }
 
 export type GetBooksResponse = {

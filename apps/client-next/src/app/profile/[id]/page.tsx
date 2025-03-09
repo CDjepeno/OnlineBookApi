@@ -1,3 +1,4 @@
+"use client";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import {
@@ -19,15 +20,16 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import UserCard from "src/components/CardUser";
-import { BookForm } from "src/types/book/form.types";
-import { UserForm } from "src/types/user/form.types";
-import { UserFormInput } from "src/types/user/input.types";
-import { formatDate } from "../../utils/formatDate";
-import BookUpdateForm from "../book/BookForm/BookUpdate/BookUpdateForm";
-import { TableList } from "../book/components/TableList";
-import UserUpdateForm from "../user/Update-User/UserUpdateForm";
+import { useParams } from "next/navigation";
+import { UpdateBookInput } from "@/types/book/input.types";
+import { UpdateUserInput } from "@/types/user/input.types";
 import ProfileHook from "./profile.hook";
+import { TableList } from "@/components/TableList";
+import { formatDate } from "@/utils/formatDate";
+import Image from "next/image";
+import UserCard from "@/components/CardUser";
+import BookUpdateForm from "./bookUpdateForm";
+import { BookFormData } from "@/types/book/form.types";
 
 export default function Profile() {
   const [isFormUpdateBookOpen, setIsFormUpdateBookOpen] = useState(false);
@@ -36,7 +38,8 @@ export default function Profile() {
   const [openBookId, setOpenBookId] = useState<number | null>(null);
   const [selectedBookIds, setSelectedBookIds] = useState<number[]>([]);
   const [isBulkDelete, setIsBulkDelete] = useState(false);
-
+  const params = useParams();
+  const id = params.id as string;
   const limit = 6;
 
   const {
@@ -46,19 +49,19 @@ export default function Profile() {
     deleteBookMutation,
     user,
     deleteBooksMutation,
-    totalPage 
-  } = ProfileHook(currentPage, limit);
+    totalPage,
+  } = ProfileHook(currentPage, limit, id);
 
-  const [book, setBook] = useState<BookForm>({
-    id: 0,
+  const [book, setBook] = useState<BookFormData>({
+    bookId: 0,
     title: "",
     description: "",
     author: "",
     releaseAt: "",
-    coverUrl: undefined,
+    coverUrl: "",
   });
 
-  const [userForm, setUserForm] = useState<UserFormInput>({
+  const [userForm, setUserForm] = useState<UpdateUserInput>({
     id: user?.id || 0,
     email: user?.email || "",
     password: "",
@@ -85,12 +88,12 @@ export default function Profile() {
     }
   };
 
-  const editBook = (book: BookForm) => {
+  const editBook = (book: UpdateBookInput) => {
     setBook(book);
     setIsFormUpdateBookOpen(true);
   };
 
-  const editUser = (user: UserForm) => {
+  const editUser = (user: UpdateUserInput) => {
     setUserForm(user);
     setIsFormUpdateUserOpen(true);
   };
@@ -150,15 +153,16 @@ export default function Profile() {
         books
           ?.filter((book) => !book.hasFuturReservations)
           .map((book) => book.id) || [];
-      setSelectedBookIds(allSelectableBookIds);   
+      setSelectedBookIds(allSelectableBookIds);
     } else {
       // Désélectionne tous les livres
       setSelectedBookIds([]);
     }
   };
 
-  const isAllSelected =  
-    books && books.length > 0 &&
+  const isAllSelected =
+    books &&
+    books.length > 0 &&
     selectedBookIds.length ===
       books!.filter((book) => !book.hasFuturReservations).length;
 
@@ -166,11 +170,12 @@ export default function Profile() {
 
   const headCells = [
     <Checkbox
+      key={id}
       indeterminate={isIndeterminate}
       checked={isAllSelected}
       onChange={toggleSelectAllBooks}
     />,
-    "Name",
+    "Titre",
     "Auteur",
     "Description",
     "Date de parution",
@@ -182,6 +187,7 @@ export default function Profile() {
     books?.map((book) => ({
       cells: [
         <Checkbox
+          key={book.id}
           checked={selectedBookIds.includes(book.id)}
           onChange={() => toggleSelectBook(book.id)}
           disabled={book.hasFuturReservations} // Désactiver si la suppression est impossible
@@ -190,12 +196,15 @@ export default function Profile() {
         book.author,
         book.description,
         formatDate(book.releaseAt),
-        <img
+        <Image
           src={book.coverUrl}
           alt="couverture du book"
           style={{ width: "50px", height: "30px", objectFit: "cover" }}
+          key={book.id}
+          width={300}
+          height={300}
         />,
-        <Stack direction="row" justifyContent="start">
+        <Stack direction="row" justifyContent="start" key={book.id}>
           <IconButton aria-label="edit" onClick={() => editBook(book)}>
             <EditTwoToneIcon />
           </IconButton>
@@ -245,7 +254,7 @@ export default function Profile() {
           </Dialog>
         </Stack>,
       ],
-  })) || [];
+    })) || [];
 
   if (isPending && !user) {
     return (
@@ -373,10 +382,10 @@ export default function Profile() {
             boxShadow: 24,
           }}
         >
-          <UserUpdateForm
+          {/* <UserUpdateForm
             userUpdate={userForm}
             setIsFormUpdateUserOpen={setIsFormUpdateUserOpen}
-          />
+          /> */}
         </Box>
       </Modal>
       <Modal
@@ -385,19 +394,31 @@ export default function Profile() {
       >
         <Box
           sx={{
-            p: 4,
-            backgroundColor: "white",
-            margin: "auto",
-            mt: 25,
-            width: "35%",
-            borderRadius: 2,
-            boxShadow: 24,
+            position: "fixed", // Assure que la modal reste fixe
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Fond semi-transparent
           }}
         >
-          <BookUpdateForm
-            bookUpdate={book}
-            setIsFormUpdateBookOpen={setIsFormUpdateBookOpen}
-          />
+          <Box
+            sx={{
+              p: 4,
+              backgroundColor: "white",
+              width: "35%",
+              borderRadius: 2,
+              boxShadow: 24,
+            }}
+          >
+            <BookUpdateForm
+              bookUpdate={book}
+              setIsFormUpdateBookOpen={setIsFormUpdateBookOpen}
+            />
+          </Box>
         </Box>
       </Modal>
     </Container>

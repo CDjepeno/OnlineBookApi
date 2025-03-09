@@ -12,7 +12,7 @@ import { formatDate } from "@/utils/formatDate";
 
 interface BookCardProps {
   id: number;
-  name: string;
+  title: string;
   author: string;
   description: string;
   releaseAt: Date | string;
@@ -21,7 +21,7 @@ interface BookCardProps {
 
 export default function BookCard({
   id,
-  name,
+  title,
   author,
   description,
   releaseAt,
@@ -52,7 +52,7 @@ export default function BookCard({
       />
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography gutterBottom variant="h5" component="h2">
-          {name}
+          {title}
         </Typography>
         <Typography>{author}</Typography>
         <Typography>{truncateDescription(description, 100)}</Typography>

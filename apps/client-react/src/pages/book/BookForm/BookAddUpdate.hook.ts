@@ -26,9 +26,9 @@ function BookUpdateAddHook(setIsFormOpen?: (value: boolean) => void) {
   const { mutateAsync: updateBookMutation } = useMutation<
     UpdateBookResponse,
     AxiosError<unknown>,
-    { userId: number; data: FormData | Record<string, unknown> }
+    { bookId: number; data: FormData | Record<string, unknown> }
   >({
-    mutationFn: async ({ userId:id, data }) => updateBook(id, data),
+    mutationFn: async ({ bookId:id, data }) => updateBook(id, data),
 
     onSuccess: () => {
       if (setIsFormOpen) {
@@ -122,9 +122,9 @@ function BookUpdateAddHook(setIsFormOpen?: (value: boolean) => void) {
           data.append("author", author);
           data.append("releaseAt", releaseAt ? releaseAt.toString() : "");
 
-          await updateBookMutation({ userId:id, data });
+          await updateBookMutation({ bookId:id, data });
         }
-        await updateBookMutation({ userId:id, data });
+        await updateBookMutation({ bookId:id, data });
       } else {
         const formData = new FormData();
         formData.append("title", data.title);
@@ -146,7 +146,7 @@ function BookUpdateAddHook(setIsFormOpen?: (value: boolean) => void) {
 
   return {
     submit,
-    bookSchema,
+    bookSchema
   };
 }
 

@@ -27,8 +27,7 @@ export class DeleteBookController {
   })
   async deleteBook(
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<{ message: string }> {
-    await this.deleteBookUsecaseProxy.getInstance().execute(id);
-    return { message: `Le livre avec l'id ${id} a bien été supprimé.` };
+  ): Promise<{ msg: string }> {
+    return this.deleteBookUsecaseProxy.getInstance().execute(id);
   }
 }

@@ -29,7 +29,7 @@ export default function HomePage() {
     enabled: !!activeSearchTerm,
   });
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement| HTMLTextAreaElement>) => {
     setSearchTerm(event.target.value);
   };
 
@@ -102,7 +102,7 @@ export default function HomePage() {
                   key={book.id}
                   id={book.id}
                   coverUrl={book.coverUrl}
-                  name={book.title}
+                  title={book.title}
                   author={book.author}
                   description={book.description}
                   releaseAt={book.releaseAt}

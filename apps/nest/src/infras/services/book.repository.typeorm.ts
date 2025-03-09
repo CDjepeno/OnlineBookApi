@@ -113,11 +113,13 @@ export class BookRepositoryTypeorm implements BookRepository {
           `Aucun livre trouve pour l'utilisateur avec l'userId ${userId} `,
         );
       }
-
+      
       const booksWithReservations = books.map((book) => ({
         ...book,
         hasFuturReservations: book.bookings.some(
-          (booking) => new Date(booking.startAt) > new Date(),
+          (booking) =>
+            new Date(booking.startAt) > new Date() || // Réservation future
+            (new Date(booking.startAt) <= new Date() && new Date(booking.endAt) >= new Date()) // Réservation en cours
         ),
       }));
 
