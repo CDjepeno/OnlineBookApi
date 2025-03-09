@@ -1,13 +1,12 @@
 import { AuthContext, AuthContextValue } from "@/context/AuthContext";
 import { UseQueryWorkflowCallback } from "@/request/commons/useQueryWorkflowCallback";
 import { createBook } from "@/services/book.services";
-import { AddBookForm } from "@/types/book/form.types";
+import { BookFormData } from "@/types/book/form.types";
 import { AddBookResponse } from "@/types/book/response.types";
 import { BookQueriesKeysEnum, RouterEnum } from "@/types/enum/enum";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useContext } from "react";
-import * as yup from "yup";
 
 interface ErrorResponse {
   message: string;
@@ -21,18 +20,7 @@ function BookAddHook() {
 
   const userId = user && user.id;
 
-  const bookSchema = yup.object({
-    title: yup.string().required("Le titre doit être renseigné"),
-    description: yup.string().required("La description doit être renseignée"),
-    author: yup.string().required("L'auteur doit être renseigné"),
-    releaseAt: yup.string().required("La date de sortie doit être renseignée"),
-    coverUrl: yup
-      .mixed<FileList>()
-      .required("L'image de couverture est requise")
-      .test("fileSize", "L'image doit faire moins de 5MB", (value) =>
-        value ? value[0].size <= 2000000 : true
-      ),
-  });
+ 
 
   const { mutateAsync: addBookMutation } = useMutation<
     AddBookResponse,
@@ -65,7 +53,7 @@ function BookAddHook() {
     },
   });
 
-  const submit = async (data: AddBookForm) => {
+  const onSubmit = async (data: BookFormData) => {
     try {
         const formData = new FormData();
         formData.append("title", data.title);
@@ -86,8 +74,7 @@ function BookAddHook() {
   };
 
   return {
-    submit,
-    bookSchema,
+    onSubmit,
   };
 }
 

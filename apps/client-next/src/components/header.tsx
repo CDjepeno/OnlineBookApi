@@ -18,13 +18,11 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import {
-  GET_BOOK_BY_USER_ROUTE,
-  GET_BOOKINGS_USER_ROUTE,
-} from "../request/route-http/route-http";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AuthContext, AuthContextValue } from "@/context/AuthContext";
+import { RouterEnum } from "@/types/enum/enum";
+import { GET_BOOKINGS_USER_ROUTE } from "@/request/route-http/route-http";
 
 type LinkMap = {
   [key: string]: string;
@@ -344,7 +342,7 @@ function Header() {
                         href={
                           setting === "Dashboard"
                             ? `${GET_BOOKINGS_USER_ROUTE}/${user.id}`
-                            : `${GET_BOOK_BY_USER_ROUTE}/${user.id}`
+                            : `${RouterEnum.PROFILE}/${user.id}`
                         }
                         style={{ textDecoration: "none", color: "inherit" }}
                       >

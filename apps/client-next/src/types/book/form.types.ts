@@ -3,14 +3,24 @@ export type AddBookForm = {
   description: string;
   author: string;
   releaseAt: string;
-  coverUrl: FileList;
+  coverUrl: File;
 }
 
-export type BookForm = {
+
+export type UpdateBookForm = {
   id?: number;
   title: string;
   description: string;
   author: string;
   releaseAt: string;
-  coverUrl?: string | FileList;
+  coverUrl?: string | File;
 };
+
+export interface BookFormData {
+  id?: number;
+  title: string;
+  description: string;
+  author: string;
+  releaseAt: string;
+  coverUrl: File | string;
+}
