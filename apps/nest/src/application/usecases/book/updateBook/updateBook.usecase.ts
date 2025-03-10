@@ -36,9 +36,9 @@ export class UpdateBookUseCase {
         request.userId!,
       );
 
-      const res = await this.bookRepository.updateBook(request.id, updatedBook);
+      await this.bookRepository.updateBook(request.id, updatedBook);
 
-      return res;
+      return {msg: "Le livre a été mis à jour avec succès"};
     } catch (error) {
       if (
         error instanceof BadRequestException ||

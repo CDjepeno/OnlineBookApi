@@ -23,11 +23,11 @@ function BookUpdateHook(setIsFormOpen?: (value: boolean) => void) {
   >({
     mutationFn: async ({ bookId: id, data }) => updateBook(id, data),
 
-    onSuccess: () => {
+    onSuccess: (res) => {
       if (setIsFormOpen) {
         setIsFormOpen(false);
       }
-      onSuccessCommon("Le livre a été mis à jour avec succès");
+      onSuccessCommon(res.msg);
       queryClient.invalidateQueries({
         queryKey: [BookQueriesKeysEnum.BooksUser],
       });

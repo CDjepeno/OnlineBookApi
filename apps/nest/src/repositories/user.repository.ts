@@ -9,14 +9,13 @@ import { RefreshTokenResponse } from 'src/application/usecases/user/auth/refresh
 import { VerifyOtpResponse } from 'src/application/usecases/user/auth/verifyOtp/verifyOtp.response';
 import { CurrentUserByIdResponse } from 'src/application/usecases/user/GetUserById/current.user.response';
 import { UpdateUserRequest } from 'src/application/usecases/user/updateUser/update.user.request';
-import { UpdateUserResponse } from 'src/application/usecases/user/updateUser/update.user.response';
 
 export interface UsersRepository {
   signUp(user: AddUserRequest): Promise<void>;
   updateUser(
     user: Partial<UpdateUserRequest>,
     existingUser: CurrentUserByIdResponse,
-  ): Promise<UpdateUserResponse>;
+  ): Promise<void>;
   signIn(user: LoginUserRequest): Promise<{email: string}>;
   createJwt(email: string): Promise<VerifyOtpResponse>
   signOut(userId: LogoutUserRequest): Promise<void>;

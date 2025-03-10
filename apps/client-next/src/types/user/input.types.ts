@@ -11,8 +11,6 @@ export type VerifyOtpFormInput = {
 export type UserFormInput = {
   id?: number
   email: string;
-  password: string;
-  confirmPassword: string;
   name: string;
   phone: string;
   sexe: string;
@@ -21,8 +19,8 @@ export type UserFormInput = {
 export type UserFromData = {
   id?: number
   email: string;
-  password: string;
-  confirmPassword: string;
+  password?: string;
+  confirmPassword?: string;
   name: string;
   phone: string;
   sexe: string;

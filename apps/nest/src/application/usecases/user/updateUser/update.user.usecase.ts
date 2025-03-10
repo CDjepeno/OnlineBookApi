@@ -30,6 +30,8 @@ export class UpdateUserUseCase {
       request.sexe,
     );
 
-    return await this.userRepository.updateUser(user, existingUser);
+    await this.userRepository.updateUser(user, existingUser);
+
+    return {msg: "L'utilisateur a été mis à jour avec succès"}
   }
 }

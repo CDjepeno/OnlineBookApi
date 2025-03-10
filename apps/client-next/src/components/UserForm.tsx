@@ -16,19 +16,15 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Typography } from "@mui/material";
-import { UserFormInput, UserFromData } from "@/types/user/input.types";
+import { UserFromData } from "@/types/user/input.types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
 import RecyclingIcon from "@mui/icons-material/Recycling";
+import { useState } from "react";
 
 interface UserFormProps {
-  setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
-  showPassword: boolean;
-  setShowConfirmPassword: React.Dispatch<React.SetStateAction<boolean>>;
-  showConfirmPassword: boolean;
-  handleConfirmPasswordMatch?: () => void;
   onSubmit: (data: UserFromData) => void;
   userUpdate?: UserFromData;
   title: string;
@@ -36,23 +32,26 @@ interface UserFormProps {
 }
 
 const UserForm = ({
-  setShowPassword,
-  showPassword,
-  setShowConfirmPassword,
-  showConfirmPassword,
   onSubmit,
   title,
   button,
+  userUpdate
 }: UserFormProps) => {
-  const defaultValues: UserFormInput = {
-    email: "",
-    password: "",
-    confirmPassword: "",
-    name: "",
-    phone: "",
-    sexe: "",
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const defaultValues: UserFromData = {
+    id: userUpdate?.id || 0,
+    email: userUpdate?.email || "",
+    password: userUpdate?.password || "",
+    confirmPassword: userUpdate?.confirmPassword || "",
+    name: userUpdate?.name || "",
+    phone: userUpdate?.phone || "",
+    sexe: userUpdate?.sexe || "",
   };
 
+  const isEditing = Boolean(userUpdate); 
+   
   const signupSchema = yup.object({
     email: yup
       .string()
@@ -62,14 +61,27 @@ const UserForm = ({
         "Veuillez renseigner une adresse email valide"
       )
       .required("Veuillez renseigner une adresse email valide"),
-    password: yup
+      password: yup
       .string()
-      .required("Veuillez renseigner un mot de passe")
-      .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
-    confirmPassword: yup
+      .when("$isEditing", {
+        is: false, // Si userUpdate n'est PAS présent (création)
+        then: (schema) =>
+          schema
+            .required("Veuillez renseigner un mot de passe")
+            .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
+        otherwise: (schema) => schema.notRequired(), // Sinon (modification) → pas obligatoire
+      }),
+  
+      confirmPassword: yup
       .string()
-      .required("Veuillez confirmer le mot de passe")
-      .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
+      .when("$isEditing", {
+        is: false, // Si userUpdate n'est PAS présent (création)
+        then: (schema) =>
+          schema
+            .required("Veuillez confirmer le mot de passe")
+            .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
+        otherwise: (schema) => schema.notRequired(), // Sinon (modification) → pas obligatoire
+      }),
     name: yup
       .string()
       .required("Le nom doit être renseigné")
@@ -91,8 +103,8 @@ const UserForm = ({
     watch,
     control,
     formState: { errors, isSubmitting },
-  } = useForm({ defaultValues, resolver: yupResolver(signupSchema) });
-  
+  } = useForm({ defaultValues, context:{isEditing}, resolver: yupResolver(signupSchema) });
+
   const password = watch("password", "");
   const confirmPassword = watch("confirmPassword", "");
 
@@ -120,7 +132,7 @@ const UserForm = ({
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          {title === "Modifier" ? <RecyclingIcon /> : <LockOutlinedIcon />}
+          {button === "Modifier" ? <RecyclingIcon /> : <LockOutlinedIcon />}
         </Avatar>
         <Typography component="h1" variant="h5">
           {title}
@@ -176,7 +188,6 @@ const UserForm = ({
                 <Controller
                   name="phone"
                   control={control}
-                  defaultValue=""
                   render={({ field }) => (
                     <OutlinedInput {...field} label="Téléphone" />
                   )}
@@ -195,7 +206,7 @@ const UserForm = ({
                 <Controller
                   name="sexe"
                   control={control}
-                  defaultValue=""
+                  defaultValue={userUpdate?.sexe || ""}
                   rules={{ required: "Le sexe est obligatoire" }}
                   render={({ field }) => (
                     <Select {...field} label="Sexe">
@@ -211,104 +222,111 @@ const UserForm = ({
                 )}
               </FormControl>
             </Grid2>
-
-            <Grid2 size={12}>
-              <FormControl
-                fullWidth
-                error={Boolean(errors.password)}
-                variant="outlined"
-              >
-                <InputLabel>Mot de passe</InputLabel>
-                <Controller
-                  name="password"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <OutlinedInput
-                      {...field}
-                      id="outlined-adornment-password"
-                      type={showPassword ? "text" : "password"}
-                      label="Mot de passe"
-                      onBlur={handleConfirmPasswordMatch}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label={
-                              showPassword
-                                ? "hide the password"
-                                : "display the password"
-                            }
-                            onClick={() => setShowPassword((prev) => !prev)}
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    />
+            {title === "Inscription" && (
+              <Grid2 size={12}>
+                <FormControl
+                  fullWidth
+                  error={Boolean(errors.password)}
+                  variant="outlined"
+                >
+                  <InputLabel>Mot de passe</InputLabel>
+                  <Controller
+                    name="password"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <OutlinedInput
+                        {...field}
+                        id="outlined-adornment-password"
+                        type={showPassword ? "text" : "password"}
+                        label="Mot de passe"
+                        onBlur={handleConfirmPasswordMatch}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label={
+                                showPassword
+                                  ? "hide the password"
+                                  : "display the password"
+                              }
+                              onClick={() => setShowPassword((prev) => !prev)}
+                            >
+                              {showPassword ? (
+                                <VisibilityOff />
+                              ) : (
+                                <Visibility />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                      />
+                    )}
+                  />
+                  {errors.password && (
+                    <Typography variant="body2" color="error">
+                      {errors.password.message}
+                    </Typography>
                   )}
-                />
-                {errors.password && (
-                  <Typography variant="body2" color="error">
-                    {errors.password.message}
-                  </Typography>
-                )}
-              </FormControl>
-            </Grid2>
-
-            <Grid2 size={12}>
-              <FormControl
-                fullWidth
-                error={Boolean(errors.confirmPassword)}
-                variant="outlined"
-              >
-                <InputLabel>Confirmation Mot de passe</InputLabel>
-                <Controller
-                  name="confirmPassword"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: "La confirmation du mot de passe est obligatoire",
-                    validate: (value) =>
-                      value === password ||
-                      "Les mots de passe ne correspondent pas",
-                  }}
-                  render={({ field }) => (
-                    <OutlinedInput
-                      {...field}
-                      id="outlined-adornment-confirm-password"
-                      type={showConfirmPassword ? "text" : "password"}
-                      label="Confirmation Mot de passe"
-                      onBlur={handleConfirmPasswordMatch}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label={
-                              showConfirmPassword
-                                ? "hide the password"
-                                : "display the password"
-                            }
-                            onClick={() =>
-                              setShowConfirmPassword((prev) => !prev)
-                            }
-                          >
-                            {showConfirmPassword ? (
-                              <VisibilityOff />
-                            ) : (
-                              <Visibility />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    />
+                </FormControl>
+              </Grid2>
+            )}
+            {title === "Inscription" && (
+              <Grid2 size={12}>
+                <FormControl
+                  fullWidth
+                  error={Boolean(errors.confirmPassword)}
+                  variant="outlined"
+                >
+                  <InputLabel>Confirmation Mot de passe</InputLabel>
+                  <Controller
+                    name="confirmPassword"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required:
+                        "La confirmation du mot de passe est obligatoire",
+                      validate: (value) =>
+                        value === password ||
+                        "Les mots de passe ne correspondent pas",
+                    }}
+                    render={({ field }) => (
+                      <OutlinedInput
+                        {...field}
+                        id="outlined-adornment-confirm-password"
+                        type={showConfirmPassword ? "text" : "password"}
+                        label="Confirmation Mot de passe"
+                        onBlur={handleConfirmPasswordMatch}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label={
+                                showConfirmPassword
+                                  ? "hide the password"
+                                  : "display the password"
+                              }
+                              onClick={() =>
+                                setShowConfirmPassword((prev) => !prev)
+                              }
+                            >
+                              {showConfirmPassword ? (
+                                <VisibilityOff />
+                              ) : (
+                                <Visibility />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                      />
+                    )}
+                  />
+                  {errors.confirmPassword && (
+                    <Typography variant="body2" color="error">
+                      {errors.confirmPassword.message}
+                    </Typography>
                   )}
-                />
-                {errors.confirmPassword && (
-                  <Typography variant="body2" color="error">
-                    {errors.confirmPassword.message}
-                  </Typography>
-                )}
-              </FormControl>
-            </Grid2>
+                </FormControl>
+              </Grid2>
+            )}
           </Grid2>
           <Button
             type="submit"
@@ -319,7 +337,7 @@ const UserForm = ({
           >
             {button}
           </Button>
-          {title === "Modifier" && (
+          {title === "Inscription" && (
             <Grid2 container justifyContent="flex-end">
               <Grid2>
                 <Link href="/login">Already have an account? Sign in</Link>

@@ -3,7 +3,6 @@ import { GetAllBookResponsePagination } from 'src/application/usecases/book/getA
 import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
 import { GetBookByNameResponse } from 'src/application/usecases/book/getBookByName/getBookByName.response';
 import { GetBooksByUserPaginationResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
-import { UpdateBookResponse } from 'src/application/usecases/book/updateBook/updateBook.response';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
 
 export interface BookRepository {
@@ -22,7 +21,7 @@ export interface BookRepository {
   updateBook(
     id: number,
     book: Partial<BookEntity>,
-  ): Promise<UpdateBookResponse>;
+  ): Promise<void>;
   deleteBook(id: number): Promise<void>;
   deleteBooks(id: Array<string>): Promise<void>;
 }
