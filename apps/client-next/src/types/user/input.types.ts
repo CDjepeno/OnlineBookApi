@@ -18,7 +18,7 @@ export type UserFormInput = {
   sexe: string;
 };
 
-export type UpdateUserInput = {
+export type UserFromData = {
   id?: number
   email: string;
   password: string;
