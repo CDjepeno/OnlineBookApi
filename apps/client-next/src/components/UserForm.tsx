@@ -1,85 +1,104 @@
-"use client";
-
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+// UserForm.tsx
 import {
+  Avatar,
+  Box,
+  Button,
+  Container,
   FormControl,
   Grid2,
   IconButton,
   InputAdornment,
   InputLabel,
   MenuItem,
+  OutlinedInput,
   Select,
 } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import Link from "@mui/material/Link";
-import Typography from "@mui/material/Typography";
 import { Controller, useForm } from "react-hook-form";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useEffect, useState } from "react";
-import FormInput from "@/components/FormInput";
-import { UserFormInput } from "@/types/user/input.types";
-import * as yup from "yup";
+import { Typography } from "@mui/material";
+import { UserFormInput, UserFromData } from "@/types/user/input.types";
 import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Link from "next/link";
+import RecyclingIcon from "@mui/icons-material/Recycling";
 
 interface UserFormProps {
+  setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
+  showPassword: boolean;
+  setShowConfirmPassword: React.Dispatch<React.SetStateAction<boolean>>;
+  showConfirmPassword: boolean;
+  handleConfirmPasswordMatch?: () => void;
+  onSubmit: (data: UserFromData) => void;
+  userUpdate?: UserFromData;
   title: string;
   button: string;
-  onSubmit: (data: UserFormInput) => void;
-  userUpdate?: UserFormInput;
 }
 
-export default function UserForm({
+const UserForm = ({
+  setShowPassword,
+  showPassword,
+  setShowConfirmPassword,
+  showConfirmPassword,
+  onSubmit,
   title,
   button,
-  onSubmit,
-  userUpdate,
-}: UserFormProps) {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+}: UserFormProps) => {
+  const defaultValues: UserFormInput = {
+    email: "",
+    password: "",
+    confirmPassword: "",
+    name: "",
+    phone: "",
+    sexe: "",
+  };
 
-  const userSchema = yup.object({
-    name: yup.string().required("Le titre doit être renseigné"),
+  const signupSchema = yup.object({
     email: yup
       .string()
-      .required("Il faut préciser votre email")
-      .email("l'email n'est pas valide"),
-    phone: yup.string()
+      .email("Veuillez renseigner une adresse email valide")
       .matches(
-        /^(?:\+(\d{1,3}))?[-. ]?(\(?\d{1,4}\)?)[-. ]?(\d{1,4})[-. ]?(\d{1,4})[-. ]?(\d{1,4})$/,
-        "Le numéro de téléphone est invalide"
+        /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+        "Veuillez renseigner une adresse email valide"
       )
-      .required("Le numéro de téléphone est requis"),
-    sexe: yup.string().required("Le sex doit être renseigné"),
+      .required("Veuillez renseigner une adresse email valide"),
     password: yup
-          .string()
-          .required("Il faut préciser votre mot de passe")
-          .min(6, "Mot de passe trop court"),
+      .string()
+      .required("Veuillez renseigner un mot de passe")
+      .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
     confirmPassword: yup
-          .string()
-          .required("Il faut préciser votre mot de passe")
-          .min(6, "Mot de passe trop court"),
-  });
-  const {
-    handleSubmit,
-    control,
-    reset,
-    watch,
-    setError,
-    formState: { errors, isSubmitting },
-  } = useForm<UserFormInput>({
-    defaultValues: userUpdate ?? undefined,
-    resolver: yupResolver(userSchema),
+      .string()
+      .required("Veuillez confirmer le mot de passe")
+      .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
+    name: yup
+      .string()
+      .required("Le nom doit être renseigné")
+      .min(2, "Le nom doit être explicite")
+      .max(10, "Le titre doit être succinct"),
+    phone: yup
+      .string()
+      .matches(
+        /^(?:\+33|0)[1-9](?:\d{2}){4}$/,
+        "Veuillez entrer un numéro de téléphone valide"
+      )
+      .required("Veuillez renseigner un numéro valide"),
+    sexe: yup.string().required("Veuillez renseigner un numero valide"),
   });
 
+  const {
+    handleSubmit,
+    setError,
+    watch,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm({ defaultValues, resolver: yupResolver(signupSchema) });
+  
   const password = watch("password", "");
   const confirmPassword = watch("confirmPassword", "");
 
   const isPasswordMatch = password === confirmPassword;
 
-  const handleConfirmPasswordChange = () => {
+  const handleConfirmPasswordMatch = () => {
     if (!isPasswordMatch) {
       setError("confirmPassword", {
         type: "manual",
@@ -88,22 +107,20 @@ export default function UserForm({
     }
   };
 
-  useEffect(() => {
-    reset(userUpdate || undefined);
-  }, [userUpdate, reset]);
-
   return (
     <Container component="main" maxWidth="xs">
       <Box
         sx={{
           marginTop: 8,
           display: "flex",
+          my: 8,
+          mx: 4,
           flexDirection: "column",
           alignItems: "center",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
+          {title === "Modifier" ? <RecyclingIcon /> : <LockOutlinedIcon />}
         </Avatar>
         <Typography component="h1" variant="h5">
           {title}
@@ -115,146 +132,204 @@ export default function UserForm({
           sx={{ mt: 3 }}
         >
           <Grid2 container spacing={2}>
-            <Grid2>
-              <FormInput
-                name="name"
-                label="Name"
-                control={control}
-                errors={errors}
-              />
-              {errors.name && (
-                <small style={{ color: "red" }}>{errors.name.message}</small>
-              )}
+            <Grid2 size={12}>
+              <FormControl fullWidth error={Boolean(errors.name)}>
+                <InputLabel>Prénom</InputLabel>
+                <Controller
+                  name="name"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <OutlinedInput {...field} label="Prénom" />
+                  )}
+                />
+                {errors.name && (
+                  <Typography variant="body2" color="error">
+                    {errors.name.message}
+                  </Typography>
+                )}
+              </FormControl>
             </Grid2>
-            <Grid2>
-              <FormInput
-                name="email"
-                label="Email Address"
-                errors={errors}
-                control={control}
-              />
 
-              {errors.email && (
-                <small style={{ color: "red" }}>{errors.email.message}</small>
-              )}
+            <Grid2 size={12}>
+              <FormControl fullWidth error={Boolean(errors.email)}>
+                <InputLabel>Adresse mail</InputLabel>
+                <Controller
+                  name="email"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <OutlinedInput {...field} label="Adresse mail" />
+                  )}
+                />
+                {errors.email && (
+                  <Typography variant="body2" color="error">
+                    {errors.email.message}
+                  </Typography>
+                )}
+              </FormControl>
             </Grid2>
-            <Grid2>
-              <FormInput
-                name="phone"
-                label="Phone"
-                control={control}
-                errors={errors}
-              />
-              {errors.phone && (
-                <small style={{ color: "red" }}>{errors.phone.message}</small>
-              )}
+
+            <Grid2 size={12}>
+              <FormControl fullWidth error={Boolean(errors.phone)}>
+                <InputLabel>Téléphone</InputLabel>
+                <Controller
+                  name="phone"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <OutlinedInput {...field} label="Téléphone" />
+                  )}
+                />
+                {errors.phone && (
+                  <Typography variant="body2" color="error">
+                    {errors.phone.message}
+                  </Typography>
+                )}
+              </FormControl>
             </Grid2>
-            <Grid2>
+
+            <Grid2 size={12}>
               <FormControl fullWidth error={Boolean(errors.sexe)}>
-                <InputLabel id="demo-simple-select-label">Sexe</InputLabel>
+                <InputLabel>Sexe</InputLabel>
                 <Controller
                   name="sexe"
                   control={control}
                   defaultValue=""
                   rules={{ required: "Le sexe est obligatoire" }}
                   render={({ field }) => (
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label="Sexe"
-                      {...field}
-                    >
+                    <Select {...field} label="Sexe">
                       <MenuItem value="femme">Femme</MenuItem>
                       <MenuItem value="homme">Homme</MenuItem>
                     </Select>
                   )}
                 />
                 {errors.sexe && (
-                  <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                  <Typography variant="body2" color="error">
                     {errors.sexe.message}
                   </Typography>
                 )}
               </FormControl>
             </Grid2>
-            <Grid2>
-              <FormInput
-                name="password"
-                label="password"
-                type={showPassword ? "text" : "password"}
-                control={control}
-                onBlur={() => handleConfirmPasswordChange}
-                errors={errors}
-                slots={{
-                  input: InputAdornment,
-                }}
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPassword(!showPassword)}
-                          edge="end"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-              />
+
+            <Grid2 size={12}>
+              <FormControl
+                fullWidth
+                error={Boolean(errors.password)}
+                variant="outlined"
+              >
+                <InputLabel>Mot de passe</InputLabel>
+                <Controller
+                  name="password"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <OutlinedInput
+                      {...field}
+                      id="outlined-adornment-password"
+                      type={showPassword ? "text" : "password"}
+                      label="Mot de passe"
+                      onBlur={handleConfirmPasswordMatch}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label={
+                              showPassword
+                                ? "hide the password"
+                                : "display the password"
+                            }
+                            onClick={() => setShowPassword((prev) => !prev)}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  )}
+                />
+                {errors.password && (
+                  <Typography variant="body2" color="error">
+                    {errors.password.message}
+                  </Typography>
+                )}
+              </FormControl>
             </Grid2>
-            <Grid2>
-              <FormInput
-                name="confirmPassword"
-                label="Confirm Password"
-                type={showConfirmPassword ? "text" : "password"}
-                control={control}
-                errors={errors}
-                onBlur={handleConfirmPasswordChange}
-                slots={{
-                  input: InputAdornment,
-                }}
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
-                          edge="end"
-                        >
-                          {showConfirmPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-              />
+
+            <Grid2 size={12}>
+              <FormControl
+                fullWidth
+                error={Boolean(errors.confirmPassword)}
+                variant="outlined"
+              >
+                <InputLabel>Confirmation Mot de passe</InputLabel>
+                <Controller
+                  name="confirmPassword"
+                  control={control}
+                  defaultValue=""
+                  rules={{
+                    required: "La confirmation du mot de passe est obligatoire",
+                    validate: (value) =>
+                      value === password ||
+                      "Les mots de passe ne correspondent pas",
+                  }}
+                  render={({ field }) => (
+                    <OutlinedInput
+                      {...field}
+                      id="outlined-adornment-confirm-password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      label="Confirmation Mot de passe"
+                      onBlur={handleConfirmPasswordMatch}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label={
+                              showConfirmPassword
+                                ? "hide the password"
+                                : "display the password"
+                            }
+                            onClick={() =>
+                              setShowConfirmPassword((prev) => !prev)
+                            }
+                          >
+                            {showConfirmPassword ? (
+                              <VisibilityOff />
+                            ) : (
+                              <Visibility />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  )}
+                />
+                {errors.confirmPassword && (
+                  <Typography variant="body2" color="error">
+                    {errors.confirmPassword.message}
+                  </Typography>
+                )}
+              </FormControl>
             </Grid2>
           </Grid2>
           <Button
             type="submit"
-            fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             disabled={isSubmitting}
+            fullWidth
           >
             {button}
           </Button>
-          <Grid2 container justifyContent="flex-end">
-            <Grid2>
-              <Link href="/login" variant="body2">
-                Already have an account? Sign in
-              </Link>
+          {title === "Modifier" && (
+            <Grid2 container justifyContent="flex-end">
+              <Grid2>
+                <Link href="/login">Already have an account? Sign in</Link>
+              </Grid2>
             </Grid2>
-          </Grid2>
+          )}
         </Box>
       </Box>
     </Container>
   );
-}
+};
+
+export default UserForm;
