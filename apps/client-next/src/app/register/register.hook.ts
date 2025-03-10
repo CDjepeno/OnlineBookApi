@@ -3,13 +3,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflowCallback";
-import { RegisterFormInput } from "@/types/user/input.types";
+import { UserFormInput } from "@/types/user/input.types";
 import { registerUser } from "@/services/user.services";
 import { RouterEnum } from "@/types/enum/enum";
 
 export default function RegisterHook() {
 
-  const defaultValues: RegisterFormInput = {
+  const defaultValues: UserFormInput = {
     email: "",
     password: "",
     confirmPassword: "",
@@ -40,7 +40,13 @@ export default function RegisterHook() {
       .required("Le nom doit être renseigné")
       .min(2, "Le nom doit être explicite")
       .max(10, "Le titre doit être succinct"),
-    phone: yup.string().required("Veuillez renseigner un numero valide"),
+      phone: yup
+      .string()
+      .matches(
+        /^(?:\+33|0)[1-9](?:\d{2}){4}$/,
+        "Veuillez entrer un numéro de téléphone valide"
+      )
+      .required("Veuillez renseigner un numéro valide"),
     sexe: yup.string().required("Veuillez renseigner un numero valide"),
   });
 
@@ -60,7 +66,7 @@ export default function RegisterHook() {
   const { onSuccessCommon } = UseQueryWorkflowCallback();
 
   const { mutateAsync: submit } = useMutation({
-    mutationFn: (input: RegisterFormInput) => registerUser(input),
+    mutationFn: (input: UserFormInput) => registerUser(input),
     onSuccess: (response) => {
       onSuccessCommon(
         response.msg,
@@ -83,7 +89,7 @@ export default function RegisterHook() {
     }
   };
 
-  const onSubmit = (input: RegisterFormInput) => {
+  const onSubmit = (input: UserFormInput) => {
     return submit(input);
   };
 

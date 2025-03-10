@@ -53,8 +53,6 @@ function BookUpdateHook(setIsFormOpen?: (value: boolean) => void) {
   });
 
   const onSubmit = async (data: BookFormData) => {
-    console.log("OnSubmit Update");
-
     try {
       const { id, title, description, author, releaseAt, coverUrl } = data;
       if (coverUrl instanceof File) {

@@ -8,6 +8,7 @@ import {
   InputAdornment,
   InputLabel,
   MenuItem,
+  OutlinedInput,
   Select,
 } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
@@ -21,7 +22,6 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import RegisterHook from "./register.hook";
 import FormInput from "@/components/FormInput";
-
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -40,7 +40,7 @@ export default function Register() {
 
   const isPasswordMatch = password === confirmPassword;
 
-  const handleConfirmPasswordChange = () => {
+  const handleConfirmPasswordMatch = () => {
     if (!isPasswordMatch) {
       setError("confirmPassword", {
         type: "manual",
@@ -55,6 +55,8 @@ export default function Register() {
         sx={{
           marginTop: 8,
           display: "flex",
+          my: 8,
+          mx: 4,
           flexDirection: "column",
           alignItems: "center",
         }}
@@ -63,7 +65,7 @@ export default function Register() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+          Inscription
         </Typography>
         <Box
           component="form"
@@ -72,41 +74,31 @@ export default function Register() {
           sx={{ mt: 3 }}
         >
           <Grid2 container spacing={2}>
-            <Grid2>
+            <Grid2 size={12}>
               <FormInput
                 name="name"
-                label="Name"
+                label="Prénom"
                 control={control}
                 errors={errors}
               />
-              {errors.name && (
-                <small style={{ color: "red" }}>{errors.name.message}</small>
-              )}
             </Grid2>
-            <Grid2>
+            <Grid2 size={12}>
               <FormInput
                 name="email"
-                label="Email Address"
+                label="Adresse mail"
                 errors={errors}
                 control={control}
               />
-
-              {errors.email && (
-                <small style={{ color: "red" }}>{errors.email.message}</small>
-              )}
             </Grid2>
-            <Grid2>
+            <Grid2 size={12}>
               <FormInput
                 name="phone"
-                label="Phone"
+                label="Téléphone"
                 control={control}
                 errors={errors}
               />
-              {errors.phone && (
-                <small style={{ color: "red" }}>{errors.phone.message}</small>
-              )}
             </Grid2>
-            <Grid2>
+            <Grid2 size={12}>
               <FormControl fullWidth error={Boolean(errors.sexe)}>
                 <InputLabel id="demo-simple-select-label">Sexe</InputLabel>
                 <Controller
@@ -133,69 +125,159 @@ export default function Register() {
                 )}
               </FormControl>
             </Grid2>
-            <Grid2>
-              <FormInput
+            <Grid2 size={12}>
+              {/* <FormInput
                 name="password"
                 label="password"
                 type={showPassword ? "text" : "password"}
                 control={control}
-                onBlur={() => handleConfirmPasswordChange}
                 errors={errors}
-                slots={{
-                  input: InputAdornment,
-                }}
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPassword(!showPassword)}
-                          edge="end"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-              />
+                onBlur={handleConfirmPasswordChange}
+                // slots={{
+                //   input: "input",
+                // }}
+                // slotProps={{
+                //   input: {
+                //     endAdornment: (
+                //       <InputAdornment position="end">
+                //         <IconButton
+                //           onClick={() => setShowPassword(!showPassword)}
+                //           edge="end"
+                //         >
+                //           {showPassword ? <VisibilityOff /> : <Visibility />}
+                //         </IconButton>
+                //       </InputAdornment>
+                //     ),
+                //   },
+                // }}
+              /> */}
+              {/* https://mui.com/material-ui/react-text-field/ */}
+              <FormControl sx={{ width: "100%" }} variant="outlined" error={Boolean(errors.password)}>
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Mot de passe
+                </InputLabel>
+                <Controller
+                  name="password"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <OutlinedInput
+                    {...field} // Important pour lier React Hook Form
+                    id="outlined-adornment-password"
+                    type={showPassword ? "text" : "password"}
+                    label="Mot de passe"
+                    onBlur={handleConfirmPasswordMatch}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label={
+                              showPassword
+                                ? "hide the password"
+                                : "display the password"
+                            }
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  )}
+                />
+                {errors.password && (
+                  <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                    {errors.password.message}
+                  </Typography>
+                )}
+              </FormControl>
             </Grid2>
-            <Grid2>
-              <FormInput
+            <Grid2 size={12}>
+              {/* <FormInput
                 name="confirmPassword"
                 label="Confirm Password"
                 type={showConfirmPassword ? "text" : "password"}
                 control={control}
                 errors={errors}
-                onBlur={handleConfirmPasswordChange}
-                slots={{
-                  input: InputAdornment,
-                }}
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          edge="end"
-                        >
-                          {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-              />
+                // slots={{
+                //   input: "input",
+                // }}
+                // slotProps={{
+                //   input: {
+                //     endAdornment: (
+                //       <InputAdornment position="end">
+                //         <IconButton
+                //           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                //           edge="end"
+                //         >
+                //           {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                //         </IconButton>
+                //       </InputAdornment>
+                //     ),
+                //   },
+                // }}
+              /> */}
+              <FormControl sx={{ width: "100%" }} variant="outlined" error={Boolean(errors.confirmPassword)}>
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Confirm mot de passe
+                </InputLabel>
+                <Controller
+                  name="confirmPassword"
+                  control={control}
+                  defaultValue=""
+                  rules={{
+                    required: "La confirmation du mot de passe est obligatoire",
+                    validate: (value) =>
+                      value === watch("password") ||
+                      "Les mots de passe ne correspondent pas",
+                  }}
+                  render={({ field }) => (
+                    <OutlinedInput
+                      {...field} // Important pour lier React Hook Form
+                      id="outlined-adornment-password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      label="Confirmation Mot de passe"
+                      onBlur={handleConfirmPasswordMatch}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label={
+                              showConfirmPassword
+                                ? "hide the password"
+                                : "display the password"
+                            }
+                            onClick={() =>
+                              setShowConfirmPassword((prev) => !prev)
+                            }
+                            edge="end"
+                          >
+                            {showConfirmPassword ? (
+                              <VisibilityOff />
+                            ) : (
+                              <Visibility />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  )}
+                />
+                {errors.confirmPassword && (
+                  <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                    {errors.confirmPassword.message}
+                  </Typography>
+                )}
+              </FormControl>
             </Grid2>
           </Grid2>
           <Button
             type="submit"
-            fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             disabled={isSubmitting}
+            fullWidth
           >
-            Sign Up
+            Enregister
           </Button>
           <Grid2 container justifyContent="flex-end">
             <Grid2>

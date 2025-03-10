@@ -19,12 +19,16 @@ interface FormInputProps<T extends FieldValues>
   errors: FieldErrors<T>;
   type?: string;
   onBlur?: () => void;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement| HTMLTextAreaElement>) => void;
+  onChange?: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   customField?: (fieldProps: {
     field: ControllerRenderProps<T, Path<T>>;
     fieldState: ControllerFieldState;
     formState: UseFormStateReturn<T>;
   }) => React.ReactNode;
+  slots?: Record<string, React.ElementType>;
+  slotProps?: Record<string, unknown>;
 }
 
 function FormInput<T extends FieldValues>({
@@ -36,8 +40,6 @@ function FormInput<T extends FieldValues>({
   onBlur,
   customField,
   onChange,
-  slots,
-  slotProps,
   ...props
 }: FormInputProps<T>) {
   return (
@@ -46,19 +48,25 @@ function FormInput<T extends FieldValues>({
       control={control}
       render={({ field, fieldState, formState }) => {
         if (customField) {
-          const customFieldResult = customField({ field, fieldState, formState });
+          const customFieldResult = customField({
+            field,
+            fieldState,
+            formState,
+          });
           if (React.isValidElement(customFieldResult)) {
             return customFieldResult;
           }
 
-          console.error("The customField function must return a valid React element.");
+          console.error(
+            "The customField function must return a valid React element."
+          );
           return <></>; // Retourne un fragment vide comme fallback
         }
 
         return (
           <TextField
             {...field}
-            value={field.value || ""} 
+            value={field.value || ""}
             {...props}
             label={label}
             fullWidth
@@ -71,8 +79,6 @@ function FormInput<T extends FieldValues>({
               field.onChange(event); // Appelle le onChange de react-hook-form
               onChange?.(event); // Appelle le onChange passé en prop (s'il existe)
             }}
-            slots={slots}
-            slotProps={slotProps}
           />
         );
       }}
