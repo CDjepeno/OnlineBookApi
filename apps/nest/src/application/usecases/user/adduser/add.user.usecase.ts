@@ -18,12 +18,6 @@ export class AddUserUseCase {
         throw new InvalidPhoneNumberException("Numero n'est pas valide");
       }
 
-      await this.nodemailerClient.sendMail({
-        to: request.email,
-        subject: `Confirmation de votre inscription`,
-        text: `Bonjour ${request.name}, \nVotre compte a bien été crée`,
-      });
-
       const user = new User(
         request.id,
         request.name,
@@ -34,8 +28,15 @@ export class AddUserUseCase {
 
       await this.usersRepository.signUp(user);
 
+      await this.nodemailerClient.sendMail({
+        to: request.email,
+        subject: `Confirmation de votre inscription`,
+        text: `Bonjour ${request.name}, \nVotre compte a bien été crée`,
+      });
+
       return { message: 'Votre compte a bien été crée' };
     } catch (error) {
+      console.log("Erreur lors de l'inscription de l'utilisateur :", error);
       throw error;
     }
   }
