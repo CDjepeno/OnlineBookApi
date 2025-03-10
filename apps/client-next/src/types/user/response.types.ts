@@ -23,22 +23,27 @@ export type CurrentUserResponse = {
 };
 
 export interface UpdateUserResponse {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  phone: string;
-  sexe: string;
+  msg: string;
 }
 
 export type GetUserByIdResponse = {
   id: number;
   name: string;
+  password?: string;
+  confirmPassword?: string;
   email: string;
   phone: string;
   sexe: string;
 };
-
+export type UserFromData = {
+  id?: number
+  email: string;
+  password?: string;
+  confirmPassword?: string;
+  name: string;
+  phone: string;
+  sexe: string;
+};
 export type RegisterResponse = {
   msg: string;
 };

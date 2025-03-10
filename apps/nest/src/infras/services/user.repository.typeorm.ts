@@ -17,7 +17,6 @@ import { LogoutUserRequest } from 'src/application/usecases/user/auth/logout/log
 import { RefreshTokenRequest } from 'src/application/usecases/user/auth/refreshToken/refresh.token.request';
 import { RefreshTokenResponse } from 'src/application/usecases/user/auth/refreshToken/refresh.token.response';
 import { UpdateUserRequest } from 'src/application/usecases/user/updateUser/update.user.request';
-import { UpdateUserResponse } from 'src/application/usecases/user/updateUser/update.user.response';
 import { QueryFailedError, Repository } from 'typeorm';
 import { User } from '../models/user.model';
 import { CurrentUserByIdResponse } from 'src/application/usecases/user/GetUserById/current.user.response';
@@ -198,7 +197,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
   async updateUser(
     user: Partial<UpdateUserRequest>,
     existingUser: CurrentUserByIdResponse,
-  ): Promise<UpdateUserResponse> {
+  ): Promise<void> {
     try {
       existingUser.email = user.email!;
       existingUser.name = user.name!;
@@ -206,9 +205,8 @@ export class UserRepositoryTypeorm implements UsersRepository {
       existingUser.password = user.password!;
       existingUser.sexe = user.sexe!;
 
-      const res = await this.repository.save(existingUser);
+      await this.repository.save(existingUser);
 
-      return res;
     } catch (error) {
       console.error("Erreur lors de la modification d'un livre :", error);
       if (error instanceof NotFoundException) {

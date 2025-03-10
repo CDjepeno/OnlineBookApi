@@ -53,19 +53,10 @@ export class UpdateBookController {
 
       const dataToUpdate = {...updateBookDto, id, coverUrl}
       
-      const result = await this.updateUsecaseProxy
+      return await this.updateUsecaseProxy
         .getInstance()
         .execute(dataToUpdate);
 
-      const { title, description, author, releaseAt } = result;
-
-      return {
-        title,
-        description,
-        author,
-        releaseAt,
-        coverUrl,
-      };
     } catch (error) {
       console.error('Error occurred while updating book:', error);
 

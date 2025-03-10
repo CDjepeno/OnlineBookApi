@@ -33,23 +33,11 @@ export class UpdateUserController {
     try {
       const dataToUpdate = {...updateUserDto, id: idUser}
 
-      const result = await this.updateUsecaseProxy
+      return await this.updateUsecaseProxy
         .getInstance()
         .execute(dataToUpdate);
       
-      const { name, id, email, password, phone, sexe } = result;
-
-      return {
-        id,
-        name,
-        email,
-        password,
-        phone,
-        sexe
-      };
     } catch (error) {
-      console.error('Error occurred while updating user:', error);
-
       if (error instanceof BadRequestException) {
         throw new BadRequestException(error.message);
       }

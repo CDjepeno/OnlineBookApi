@@ -1,9 +1,5 @@
 export type UpdateBookResponse = {
-  name: string;
-  description: string;
-  author: string;
-  releaseAt: string;
-  coverUrl: string;
+  msg: string;
 }
 
 export type ErrorResponse = {

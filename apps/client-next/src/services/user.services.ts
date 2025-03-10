@@ -3,10 +3,10 @@ import { MethodHttpEnum } from "@/types/enum/enum";
 import { UseRequestApi } from "@/request/commons/useApiRequest";
 import { CURRENT_USER_ROUTE, GET_USER_BY_ID_ROUTE, REGISTER_ROUTE, USER_ROUTE } from "@/request/route-http/route-http";
 import { CurrentUserResponse, GetUserByIdResponse, RegisterResponse, UpdateUserResponse } from "@/types/user/response.types";
-import { RegisterFormInput } from "@/types/user/input.types";
+import { UserFromData } from "@/types/user/input.types";
 
 export const registerUser = async (
-  input: RegisterFormInput
+  input: UserFromData
 ): Promise<RegisterResponse> => {
   const params = input;
   return await UseRequestApi({
@@ -19,7 +19,7 @@ export const registerUser = async (
 
 export const updateUser = async (
   id: number,
-  data: RegisterFormInput,
+  data: UserFromData,
 ): Promise<UpdateUserResponse> => {
   return await UseRequestApi({
     method: MethodHttpEnum.PUT,

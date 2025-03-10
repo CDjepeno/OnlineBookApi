@@ -7,4 +7,5 @@ export type CurrentUserByIdResponse = {
   phone: string;
   sexe: string;
   password?:string
+  confirmPassword?:string
 };

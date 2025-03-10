@@ -22,7 +22,6 @@ import {
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { UpdateBookInput } from "@/types/book/input.types";
-import { UpdateUserInput } from "@/types/user/input.types";
 import ProfileHook from "./profile.hook";
 import { TableList } from "@/components/TableList";
 import { formatDate } from "@/utils/formatDate";
@@ -30,6 +29,8 @@ import Image from "next/image";
 import UserCard from "@/components/CardUser";
 import BookUpdateForm from "./bookUpdateForm";
 import { BookFormData } from "@/types/book/form.types";
+import { UserFromData } from "@/types/user/input.types";
+import UserUpdateForm from "./userUpdateForm";
 
 export default function Profile() {
   const [isFormUpdateBookOpen, setIsFormUpdateBookOpen] = useState(false);
@@ -61,7 +62,7 @@ export default function Profile() {
     coverUrl: "",
   });
 
-  const [userForm, setUserForm] = useState<UpdateUserInput>({
+  const [userForm, setUserForm] = useState<UserFromData>({
     id: user?.id || 0,
     email: user?.email || "",
     password: "",
@@ -93,7 +94,7 @@ export default function Profile() {
     setIsFormUpdateBookOpen(true);
   };
 
-  const editUser = (user: UpdateUserInput) => {
+  const editUser = (user: UserFromData) => {
     setUserForm(user);
     setIsFormUpdateUserOpen(true);
   };
@@ -382,10 +383,11 @@ export default function Profile() {
             boxShadow: 24,
           }}
         >
-          {/* <UserUpdateForm
-            userUpdate={userForm}
+          <UserUpdateForm
+            userUpdate={user!}
             setIsFormUpdateUserOpen={setIsFormUpdateUserOpen}
-          /> */}
+
+          />
         </Box>
       </Modal>
       <Modal
