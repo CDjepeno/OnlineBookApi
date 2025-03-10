@@ -7,7 +7,6 @@ import { RouterEnum } from "../../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../../request/commons/useQueryWorkflowCallback";
 import { registerUser } from "../../../services/user.services";
 import { RegisterFormInput } from "../../../types/user/form.types";
-import { AxiosResponse } from "axios";
 
 export default function RegisterHook() {
   const navigate = useNavigate();
@@ -24,10 +23,6 @@ export default function RegisterHook() {
     email: yup
       .string()
       .email("Veuillez renseigner une adresse email valide")
-      .matches(
-        /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-        "Veuillez renseigner une adresse email valide"
-      )
       .required("Veuillez renseigner une adresse email valide"),
     password: yup
       .string()
@@ -35,55 +30,42 @@ export default function RegisterHook() {
       .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
     confirmPassword: yup
       .string()
-      .required("Veuillez confirmer le mot de passe")
-      .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
+      .oneOf([yup.ref("password")], "Les mots de passe ne correspondent pas.")
+      .required("Veuillez confirmer le mot de passe"),
     name: yup
       .string()
       .required("Le nom doit être renseigné")
       .min(2, "Le nom doit être explicite")
       .max(10, "Le titre doit être succinct"),
-    phone: yup.string().required("Veuillez renseigner un numero valide"),
+    phone: yup
+      .string()
+      .matches(/^[0-9]{10}$/, "Veuillez renseigner un numero valide")
+      .required("Veuillez renseigner un numero valide"),
   });
 
   const {
     register,
     handleSubmit,
     setError,
-    watch,
     control,
     formState: { errors, isSubmitting },
   } = useForm({ defaultValues, resolver: yupResolver(signupSchema) });
 
-  const validatePasswordMatch = (value: string) => {
-    const password = watch("password");
-    return password === value || "Les mots de passe ne correspondent pas.";
-  };
-  const { onSuccessCommon } = UseQueryWorkflowCallback();
+  const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
 
   const { mutateAsync: submit } = useMutation({
     mutationFn: (input: RegisterFormInput) => registerUser(input),
-    onSuccess: (response: AxiosResponse<RegisterResponse>) => {
-      onSuccessCommon(
-        response.data.message,
-        RouterEnum.LOGIN,
-      );
+    onSuccess: (response) => {
+      console.log("data", response);
+      onSuccessCommon(response.data.message, RouterEnum.LOGIN);
       navigate(RouterEnum.LOGIN);
     },
+
+    onError: (error) => {
+      console.log("erreur lors de l'inscription", error);
+      onErrorCommon("Une erreur est survenue lors de l'inscription");
+    },
   });
-
-  const password = watch("password", "");
-  const confirmPassword = watch("confirmPassword", "");
-
-  const isPasswordMatch = password === confirmPassword;
-
-  const handleConfirmPasswordChange = () => {
-    if (!isPasswordMatch) {
-      setError("confirmPassword", {
-        type: "manual",
-        message: "Les mots de passe ne correspondent pas.",
-      });
-    }
-  };
 
   const onSubmit = (input: RegisterFormInput) => {
     return submit(input);
@@ -94,12 +76,8 @@ export default function RegisterHook() {
     register,
     handleSubmit,
     setError,
-    watch,
     control,
     errors,
     isSubmitting,
-    handleConfirmPasswordChange,
-    isPasswordMatch,
-    validatePasswordMatch,
   };
 }

@@ -8,19 +8,12 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Controller } from "react-hook-form";
-import RegisterHook from "./Register.hook";
 import FormInput from "../../../components/FormInput";
+import RegisterHook from "./Register.hook";
 
 export default function Register() {
-  const {
-    onSubmit,
-    handleSubmit,
-    control,
-    errors,
-    isSubmitting,
-    isPasswordMatch,
-    handleConfirmPasswordChange,
-  } = RegisterHook();
+  const { onSubmit, handleSubmit, control, errors, isSubmitting } =
+    RegisterHook();
 
   return (
     <Container component="main" maxWidth="xs">
@@ -52,10 +45,6 @@ export default function Register() {
                 errors={errors}
                 control={control}
               />
-
-              {errors.email && (
-                <small style={{ color: "red" }}>{errors.email.message}</small>
-              )}
             </Grid>
             <Grid item xs={12}>
               <FormInput
@@ -63,12 +52,11 @@ export default function Register() {
                 label="password"
                 type="password"
                 control={control}
-                onblur={() => handleConfirmPasswordChange}
                 errors={errors}
               />
             </Grid>
             <Grid item xs={12}>
-            <Controller
+              <Controller
                 name="confirmPassword"
                 control={control}
                 render={({ field }) => (
@@ -78,12 +66,8 @@ export default function Register() {
                     fullWidth
                     label="Confirm Password"
                     type="password"
-                    error={!isPasswordMatch}
-                    helperText={
-                      !isPasswordMatch
-                        ? "Les mots de passe ne correspondent pas."
-                        : ""
-                    }
+                    error={!!errors.confirmPassword}
+                    helperText={errors.confirmPassword?.message}
                   />
                 )}
               />
@@ -95,9 +79,6 @@ export default function Register() {
                 control={control}
                 errors={errors}
               />
-              {errors.name && (
-                <small style={{ color: "red" }}>{errors.name.message}</small>
-              )}
             </Grid>
             <Grid item xs={12}>
               <FormInput
@@ -106,9 +87,6 @@ export default function Register() {
                 control={control}
                 errors={errors}
               />
-              {errors.phone && (
-                <small style={{ color: "red" }}>{errors.phone.message}</small>
-              )}
             </Grid>
           </Grid>
           <Button

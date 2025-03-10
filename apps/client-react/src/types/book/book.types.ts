@@ -63,5 +63,5 @@ export type UpdateBookFormType = {
 };
 
 export type AddBookResponses = {
-message : string;
+  message : string;
 }
