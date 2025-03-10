@@ -23,7 +23,7 @@ export default function Login() {
     errors,
     isSubmitting,
     control,
-    setValue
+    setValue,
   } = LoginHook();
 
   const [openOtp, setOpenOtp] = useState(false); // État pour la modal OTP
@@ -48,14 +48,18 @@ export default function Login() {
     setOpenOtp(false); // Fermer la modal après succès
   };
 
-  const handleEmailChange = async (e:React.ChangeEvent<HTMLInputElement> ) => {
+  const handleEmailChange = async (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const value = e.target.value;
-    setValue('email', value);
+    setValue("email", value);
   };
 
-  const handlePasswordChange = async (e:React.ChangeEvent<HTMLInputElement> ) => {
+  const handlePasswordChange = async (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const value = e.target.value;
-    setValue('password', value);
+    setValue("password", value);
   };
 
   return (
@@ -110,7 +114,7 @@ export default function Login() {
                 errors={errors}
                 sx={{ mb: 2 }}
                 onChange={handleEmailChange}
-                />
+              />
 
               <FormInput
                 name="password"

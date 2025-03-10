@@ -53,7 +53,7 @@ export default function Profile() {
   } = ProfileHook(currentPage, limit, id);
 
   const [book, setBook] = useState<BookFormData>({
-    bookId: 0,
+    id: 0,
     title: "",
     description: "",
     author: "",
