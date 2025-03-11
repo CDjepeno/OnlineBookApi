@@ -27,11 +27,10 @@ export class ContactController {
   })
   async bookingBook(@Body() contactDto: ContactDto) {
     try {
-      const result = await this.contactUsecaseProxy
+      return await this.contactUsecaseProxy
         .getInstance()
         .execute(contactDto);
 
-      return result;
     } catch (error) {
       console.error('Error occurred while booking book:', error);
       if (
