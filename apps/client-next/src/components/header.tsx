@@ -22,7 +22,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AuthContext, AuthContextValue } from "@/context/AuthContext";
 import { RouterEnum } from "@/types/enum/enum";
-import { GET_BOOKINGS_USER_ROUTE } from "@/request/route-http/route-http";
 
 type LinkMap = {
   [key: string]: string;
@@ -341,7 +340,7 @@ function Header() {
                       <Link
                         href={
                           setting === "Dashboard"
-                            ? `${GET_BOOKINGS_USER_ROUTE}/${user.id}`
+                            ? `${RouterEnum.DASHBOARD}`
                             : `${RouterEnum.PROFILE}/${user.id}`
                         }
                         style={{ textDecoration: "none", color: "inherit" }}

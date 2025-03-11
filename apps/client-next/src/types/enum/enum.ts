@@ -36,7 +36,7 @@ export enum RouterEnum {
   REGISTER = '/register',
   ADD_BOOK = '/add-book',
   BOOK = '/book/:id',
-  DASHBOARD = '/bookings/user/:id',
+  DASHBOARD = '/dashboard',
   PROFILE = '/profile',
   HOME = '/',
   CONTACT = '/contact',
