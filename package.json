@@ -9,12 +9,13 @@
   "scripts": {
     "lint:nest": "cd apps/nest && npm run lint",
     "lint:react": "cd apps/client-react && npm run lint",
+    "lint:next": "cd apps/client-next && npm run lint",
     "test": "npm run lint:react && npm run lint:nest",
     "prepare": "husky install",
     "build:react": "cd apps/client-react && npm run build",
     "build:nest": "cd apps/nest && npm run build",
     "build:all": "npm run build:react && npm run build:nest",
-    "lint:all": "npm run lint:react && npm run lint:nest",
+    "lint:all": "npm run lint:react && npm run lint:nest && npm run lint:next",
     "lint:commit": "commitlint --from=HEAD~1"
   }
 }

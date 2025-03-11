@@ -38,7 +38,7 @@ export default function BookCard({
   return (
     <Card
       sx={{
-        height: "100%",
+        height: "300px",
         display: "flex",
         flexDirection: "column",
       }}

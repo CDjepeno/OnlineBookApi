@@ -13,6 +13,7 @@ export default defineConfig({
     port: 5173, // Assurez-vous que Vite écoute sur le bon port
   },
   optimizeDeps: {
+    force: true,
     exclude: [
       // Liste des modules problématiques à exclure
       'chunk-JXL2BQXN',
