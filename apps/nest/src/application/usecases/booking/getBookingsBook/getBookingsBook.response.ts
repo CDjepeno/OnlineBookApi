@@ -1,4 +1,4 @@
-export type GetBookingsBookResponse = {
+export type GetBookingsDatesByBookResponse = {
   startAt: Date,
   endAt: Date
 }

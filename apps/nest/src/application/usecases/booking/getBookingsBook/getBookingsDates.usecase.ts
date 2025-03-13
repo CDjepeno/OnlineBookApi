@@ -4,21 +4,15 @@ import {
 } from 'src/domaine/errors/onlineBook.error';
 import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { BookingRepository } from 'src/repositories/bookingBook.repository';
-import { GetBookingUserPaginationResponse } from './getBookingsUser.response';
+import { GetBookingsDatesByBookResponse } from './getBookingsBook.response';
 
-export class GetBookingsUserUseCase {
+export class GetBookingsDatesByBookUseCase {
   constructor(private readonly getbookingBookRepository: BookingRepository) {}
 
-  async execute(
-    userId: number,
-    page: number,
-    limit: number,
-  ): Promise<GetBookingUserPaginationResponse> {
+  async execute(bookId: number): Promise<GetBookingsDatesByBookResponse[]> {
     try {
-      return await this.getbookingBookRepository.getBookingsUser(
-        userId,
-        page,
-        limit,
+      return await this.getbookingBookRepository.getBookingsDatesByBookId(
+        bookId,
       );
     } catch (error) {
       if (error instanceof Error) {

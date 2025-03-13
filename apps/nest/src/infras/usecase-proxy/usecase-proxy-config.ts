@@ -9,7 +9,7 @@ import { UpdateBookUseCase } from 'src/application/usecases/book/updateBook/upda
 import { BookingBookUseCase } from 'src/application/usecases/booking/bookingBook/bookingBook.usecase';
 import { DeleteBookingsUserUsecase } from 'src/application/usecases/booking/deleteBookingsUser/deleteBookingsUser.usecase';
 import { DeleteBookingUserUsecase } from 'src/application/usecases/booking/deleteBookingUser/deleteBookingUser.usecase';
-import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsBook.usecase';
+import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsDates.usecase';
 import { GetBookingsUserUseCase } from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.usecase';
 import { UpdateBookingUserUseCase } from 'src/application/usecases/booking/updateBooking/updateBookingUser.usecase';
 import { ContactUseCase } from 'src/application/usecases/contact/contact.usecase';
