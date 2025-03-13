@@ -145,16 +145,14 @@ export class BookRepositoryTypeorm implements BookRepository {
         where: { id },
       });
       if (!book) {
-        throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
       return book;
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException(
-        'Probleme serveur impossible de récupérer le livre',
-      );
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 
