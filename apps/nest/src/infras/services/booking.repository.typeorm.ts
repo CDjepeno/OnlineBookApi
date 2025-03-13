@@ -8,14 +8,13 @@ import {
 import { UpdateBookingUserRequest } from 'src/application/usecases/booking/updateBooking/updateBookingUser.request';
 import {
   InternalServerException,
-  NotFoundException,
   TypeOrmException,
 } from 'src/domaine/errors/onlineBook.error';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { BookingRepository } from 'src/repositories/bookingBook.repository';
 import { Between, QueryFailedError, Repository } from 'typeorm';
-import { Booking } from '../models/booking.model';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
+import { Booking } from '../models/booking.model';
 
 export class BookingRepositoryTypeorm implements BookingRepository {
   constructor(
@@ -175,17 +174,13 @@ export class BookingRepositoryTypeorm implements BookingRepository {
     try {
       const result = await this.repository.delete(id);
       if (result.affected === 0) {
-        throw new NotFoundException(
-          `Aucune réservation trouvé avec l'id "${id}"`,
-        );
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException(
-        'Probleme serveur impossible de supprimer la reservation.',
-      );
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -195,20 +190,16 @@ export class BookingRepositoryTypeorm implements BookingRepository {
 
       const results = await Promise.all(deletionPromises);
 
-      results.forEach((result, index) => {
+      results.forEach((result) => {
         if (result.affected === 0) {
-          throw new NotFoundException(
-            `Aucune réservation trouvé avec l'id "${ids[index]}"`,
-          );
+          throw new Error(ErrorsMessagesEnum.NOT_FOUND);
         }
       });
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException(
-        'Probleme serveur impossible de supprimer les reservations.',
-      );
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 }
