@@ -166,11 +166,10 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       await this.repository.update(updateBooking.id, updateBooking);
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException(
-        'Probleme serveur impossible de modifier la reservation',
-      );
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+
     }
   }
 
