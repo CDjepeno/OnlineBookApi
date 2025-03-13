@@ -21,14 +21,17 @@ export class DeleteBookUsecase {
         if (error.message === ErrorsMessagesEnum.NOT_FOUND) {
           throw new NotFoundException('Aucun livre trouvé');
         }
+        if (error.message === ErrorsMessagesEnum.INTERNAL_SERVER_ERROR) {
+          throw new InternalServerException(
+            "Probleme serveur impossible de supprimer le livre",
+          );
+        }
         throw error;
       }
       if (error instanceof HttpException) {
         throw error;
       }
-      throw new InternalServerException(
-        "Probleme serveur impossible de supprimer le livre",
-      );
+      throw error
     }
   }
 }
