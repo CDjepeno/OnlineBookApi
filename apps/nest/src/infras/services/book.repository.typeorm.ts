@@ -9,12 +9,12 @@ import {
   NotFoundException,
   TypeOrmException,
 } from 'src/domaine/errors/onlineBook.error';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { BookRepository } from 'src/repositories/book.repository';
 import { QueryFailedError, Repository } from 'typeorm';
+import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
-import { handleDatabaseError } from '../common/errors/errorsSwitch';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 
 export class BookRepositoryTypeorm implements BookRepository {
   constructor(
@@ -193,20 +193,16 @@ export class BookRepositoryTypeorm implements BookRepository {
 
       const results = await Promise.all(deletionPromises);
 
-      results.forEach((result, index) => {
+      results.forEach((result) => {
         if (result.affected === 0) {
-          throw new NotFoundException(
-            `Aucun livre trouvé avec l'id "${ids[index]}"`,
-          );
+          throw new Error(ErrorsMessagesEnum.NOT_FOUND);
         }
       });
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException(
-        'Probleme serveur impossible de supprimer les livres',
-      );
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 
