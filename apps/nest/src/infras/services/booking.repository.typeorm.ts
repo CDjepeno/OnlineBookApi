@@ -14,6 +14,8 @@ import {
 import { BookingRepository } from 'src/repositories/bookingBook.repository';
 import { Between, QueryFailedError, Repository } from 'typeorm';
 import { Booking } from '../models/booking.model';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
+import { handleDatabaseError } from '../common/errors/errorsSwitch';
 
 export class BookingRepositoryTypeorm implements BookingRepository {
   constructor(
@@ -33,9 +35,9 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       await this.repository.save(newBooking);
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException('Probleme serveur impossible de reserver un livre.');
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -57,7 +59,9 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException('Probleme serveur impossible de récuperer la reservation.');
+      throw new InternalServerException(
+        'Probleme serveur impossible de récuperer la reservation.',
+      );
     }
   }
 
@@ -73,8 +77,9 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException('Probleme serveur impossible de récuperer les reservations.');
-     
+      throw new InternalServerException(
+        'Probleme serveur impossible de récuperer les reservations.',
+      );
     }
   }
 
@@ -178,7 +183,9 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException('Probleme serveur impossible de supprimer la reservation.');
+      throw new InternalServerException(
+        'Probleme serveur impossible de supprimer la reservation.',
+      );
     }
   }
 
@@ -199,7 +206,9 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException('Probleme serveur impossible de supprimer les reservations.');
+      throw new InternalServerException(
+        'Probleme serveur impossible de supprimer les reservations.',
+      );
     }
   }
 }

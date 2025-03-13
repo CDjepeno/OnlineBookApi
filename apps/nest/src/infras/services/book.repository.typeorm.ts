@@ -6,7 +6,6 @@ import { GetBooksByUserPaginationResponse } from 'src/application/usecases/book/
 import { BookEntity } from 'src/domaine/entities/Book.entity';
 import {
   InternalServerException,
-  NotFoundException,
   TypeOrmException,
 } from 'src/domaine/errors/onlineBook.error';
 import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
@@ -106,9 +105,7 @@ export class BookRepositoryTypeorm implements BookRepository {
       });
 
       if (!books) {
-        throw new NotFoundException(
-          `Aucun livre trouver pour l'utilisateur avec l'userId ${userId} `,
-        );
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
 
       const booksWithReservations = books.map((book) => ({
@@ -161,15 +158,13 @@ export class BookRepositoryTypeorm implements BookRepository {
       await this.repository.update(id, book);
       const updatedBook = await this.repository.findOneBy({ id });
       if (!updatedBook) {
-        throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException(
-        'Probleme serveur impossible de modifier le livre',
-      );
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -211,18 +206,14 @@ export class BookRepositoryTypeorm implements BookRepository {
       const book = await this.repository.findOneBy({ title: nameBook });
 
       if (!book) {
-        throw new NotFoundException(
-          `Aucun livre trouvé avec le nom "${nameBook}"`,
-        );
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
       return book;
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException(
-        `Probleme serveur impossible de récupérer le livre de l'utilisateur`,
-      );
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 }

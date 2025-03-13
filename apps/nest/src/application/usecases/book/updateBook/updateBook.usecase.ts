@@ -1,5 +1,9 @@
-import { HttpException } from '@nestjs/common';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
+import {
+  InternalServerException,
+  NotFoundException,
+} from 'src/domaine/errors/onlineBook.error';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
 import { BookRepository } from 'src/repositories/book.repository';
 import { UpdateBookRequest } from './updateBook.request';
@@ -35,9 +39,18 @@ export class UpdateBookUseCase {
 
       return { msg: 'Le livre a été mis à jour avec succès' };
     } catch (error) {
-      if (error instanceof HttpException) {
-        // Si c'est une exception NestJS connue, on la relance directement
-        throw error;
+      if (error instanceof Error) {
+        if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
+          throw new InternalServerException('Database Error');
+        }
+        if (error.message === ErrorsMessagesEnum.NOT_FOUND) {
+          throw new NotFoundException('Aucun livre trouvé');
+        }
+        if (error.message === ErrorsMessagesEnum.INTERNAL_SERVER_ERROR) {
+          throw new InternalServerException(
+            'Probleme serveur impossible de supprimer le livre',
+          );
+        }
       }
       throw error;
     }
