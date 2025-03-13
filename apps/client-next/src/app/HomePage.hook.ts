@@ -1,3 +1,5 @@
+"use client";
+
 import { getBooks } from "@/services/book.services";
 import { GetBookByNameInput } from "@/types/book/input.types";
 import { BookQueriesKeysEnum } from "@/types/enum/enum";
@@ -5,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 export default function HomePageHook(page: number, limit: number) {
+  
   const {
     isPending,
     data: booksPagination,

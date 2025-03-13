@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Inject,
-  InternalServerErrorException,
   NotFoundException,
   Param,
   ParseIntPipe,
@@ -31,26 +30,16 @@ export class GetBookByUserController {
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '6',
   ): Promise<GetBooksByUserPaginationResponse> {
-    try {
-      const pageNumber = parseInt(page, 10);
-      const limitNumber = parseInt(limit, 10);
-      const { books, pagination } = await this.getBooksByUserUsecaseProxy
-        .getInstance()
-        .execute(userId, pageNumber, limitNumber);
-      if (!books) {
-        throw new NotFoundException(
-          `Aucun livre trouve pour l'utilisateur avec l'userId ${userId}`,
-        );
-      }
-      return {books, pagination};
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new NotFoundException(error.message);
-      } else {
-        throw new InternalServerErrorException(
-          'Impossible de récupérer les livres.',
-        );
-      }
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    const { books, pagination } = await this.getBooksByUserUsecaseProxy
+      .getInstance()
+      .execute(userId, pageNumber, limitNumber);
+    if (!books) {
+      throw new NotFoundException(
+        `Aucun livre trouve pour l'utilisateur avec l'userId ${userId}`,
+      );
     }
+    return { books, pagination };
   }
 }

@@ -1,4 +1,3 @@
-import { AddBookResponse } from 'src/application/usecases/book/addBook/addBook.response';
 import { GetAllBookResponsePagination } from 'src/application/usecases/book/getAllBook/getAllBook.response';
 import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
 import { GetBookByNameResponse } from 'src/application/usecases/book/getBookByName/getBookByName.response';
@@ -6,7 +5,7 @@ import { GetBooksByUserPaginationResponse } from 'src/application/usecases/book/
 import { BookEntity } from 'src/domaine/entities/Book.entity';
 
 export interface BookRepository {
-  addBook(book: BookEntity): Promise<AddBookResponse>;
+  addBook(book: BookEntity): Promise<void>;
   getAllBook(
     page: number,
     limit: number,

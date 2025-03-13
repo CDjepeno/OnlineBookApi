@@ -1,20 +1,19 @@
-import {
-  BadRequestException,
-  InternalServerErrorException,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AddBookResponse } from 'src/application/usecases/book/addBook/addBook.response';
 import { GetAllBookResponsePagination } from 'src/application/usecases/book/getAllBook/getAllBook.response';
 import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
 import { GetBookByNameResponse } from 'src/application/usecases/book/getBookByName/getBookByName.response';
 import { GetBooksByUserPaginationResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
+import {
+  InternalServerException,
+  NotFoundException,
+  TypeOrmException,
+} from 'src/domaine/errors/onlineBook.error';
 import { BookRepository } from 'src/repositories/book.repository';
 import { QueryFailedError, Repository } from 'typeorm';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
+import { HttpException } from '@nestjs/common';
 
 export class BookRepositoryTypeorm implements BookRepository {
   constructor(
@@ -24,7 +23,7 @@ export class BookRepositoryTypeorm implements BookRepository {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async addBook(addBookRequest: BookEntity): Promise<AddBookResponse> {
+  async addBook(addBookRequest: BookEntity): Promise<void> {
     try {
       const user = await this.userRepository.findOne({
         where: { id: addBookRequest.userId },
@@ -42,18 +41,21 @@ export class BookRepositoryTypeorm implements BookRepository {
       book.coverUrl = addBookRequest.coverUrl;
       book.userId = addBookRequest.userId;
 
-      const result = await this.repository.save(book);
-      const { title, description, author, releaseAt, coverUrl } = result;
-      return {
-        title,
-        description,
-        author,
-        releaseAt,
-        coverUrl,
-      };
-    } catch (error) {
-      console.error("Erreur lors de l'ajout du livre :", error);
-      throw new InternalServerErrorException("Impossible d'ajouter le livre.");
+      await this.repository.save(book);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.message === "USER_NOT_FOUND") {
+          throw new NotFoundException("L'utilisateur n'existe pas.");
+        }
+        if (error.message === "DATABASE_ERROR") {
+          throw new InternalServerException("Erreur de base de données. Impossible d'ajouter le livre.");
+        }
+        if (error instanceof HttpException) {
+          throw error; // Laisse passer les erreurs NestJS connues
+        }
+
+      }
+      throw new InternalServerException("Probleme serveur impossible d'ajouter le livre.");
     }
   }
 
@@ -79,10 +81,10 @@ export class BookRepositoryTypeorm implements BookRepository {
         },
       };
     } catch (error) {
-      console.error('Erreur lors de la récupération des livres :', error);
-      throw new InternalServerErrorException(
-        'Impossible de récupérer les livres.',
-      );
+      if (error instanceof QueryFailedError) {
+        throw new TypeOrmException();
+      }
+      throw new InternalServerException('Probleme serveur impossible de récupérer les livres');
     }
   }
 
@@ -109,16 +111,17 @@ export class BookRepositoryTypeorm implements BookRepository {
 
       if (!books) {
         throw new NotFoundException(
-          `Aucun livre trouve pour l'utilisateur avec l'userId ${userId} `,
+          `Aucun livre trouver pour l'utilisateur avec l'userId ${userId} `,
         );
       }
-      
+
       const booksWithReservations = books.map((book) => ({
         ...book,
         hasFuturReservations: book.bookings.some(
           (booking) =>
             new Date(booking.startAt) > new Date() || // Réservation future
-            (new Date(booking.startAt) <= new Date() && new Date(booking.endAt) >= new Date()) // Réservation en cours
+            (new Date(booking.startAt) <= new Date() &&
+              new Date(booking.endAt) >= new Date()), // Réservation en cours
         ),
       }));
 
@@ -131,13 +134,10 @@ export class BookRepositoryTypeorm implements BookRepository {
         },
       };
     } catch (error) {
-      console.error(
-        "Erreur s'est produite lors de la récupération des livres",
-        error,
-      );
-      throw new InternalServerErrorException(
-        'Impossible de récupérer le livre.',
-      );
+      if (error instanceof QueryFailedError) {
+        throw new TypeOrmException();
+      }
+      throw new InternalServerException(`Probleme serveur impossible de récupérer les livres de l'utilisateur`);
     }
   }
 
@@ -151,20 +151,14 @@ export class BookRepositoryTypeorm implements BookRepository {
       }
       return book;
     } catch (error) {
-      console.error("Erreur lors de la recherche d'un livre :", error);
-      if (error instanceof NotFoundException) {
-        throw error;
+      if (error instanceof QueryFailedError) {
+        throw new TypeOrmException();
       }
-      throw new InternalServerErrorException(
-        'Impossible de récupérer le livre.',
-      );
+      throw new InternalServerException('Probleme serveur impossible de récupérer le livre');
     }
   }
 
-  async updateBook(
-    id: number,
-    book: Partial<BookEntity>,
-  ): Promise<void> {
+  async updateBook(id: number, book: Partial<BookEntity>): Promise<void> {
     try {
       await this.repository.update(id, book);
       const updatedBook = await this.repository.findOneBy({ id });
@@ -172,13 +166,10 @@ export class BookRepositoryTypeorm implements BookRepository {
         throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
       }
     } catch (error) {
-      console.error("Erreur lors de la modification d'un livre :", error);
-      if (error instanceof NotFoundException) {
-        throw error;
+      if (error instanceof QueryFailedError) {
+        throw new TypeOrmException();
       }
-      throw new InternalServerErrorException(
-        'Impossible de modifier le livre.',
-      );
+      throw new InternalServerException('Probleme serveur impossible de modifier le livre');
     }
   }
 
@@ -190,13 +181,9 @@ export class BookRepositoryTypeorm implements BookRepository {
       }
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new BadRequestException(
-          'Impossible de supprimer le livre : il est référencé par d’autres entités.',
-        );
+        throw new TypeOrmException();
       }
-      throw new InternalServerErrorException(
-        'Impossible de supprimer le livre.',
-      );
+      throw new InternalServerException('Probleme serveur impossible de supprimer le livre');
     }
   }
 
@@ -214,15 +201,10 @@ export class BookRepositoryTypeorm implements BookRepository {
         }
       });
     } catch (error) {
-      Logger.log(error)
       if (error instanceof QueryFailedError) {
-        throw new BadRequestException(
-          'Impossible de supprimer le livre : il est référencé par d’autres entités.',
-        );
+        throw new TypeOrmException();
       }
-      throw new InternalServerErrorException(
-        'Impossible de supprimer le livreeeeeee.',
-      );
+      throw new InternalServerException('Probleme serveur impossible de supprimer les livres');
     }
   }
 
@@ -237,11 +219,10 @@ export class BookRepositoryTypeorm implements BookRepository {
       }
       return book;
     } catch (error) {
-      console.error(error);
-
-      throw new InternalServerErrorException(
-        'Impossible de supprimer le livre.',
-      );
+      if (error instanceof QueryFailedError) {
+        throw new TypeOrmException();
+      }
+      throw new InternalServerException(`Probleme serveur impossible de récupérer le livre de l'utilisateur`);
     }
   }
 }

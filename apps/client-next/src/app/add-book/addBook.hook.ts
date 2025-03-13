@@ -24,33 +24,25 @@ function BookAddHook() {
 
   const { mutateAsync: addBookMutation } = useMutation<
     AddBookResponse,
-    AxiosError<unknown>,
+    AxiosError<ErrorResponse>,
     FormData
   >({
     mutationFn: async (data: FormData) => createBook(data, userId!),
 
-    onSuccess: () => {
-      onSuccessCommon("Votre livre a bien été créé", RouterEnum.HOME);
+    onSuccess: (res) => {
+      onSuccessCommon(res.msg, RouterEnum.HOME);
       queryClient.invalidateQueries({
         queryKey: [BookQueriesKeysEnum.GetBooks],
       });
     },
-    onError: (error: Error | AxiosError<unknown>) => {
-      let errorMessage = "Une erreur est survenue";
-
-      if ((error as AxiosError<unknown>).isAxiosError) {
-        if (
-          (error as AxiosError).response &&
-          (error as AxiosError).response!.data &&
-          ((error as AxiosError).response!.data as ErrorResponse)
-        ) {
-          errorMessage = ((error as AxiosError).response!.data as ErrorResponse)
-            .message;
-        }
-      }
-
-      onErrorCommon(errorMessage);
-    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+          if (error.response?.data) {
+            const errorData = error.response.data.message;
+            onErrorCommon(errorData);
+          } else {
+            onErrorCommon("Problème avec la connexion réseau");
+          }
+        },
   });
 
   const onSubmit = async (data: BookFormData) => {

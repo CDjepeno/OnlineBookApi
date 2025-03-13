@@ -1,9 +1,7 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Inject,
-  InternalServerErrorException,
   Param,
   ParseIntPipe,
   Put,
@@ -30,18 +28,8 @@ export class UpdateUserController {
     @Body() updateUserDto: UpdateUserDto,
     @Param('id', ParseIntPipe) idUser: number,
   ) {
-    try {
-      const dataToUpdate = {...updateUserDto, id: idUser}
+    const dataToUpdate = { ...updateUserDto, id: idUser };
 
-      return await this.updateUsecaseProxy
-        .getInstance()
-        .execute(dataToUpdate);
-      
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw new BadRequestException(error.message);
-      }
-      throw new InternalServerErrorException('Failed to update user');
-    }
+    return await this.updateUsecaseProxy.getInstance().execute(dataToUpdate);
   }
 }

@@ -56,9 +56,5 @@ export type GetBookByUserPaginationResponse = {
 }
 
 export type AddBookResponse = {
-  name: string;
-  description: string;
-  author: string;
-  releaseAt: string;
-  coverUrl: string;
+  msg: string;
 }

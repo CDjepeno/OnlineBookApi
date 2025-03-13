@@ -1,8 +1,9 @@
+import { HttpException } from '@nestjs/common';
 import { ContactEntity } from 'src/domaine/entities/Contact.entity';
+import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
+import { ContactRepository } from 'src/repositories/contact.repository';
 import { ContactRequest } from './contact.request';
 import { ContactResponse } from './contact.response';
-import { ContactRepository } from 'src/repositories/contact.repository';
-import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 
 export class ContactUseCase {
   constructor(
@@ -11,24 +12,34 @@ export class ContactUseCase {
   ) {}
 
   async execute(request: ContactRequest): Promise<ContactResponse> {
-    const contact = new ContactEntity(
-      request.name,
-      request.email,
-      request.message,
-    );
+    try {
+      const contact = new ContactEntity(
+        request.name,
+        request.email,
+        request.message,
+      );
 
-    await this.contactRepository.send(contact);
+      await this.contactRepository.send(contact);
 
-    await this.nodemailerClient.sendMail({
-      to: request.email,
-      subject: `Confirmation de votre demande de contact`,
-      text: `Bonjour ${request.name}, Merci d'avoir contacté OnlineBook. 
-        \nNous avons bien reçu votre message et nous nous engageons à vous répondre dans les plus brefs délais.
-        \nNous vous remercions pour votre patience et votre compréhension.
-        \nCordialement.
-        \n\nLa Direction.`,
-    });
+      await this.nodemailerClient.sendMail({
+        to: request.email,
+        subject: `Confirmation de votre demande de contact`,
+        text: `Bonjour ${request.name}, Merci d'avoir contacté OnlineBook. 
+          \nNous avons bien reçu votre message et nous nous engageons à vous répondre dans les plus brefs délais.
+          \nNous vous remercions pour votre patience et votre compréhension.
+          \nCordialement.
+          \n\nLa Direction.`,
+      });
 
-    return { msg: 'Votre message a bien été recu un email vous a été envoyer' };
+      return {
+        msg: 'Votre message a bien été recu un email vous a été envoyer',
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        // Si c'est une exception NestJS connue, on la relance directement
+        throw error;
+      }
+      throw error;
+    }
   }
 }

@@ -31,19 +31,17 @@ export default function Login() {
 
   const handleLogin = async (data: LoginFormInput) => {
     try {
-      console.log("Before onSubmitLogin");
       setEmail(data.email);
-      onSubmitLogin(data);
-      console.log("After onSubmitLogin");
-      setOpenOtp(true); // Ouvrir la modal OTP
+      const submitLogin = await onSubmitLogin(data);
+      if(submitLogin) {
+        setOpenOtp(true); // Ouvrir la modal OTP
+      }
     } catch (error) {
       console.error(error);
-      alert("Erreur de connexion ❌");
     }
   };
 
   const handleVerifyOtp = async (otp: string) => {
-    console.log("verify otp");
     onSubmitVerifyOtp({ otp, email });
     setOpenOtp(false); // Fermer la modal après succès
   };

@@ -1,10 +1,9 @@
-import { BadRequestException, ConflictException } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
-import { NotFoundError } from 'src/domaine/errors/book.error';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
+import { BookRepository } from 'src/repositories/book.repository';
 import { UpdateBookRequest } from './updateBook.request';
 import { UpdateBookResponse } from './updateBook.response';
-import { BookRepository } from 'src/repositories/book.repository';
 
 export class UpdateBookUseCase {
   constructor(
@@ -15,10 +14,6 @@ export class UpdateBookUseCase {
   async execute(request: UpdateBookRequest): Promise<UpdateBookResponse> {
     try {
       const existingBook = await this.bookRepository.getBook(request.id);
-
-      if (!existingBook) {
-        throw new NotFoundError(`Livre avec l'ID ${request.id} introuvable.`);
-      }
 
       let coverUrl = existingBook.coverUrl;
 
@@ -38,15 +33,13 @@ export class UpdateBookUseCase {
 
       await this.bookRepository.updateBook(request.id, updatedBook);
 
-      return {msg: "Le livre a été mis à jour avec succès"};
+      return { msg: 'Le livre a été mis à jour avec succès' };
     } catch (error) {
-      if (
-        error instanceof BadRequestException ||
-        error instanceof ConflictException
-      ) {
+      if (error instanceof HttpException) {
+        // Si c'est une exception NestJS connue, on la relance directement
         throw error;
       }
-      throw new Error('internal server error');
+      throw error;
     }
   }
 }

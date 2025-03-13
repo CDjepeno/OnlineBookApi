@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Delete,
-  Inject,
-  InternalServerErrorException,
-  Logger,
-  Param,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Delete, Inject, Param, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DeleteBookingUserResponse } from 'src/application/usecases/booking/deleteBookingUser/deleteBookingUser.response';
 import { DeleteBookingUserUsecase } from 'src/application/usecases/booking/deleteBookingUser/deleteBookingUser.usecase';
@@ -30,11 +22,6 @@ export class DeleteBookingController {
   async deleteBookingUser(
     @Param() id: number,
   ): Promise<DeleteBookingUserResponse> {
-    try {
-      return await this.deleteBookingUserUsecaseProxy.getInstance().execute(id);
-    } catch (error) {
-      Logger.error(error);
-      throw new InternalServerErrorException();
-    }
+    return await this.deleteBookingUserUsecaseProxy.getInstance().execute(id);
   }
 }
