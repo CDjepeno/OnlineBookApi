@@ -64,6 +64,10 @@ export class BookRepositoryTypeorm implements BookRepository {
 
       const books = await this.repository.find({ skip, take });
 
+      if (!books) {
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
+      }
+
       return {
         books,
         pagination: {
@@ -74,11 +78,9 @@ export class BookRepositoryTypeorm implements BookRepository {
       };
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException(
-        'Probleme serveur impossible de récupérer les livres',
-      );
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 
