@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Inject, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { DeleteBookingsUserResponse } from 'src/application/usecases/booking/deleteBookingssUser/deleteBookingsUser.response';
-import { DeleteBookingsUserUsecase } from 'src/application/usecases/booking/deleteBookingssUser/deleteBookingsUser.usecase';
+import { DeleteBookingsUserResponse } from 'src/application/usecases/booking/deleteBookingsUser/deleteBookingsUser.response';
+import { DeleteBookingsUserUsecase } from 'src/application/usecases/booking/deleteBookingsUser/deleteBookingsUser.usecase';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';

@@ -7,7 +7,7 @@ import { GetBookByNameUsecase } from 'src/application/usecases/book/getBookByNam
 import { GetBooksByUserUsecase } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.usecase';
 import { UpdateBookUseCase } from 'src/application/usecases/book/updateBook/updateBook.usecase';
 import { BookingBookUseCase } from 'src/application/usecases/booking/bookingBook/bookingBook.usecase';
-import { DeleteBookingsUserUsecase } from 'src/application/usecases/booking/deleteBookingssUser/deleteBookingsUser.usecase';
+import { DeleteBookingsUserUsecase } from 'src/application/usecases/booking/deleteBookingsUser/deleteBookingsUser.usecase';
 import { DeleteBookingUserUsecase } from 'src/application/usecases/booking/deleteBookingUser/deleteBookingUser.usecase';
 import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsBook.usecase';
 import { GetBookingsUserUseCase } from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.usecase';
@@ -18,20 +18,20 @@ import { GetCurrentUserUseCase } from 'src/application/usecases/user/auth/GetCur
 import { LoginUserUseCase } from 'src/application/usecases/user/auth/login/login.user.usecase';
 import { LogoutUserUseCase } from 'src/application/usecases/user/auth/logout/logout.user.usecase';
 import { RefreshTokenUseCase } from 'src/application/usecases/user/auth/refreshToken/refresh.token.usecase';
+import { VerifyOtpUseCase } from 'src/application/usecases/user/auth/verifyOtp/VerifyOtp.usecase';
 import { GetUserByIdUseCase } from 'src/application/usecases/user/GetUserById/get.user_by_id.usecase';
 import { UpdateUserUseCase } from 'src/application/usecases/user/updateUser/update.user.usecase';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { ConsumerKafkajsClient } from '../clients/kafka/consumer.client';
 import { ProducerKafkaClient } from '../clients/kafka/producer.client';
+import { RedisClient } from '../clients/redis/redis.client';
 import { SocketClient } from '../clients/socket/socket.client';
 import { BookRepositoryTypeorm } from '../services/book.repository.typeorm';
 import { BookingRepositoryTypeorm } from '../services/booking.repository.typeorm';
 import { ContactRepositoryTypeorm } from '../services/contact.repository.typeorm';
 import { UserRepositoryTypeorm } from '../services/user.repository.typeorm';
 import { UseCaseProxy } from './usecase-proxy';
-import { RedisClient } from '../clients/redis/redis.client';
-import { VerifyOtpUseCase } from 'src/application/usecases/user/auth/verifyOtp/VerifyOtp.usecase';
 
 export enum UsecaseProxyEnum {
   CREATE_USER_USECASE_PROXY = 'createUserUsecaseProxy',
@@ -93,8 +93,14 @@ export const useCasesConfig = [
   {
     inject: [UserRepositoryTypeorm, NodemailerClient, RedisClient],
     provide: UsecaseProxyEnum.LOGIN_USER_USECASE_PROXY,
-    useFactory: (userRepository: UserRepositoryTypeorm, nodeMailerClient: NodemailerClient, redisClient: RedisClient) =>
-      new UseCaseProxy(new LoginUserUseCase(userRepository,redisClient, nodeMailerClient)),
+    useFactory: (
+      userRepository: UserRepositoryTypeorm,
+      nodeMailerClient: NodemailerClient,
+      redisClient: RedisClient,
+    ) =>
+      new UseCaseProxy(
+        new LoginUserUseCase(userRepository, redisClient, nodeMailerClient),
+      ),
   },
   {
     inject: [UserRepositoryTypeorm],
@@ -105,8 +111,10 @@ export const useCasesConfig = [
   {
     inject: [UserRepositoryTypeorm, RedisClient],
     provide: UsecaseProxyEnum.VERIFY_OTP,
-    useFactory: (userRepository: UserRepositoryTypeorm, redisClient: RedisClient) =>
-      new UseCaseProxy(new VerifyOtpUseCase(userRepository, redisClient)),
+    useFactory: (
+      userRepository: UserRepositoryTypeorm,
+      redisClient: RedisClient,
+    ) => new UseCaseProxy(new VerifyOtpUseCase(userRepository, redisClient)),
   },
   {
     inject: [UserRepositoryTypeorm],
