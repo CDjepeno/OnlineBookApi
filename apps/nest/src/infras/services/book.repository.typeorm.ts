@@ -13,7 +13,8 @@ import { BookRepository } from 'src/repositories/book.repository';
 import { QueryFailedError, Repository } from 'typeorm';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
-import { HttpException } from '@nestjs/common';
+import { handleDatabaseError } from '../common/errors/errorsSwitch';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 
 export class BookRepositoryTypeorm implements BookRepository {
   constructor(
@@ -30,7 +31,7 @@ export class BookRepositoryTypeorm implements BookRepository {
       });
 
       if (!user) {
-        throw new NotFoundException("L'utilisateur n'existe pas.");
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
 
       const book = new Book();
@@ -43,19 +44,10 @@ export class BookRepositoryTypeorm implements BookRepository {
 
       await this.repository.save(book);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        if (error.message === "USER_NOT_FOUND") {
-          throw new NotFoundException("L'utilisateur n'existe pas.");
-        }
-        if (error.message === "DATABASE_ERROR") {
-          throw new InternalServerException("Erreur de base de données. Impossible d'ajouter le livre.");
-        }
-        if (error instanceof HttpException) {
-          throw error; // Laisse passer les erreurs NestJS connues
-        }
-
+      if (error instanceof QueryFailedError) {
+        handleDatabaseError(error);
       }
-      throw new InternalServerException("Probleme serveur impossible d'ajouter le livre.");
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -84,7 +76,9 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException('Probleme serveur impossible de récupérer les livres');
+      throw new InternalServerException(
+        'Probleme serveur impossible de récupérer les livres',
+      );
     }
   }
 
@@ -137,7 +131,9 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException(`Probleme serveur impossible de récupérer les livres de l'utilisateur`);
+      throw new InternalServerException(
+        `Probleme serveur impossible de récupérer les livres de l'utilisateur`,
+      );
     }
   }
 
@@ -154,7 +150,9 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException('Probleme serveur impossible de récupérer le livre');
+      throw new InternalServerException(
+        'Probleme serveur impossible de récupérer le livre',
+      );
     }
   }
 
@@ -169,7 +167,9 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException('Probleme serveur impossible de modifier le livre');
+      throw new InternalServerException(
+        'Probleme serveur impossible de modifier le livre',
+      );
     }
   }
 
@@ -183,7 +183,9 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException('Probleme serveur impossible de supprimer le livre');
+      throw new InternalServerException(
+        'Probleme serveur impossible de supprimer le livre',
+      );
     }
   }
 
@@ -204,7 +206,9 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException('Probleme serveur impossible de supprimer les livres');
+      throw new InternalServerException(
+        'Probleme serveur impossible de supprimer les livres',
+      );
     }
   }
 
@@ -222,7 +226,9 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException(`Probleme serveur impossible de récupérer le livre de l'utilisateur`);
+      throw new InternalServerException(
+        `Probleme serveur impossible de récupérer le livre de l'utilisateur`,
+      );
     }
   }
 }
