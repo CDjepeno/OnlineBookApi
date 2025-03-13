@@ -1,10 +1,8 @@
-import {
-  BadRequestException,
-  ConflictException,
-  HttpException,
-} from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import cron from 'node-cron';
 import { BookingEntity } from 'src/domaine/entities/Booking.entity';
+import { InternalServerException } from 'src/domaine/errors/onlineBook.error';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { ConsumerKafkajsClient } from 'src/infras/clients/kafka/consumer.client';
 import { ProducerKafkaClient } from 'src/infras/clients/kafka/producer.client';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
@@ -111,9 +109,15 @@ export class BookingBookUseCase {
       }
       return { msg: 'Le livre a été réserver avec succès' };
     } catch (error) {
-      if (error instanceof HttpException) {
-        // Si c'est une exception NestJS connue, on la relance directement
-        throw error;
+      if (error instanceof Error) {
+        if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
+          throw new InternalServerException('Database Error');
+        }
+        if (error.message === ErrorsMessagesEnum.INTERNAL_SERVER_ERROR) {
+          throw new InternalServerException(
+            'Probleme serveur impossible de reserver le livre',
+          );
+        }
       }
       throw error;
     }
