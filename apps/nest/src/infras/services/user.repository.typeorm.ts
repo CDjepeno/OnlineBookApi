@@ -155,17 +155,15 @@ export class UserRepositoryTypeorm implements UsersRepository {
       });
 
       if (!userEntity) {
-        throw new NotFoundException("L'utilisateur n'est pas trouvé");
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
 
       return userEntity;
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException(
-        `Probleme serveur impossible de récuperer l'utilisateur`,
-      );
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 
