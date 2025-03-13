@@ -1,6 +1,6 @@
 import { Controller, Get, Inject, Param, ParseIntPipe } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsBook.usecase';
+import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsDates.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 

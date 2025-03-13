@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookingBookRequest } from 'src/application/usecases/booking/bookingBook/bookingBook.request';
-import { GetBookingsBookResponse } from 'src/application/usecases/booking/getBookingsBook/getBookingsBook.response';
+import { GetBookingsDatesByBookResponse } from 'src/application/usecases/booking/getBookingsBook/getBookingsBook.response';
 import {
   GetBookingUserPaginationResponse,
   GetBookingUserResponse,
@@ -66,7 +66,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
 
   async getBookingsDatesByBookId(
     bookId: number,
-  ): Promise<GetBookingsBookResponse[]> {
+  ): Promise<GetBookingsDatesByBookResponse[]> {
     try {
       return this.repository.find({
         where: { bookId },
@@ -74,11 +74,9 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       });
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException(
-        'Probleme serveur impossible de récuperer les reservations.',
-      );
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -110,6 +108,10 @@ export class BookingRepositoryTypeorm implements BookingRepository {
         [userId],
       );
 
+      if (raw) {
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
+      }
+
       // Calcul de hasFuturReservation pour chaque réservation
       const bookings: GetBookingUserResponse[] = await Promise.all(
         raw.map(async (booking: GetBookingUserResponse) => {
@@ -132,6 +134,10 @@ export class BookingRepositoryTypeorm implements BookingRepository {
         }),
       );
 
+      if (bookings) {
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
+      }
+
       const totalBooks = await this.repository
         .createQueryBuilder('booking')
         .where('booking.userId = :userId', { userId })
@@ -147,11 +153,9 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       };
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException(
-        'Probleme serveur impossible de recuperer les réservations.',
-      );
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 
