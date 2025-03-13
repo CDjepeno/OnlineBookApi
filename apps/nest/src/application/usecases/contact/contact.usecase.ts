@@ -1,5 +1,6 @@
-import { HttpException } from '@nestjs/common';
 import { ContactEntity } from 'src/domaine/entities/Contact.entity';
+import { InternalServerException } from 'src/domaine/errors/onlineBook.error';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { ContactRepository } from 'src/repositories/contact.repository';
 import { ContactRequest } from './contact.request';
@@ -35,9 +36,15 @@ export class ContactUseCase {
         msg: 'Votre message a bien été recu un email vous a été envoyer',
       };
     } catch (error) {
-      if (error instanceof HttpException) {
-        // Si c'est une exception NestJS connue, on la relance directement
-        throw error;
+      if (error instanceof Error) {
+        if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
+          throw new InternalServerException('Database Error');
+        }
+        if (error.message === ErrorsMessagesEnum.INTERNAL_SERVER_ERROR) {
+          throw new InternalServerException(
+            "Problem serveur impossible d'envoyer le message",
+          );
+        }
       }
       throw error;
     }
