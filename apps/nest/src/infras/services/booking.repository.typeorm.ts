@@ -6,10 +6,6 @@ import {
   GetBookingUserResponse,
 } from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.response';
 import { UpdateBookingUserRequest } from 'src/application/usecases/booking/updateBooking/updateBookingUser.request';
-import {
-  InternalServerException,
-  TypeOrmException,
-} from 'src/domaine/errors/onlineBook.error';
 import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { BookingRepository } from 'src/repositories/bookingBook.repository';
 import { Between, QueryFailedError, Repository } from 'typeorm';
@@ -56,11 +52,9 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       return !!existingBooking;
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException(
-        'Probleme serveur impossible de récuperer la reservation.',
-      );
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -169,7 +163,6 @@ export class BookingRepositoryTypeorm implements BookingRepository {
         handleDatabaseError(error);
       }
       throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
-
     }
   }
 

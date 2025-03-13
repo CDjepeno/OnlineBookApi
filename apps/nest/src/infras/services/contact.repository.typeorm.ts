@@ -1,11 +1,9 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContactRequest } from 'src/application/usecases/contact/contact.request';
-import {
-  InternalServerException,
-  TypeOrmException,
-} from 'src/domaine/errors/onlineBook.error';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { ContactRepository } from 'src/repositories/contact.repository';
 import { QueryFailedError, Repository } from 'typeorm';
+import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { Contact } from '../models/contact.model';
 
 export class ContactRepositoryTypeorm implements ContactRepository {
@@ -18,9 +16,9 @@ export class ContactRepositoryTypeorm implements ContactRepository {
       await this.contactRepository.save(request);
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException("Problem serveur impossible d'envoyer le message");
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 }
