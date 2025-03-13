@@ -1,27 +1,29 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { AddUserRequest } from 'src/application/usecases/user/adduser/add.user.request';
-import {
-  CurrentUserResponse,
-} from 'src/application/usecases/user/auth/GetCurrentUser/current.user.response';
+import { CurrentUserResponse } from 'src/application/usecases/user/auth/GetCurrentUser/current.user.response';
 import { LoginUserRequest } from 'src/application/usecases/user/auth/login/login.user.request';
 import { LogoutUserRequest } from 'src/application/usecases/user/auth/logout/logout.user.request';
 import { RefreshTokenRequest } from 'src/application/usecases/user/auth/refreshToken/refresh.token.request';
 import { RefreshTokenResponse } from 'src/application/usecases/user/auth/refreshToken/refresh.token.response';
-import { UpdateUserRequest } from 'src/application/usecases/user/updateUser/update.user.request';
-import { QueryFailedError, Repository } from 'typeorm';
-import { User } from '../models/user.model';
-import { CurrentUserByIdResponse } from 'src/application/usecases/user/GetUserById/current.user.response';
-import { UsersRepository } from 'src/repositories/user.repository';
 import { VerifyOtpResponse } from 'src/application/usecases/user/auth/verifyOtp/verifyOtp.response';
+import { CurrentUserByIdResponse } from 'src/application/usecases/user/GetUserById/current.user.response';
+import { UpdateUserRequest } from 'src/application/usecases/user/updateUser/update.user.request';
+import {
+  BadRequestException,
+  InternalServerException,
+  NotFoundException,
+  TypeOrmException,
+  UnauthorizedException,
+} from 'src/domaine/errors/onlineBook.error';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
+import { UsersRepository } from 'src/repositories/user.repository';
+import { QueryFailedError, Repository } from 'typeorm';
+import { handleDatabaseError } from '../common/errors/errorsSwitch';
+import { User } from '../models/user.model';
 
 @Injectable()
 export class UserRepositoryTypeorm implements UsersRepository {
@@ -43,80 +45,105 @@ export class UserRepositoryTypeorm implements UsersRepository {
 
       await this.repository.save(user);
     } catch (error) {
-      if (error instanceof QueryFailedError && error.driverError.code === 'ER_DUP_ENTRY') {
-        throw new UnauthorizedException('Cet email est deja utilise.');
+      if (error instanceof QueryFailedError) {
+        handleDatabaseError(error);
       }
-      throw new Error('une erreure est survenue');
+      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async signIn(siginIn: LoginUserRequest): Promise<{email: string}> {
-    const { email, password } = siginIn;
-    const user = await this.repository.findOne({
-      where: { email },
-    });
-    if (!user) {
-      throw new NotFoundException("L'utilisateur n'existe pas.");
+  async signIn(siginIn: LoginUserRequest): Promise<{ email: string }> {
+    try {
+      const { email, password } = siginIn;
+      const user = await this.repository.findOne({
+        where: { email },
+      });
+      if (!user) {
+        throw new NotFoundException("L'utilisateur n'existe pas.");
+      }
+
+      const match = await bcrypt.compare(
+        password.trim().toLowerCase(),
+        user.password,
+      );
+
+      if (!match) {
+        throw new BadRequestException('Le mot de passe est invalide.');
+      }
+
+      return { email: user.email };
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new TypeOrmException();
+      }
+      throw new InternalServerException(
+        'Probleme serveur impossible de vous connecter',
+      );
     }
-
-    const match = await bcrypt.compare(
-      password.trim().toLowerCase(),
-      user.password,
-    );
-
-    if (!match) {
-      throw new UnauthorizedException('Le mot de passe est invalide.');
-    }
-
-   
-    return { email: user.email };
   }
 
   async createJwt(email: string): Promise<VerifyOtpResponse> {
-    const user = await this.repository.findOne({
-      where: { email },
-    });
-    if (!user) {
-      throw new NotFoundException("L'utilisateur n'existe pas.");
+    try {
+      const user = await this.repository.findOne({
+        where: { email },
+      });
+      if (!user) {
+        throw new NotFoundException("L'utilisateur n'existe pas.");
+      }
+
+      const payload = {
+        sub: user.id,
+        email: user.email,
+      };
+
+      const refreshPayload = {
+        sub: user.id,
+        email: user.email,
+        type: 'refresh',
+      };
+
+      const token = await this.jwtService.signAsync(payload, {
+        secret: this.configService.get('JWT_SECRET'),
+        expiresIn: '30s',
+      });
+
+      const refreshToken: string | null = await this.jwtService.signAsync(
+        refreshPayload,
+        {
+          secret: this.configService.get('REFRESH_JWT_SECRET'),
+          expiresIn: '30d',
+        },
+      );
+
+      const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+
+      await this.repository.update(user.id, {
+        refreshToken: hashedRefreshToken,
+      });
+
+      return { email: user.email, name: user.name, refreshToken, token };
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new TypeOrmException();
+      }
+      throw new InternalServerException(
+        'Probleme serveur impossible de créer le jwt',
+      );
     }
-
-    const payload = {
-      sub: user.id,
-      email: user.email,
-    };
-
-    const refreshPayload = {
-      sub: user.id,
-      email: user.email,
-      type: 'refresh',
-    };
-
-    const token = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('JWT_SECRET'),
-      expiresIn: '30s',
-    });
-
-    const refreshToken: string| null = await this.jwtService.signAsync(refreshPayload, {
-      secret: this.configService.get('REFRESH_JWT_SECRET'),
-      expiresIn: '30d',
-    });
-
-    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-
-    await this.repository.update(user.id, { refreshToken: hashedRefreshToken });
-
-    return { email: user.email, name: user.name, refreshToken, token };
-
-
   }
 
   async signOut(request: LogoutUserRequest): Promise<void> {
     try {
-      await this.repository.update({ id: request.id }, { refreshToken: undefined });
+      await this.repository.update(
+        { id: request.id },
+        { refreshToken: undefined },
+      );
     } catch (error) {
-      console.error('Error during signOut:', error);
-      throw new Error(
-        "Une erreur s'est produite lors de la deconexion de l'utilisateur.",
+      if (error instanceof QueryFailedError) {
+        throw new TypeOrmException();
+      }
+      throw new InternalServerException(
+        `Probleme serveur une erreur s'est produite lors de la déconnexion`,
       );
     }
   }
@@ -128,15 +155,16 @@ export class UserRepositoryTypeorm implements UsersRepository {
       });
 
       if (!userEntity) {
-        throw new NotFoundException();
+        throw new NotFoundException("L'utilisateur n'est pas trouvé");
       }
 
       return userEntity;
     } catch (error) {
-      console.error('Error during getCurrentUser:', error);
-
-      throw new Error(
-        "Une erreur s'est produite lors de la recherche de l'utilisateur.",
+      if (error instanceof QueryFailedError) {
+        throw new TypeOrmException();
+      }
+      throw new InternalServerException(
+        `Probleme serveur impossible de récuperer l'utilisateur`,
       );
     }
   }
@@ -156,15 +184,14 @@ export class UserRepositoryTypeorm implements UsersRepository {
         where: { id: tokenDecoded.sub },
       });
 
-        const isRefreshTokenValid = bcrypt.compare(
-          refreshToken,
-          user!.refreshToken!
-        );
+      const isRefreshTokenValid = bcrypt.compare(
+        refreshToken,
+        user!.refreshToken!,
+      );
 
-        if (!isRefreshTokenValid) {
-          throw new UnauthorizedException('Refresh token invalide.');
-        }
-
+      if (!isRefreshTokenValid) {
+        throw new UnauthorizedException('Refresh token invalide.');
+      }
 
       const payload = {
         sub: user!.id,
@@ -189,8 +216,12 @@ export class UserRepositoryTypeorm implements UsersRepository {
 
       return { token: newAccessToken, refreshToken: newRefreshToken };
     } catch (error) {
-      console.log(error);
-      throw new UnauthorizedException('Invalid refresh token or error during token refresh.');
+      if (error instanceof QueryFailedError) {
+        throw new TypeOrmException();
+      }
+      throw new InternalServerException(
+        `Probleme serveur impossible de récuperer le refresh token`,
+      );
     }
   }
 
@@ -206,14 +237,12 @@ export class UserRepositoryTypeorm implements UsersRepository {
       existingUser.sexe = user.sexe!;
 
       await this.repository.save(existingUser);
-
     } catch (error) {
-      console.error("Erreur lors de la modification d'un livre :", error);
-      if (error instanceof NotFoundException) {
-        throw error;
+      if (error instanceof QueryFailedError) {
+        throw new TypeOrmException();
       }
-      throw new InternalServerErrorException(
-        `Impossible de modifier le l'utilisateur.`,
+      throw new InternalServerException(
+        `Probleme serveur impossible de modifier l'utilisateur`,
       );
     }
   }
@@ -223,17 +252,20 @@ export class UserRepositoryTypeorm implements UsersRepository {
       const userEntity = await this.repository.findOne({
         where: { id },
       });
-      
+
       if (!userEntity) {
-        throw new NotFoundException(`L'user avec l'id ${id} n'est pas trouver `);
+        throw new NotFoundException(
+          `L'user avec l'id ${id} n'est pas trouver `,
+        );
       }
 
       return userEntity;
     } catch (error) {
-      console.error('Error during getCurrentUser:', error);
-
-      throw new Error(
-        "Une erreur s'est produite lors de la recherche de l'utilisateur.",
+      if (error instanceof QueryFailedError) {
+        throw new TypeOrmException();
+      }
+      throw new InternalServerException(
+        `Probleme serveur impossible de recuperer l'utilisateur`,
       );
     }
   }

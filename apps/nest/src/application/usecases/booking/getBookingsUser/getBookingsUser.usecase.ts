@@ -1,21 +1,27 @@
-import { BadRequestException, ConflictException } from '@nestjs/common';
-import { GetBookingUserPaginationResponse } from './getBookingsUser.response';
+import { HttpException } from '@nestjs/common';
 import { BookingRepository } from 'src/repositories/bookingBook.repository';
+import { GetBookingUserPaginationResponse } from './getBookingsUser.response';
 
 export class GetBookingsUserUseCase {
   constructor(private readonly getbookingBookRepository: BookingRepository) {}
 
-  async execute(userId: number, page: number, limit: number): Promise<GetBookingUserPaginationResponse> {
+  async execute(
+    userId: number,
+    page: number,
+    limit: number,
+  ): Promise<GetBookingUserPaginationResponse> {
     try {
-      return await this.getbookingBookRepository.getBookingsUser(userId, page, limit);
+      return await this.getbookingBookRepository.getBookingsUser(
+        userId,
+        page,
+        limit,
+      );
     } catch (error) {
-      if (
-        error instanceof BadRequestException ||
-        error instanceof ConflictException
-      ) {
+      if (error instanceof HttpException) {
+        // Si c'est une exception NestJS connue, on la relance directement
         throw error;
       }
-      throw new Error('internale server error');
+      throw error;
     }
   }
 }

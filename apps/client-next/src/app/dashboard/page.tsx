@@ -307,7 +307,7 @@ export default function Dashboard() {
             onChange={(newValue) => setDateRange(newValue)}
             shouldDisableDate={shouldDisableDate}
             onActionClick={handleclick}
-            actionLabel="Réserver"
+            actionLabel="Modifier la réservation"
             user={user ? true : false}
             justifyContent="center"
           />

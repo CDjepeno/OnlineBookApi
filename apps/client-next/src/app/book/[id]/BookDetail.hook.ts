@@ -45,22 +45,13 @@ function BookDetailHook(bookId: string) {
         queryKey: [BookingsQueriesKeysEnum.GetBookingsBook],
       });
     },
-
-    onError: (error: Error | AxiosError<unknown>) => {
-      let errorMessage =
-        "Une erreur est survenue lors de la reservation du livre";
-
-      if ((error as AxiosError<unknown>).isAxiosError) {
-        if (
-          (error as AxiosError).response &&
-          (error as AxiosError).response!.data &&
-          ((error as AxiosError).response!.data as ErrorResponse)
-        ) {
-          errorMessage = ((error as AxiosError).response!.data as ErrorResponse)
-            .message;
-        }
+    onError: (error: AxiosError) => {
+      if (error.response?.data) {
+        const errorData = (error.response.data as ErrorResponse).message;
+        onErrorCommon(errorData);
+      } else {
+        onErrorCommon("Problème avec la connexion réseau");
       }
-      onErrorCommon(errorMessage);
     },
   });
 

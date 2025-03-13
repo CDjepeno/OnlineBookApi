@@ -1,12 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  ConflictException,
-  Controller,
-  Inject,
-  InternalServerErrorException,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ContactUseCase } from 'src/application/usecases/contact/contact.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
@@ -26,21 +18,6 @@ export class ContactController {
     summary: 'Booking Book',
   })
   async bookingBook(@Body() contactDto: ContactDto) {
-    try {
-      return await this.contactUsecaseProxy
-        .getInstance()
-        .execute(contactDto);
-
-    } catch (error) {
-      console.error('Error occurred while booking book:', error);
-      if (
-        error instanceof BadRequestException ||
-        error instanceof ConflictException
-      ) {
-        throw error;
-      }
-
-      throw new InternalServerErrorException('Failed to booking book');
-    }
+    return await this.contactUsecaseProxy.getInstance().execute(contactDto);
   }
 }

@@ -1,13 +1,4 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Controller,
-  Get,
-  Inject,
-  InternalServerErrorException,
-  Param,
-  ParseIntPipe,
-} from '@nestjs/common';
+import { Controller, Get, Inject, Param, ParseIntPipe } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsBook.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
@@ -26,20 +17,6 @@ export class GetBookingBookController {
     summary: 'get Bookings for a Book',
   })
   async getbookingsBook(@Param('id', ParseIntPipe) bookId: number) {
-    try {
-      return await this.getBookingsBookUsecaseProxy
-        .getInstance()
-        .execute(bookId);
-    } catch (error) {
-      console.error('Error occurred while getbooking book:', typeof error);
-      if (
-        error instanceof BadRequestException ||
-        error instanceof ConflictException
-      ) {
-        throw error;
-      }
-
-      throw new InternalServerErrorException('Failed to booking book');
-    }
+    return await this.getBookingsBookUsecaseProxy.getInstance().execute(bookId);
   }
 }

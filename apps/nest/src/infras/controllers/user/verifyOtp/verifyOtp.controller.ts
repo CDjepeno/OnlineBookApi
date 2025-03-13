@@ -1,12 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Inject,
-  InternalServerErrorException,
-  Post,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { VerifyOtpUseCase } from 'src/application/usecases/user/auth/verifyOtp/VerifyOtp.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
@@ -26,14 +18,6 @@ export class LoginController {
     summary: 'Verify a otp',
   })
   async verifyOtp(@Body() req: VerifyOtpDto) {
-    try {
-      return await this.verifyOtpUsecaseProxy.getInstance().execute(req);
-    } catch (error) {
-      if (error instanceof UnauthorizedException) {
-        
-        throw new BadRequestException(error.message);
-      }
-      throw new InternalServerErrorException(error);
-    }
+    return await this.verifyOtpUsecaseProxy.getInstance().execute(req);
   }
 }

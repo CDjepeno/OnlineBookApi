@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Inject, InternalServerErrorException, Logger, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Inject, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DeleteBooksUsecase } from 'src/application/usecases/book/deleteBooks/deleteBooks.usecase';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
@@ -20,11 +20,6 @@ export class DeleteBooksController {
     summary: 'Delete several Books',
   })
   async deleteBooks(@Body() ids: DeleteBooksDto): Promise<void> {
-    try {
-      await this.deleteBooksUsecaseProxy.getInstance().execute(ids.ids);
-    } catch (error) {
-      Logger.error(error);
-      throw new InternalServerErrorException()
-    }
+    await this.deleteBooksUsecaseProxy.getInstance().execute(ids.ids);
   }
 }

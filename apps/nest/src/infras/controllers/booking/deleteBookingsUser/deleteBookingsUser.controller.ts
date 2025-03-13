@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Inject,
-  InternalServerErrorException,
-  Logger,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Inject, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DeleteBookingsUserResponse } from 'src/application/usecases/booking/deleteBookingssUser/deleteBookingsUser.response';
 import { DeleteBookingsUserUsecase } from 'src/application/usecases/booking/deleteBookingssUser/deleteBookingsUser.usecase';
@@ -31,13 +23,8 @@ export class DeleteBookingsController {
   async deleteBookingsUser(
     @Body() data: DeleteBookingsDto,
   ): Promise<DeleteBookingsUserResponse> {
-    try {
-      return await this.deleteBookingsUserUsecaseProxy
-        .getInstance()
-        .execute(data.ids);
-    } catch (error) {
-      Logger.error(error);
-      throw new InternalServerErrorException();
-    }
+    return await this.deleteBookingsUserUsecaseProxy
+      .getInstance()
+      .execute(data.ids);
   }
 }

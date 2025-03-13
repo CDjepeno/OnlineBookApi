@@ -46,22 +46,13 @@ function DashboardHook(page: number, limit: number) {
       });
     },
 
-    onError: (error: Error | AxiosError) => {
-      let errorMessage =
-        "Une erreur est survenue lors de la suppression des livre";
-
-      if ((error as AxiosError).isAxiosError) {
-        if (
-          (error as AxiosError).response &&
-          (error as AxiosError).response!.data &&
-          ((error as AxiosError).response!.data as ErrorResponse)
-        ) {
-          errorMessage = ((error as AxiosError).response!.data as ErrorResponse)
-            .message;
-        }
+    onError: (error: AxiosError) => {
+      if (error.response?.data) {
+        const errorData = (error.response.data as ErrorResponse).message;
+        onErrorCommon(errorData);
+      } else {
+        onErrorCommon("Problème avec la connexion réseau");
       }
-
-      onErrorCommon(errorMessage);
     },
   });
 
@@ -79,22 +70,13 @@ function DashboardHook(page: number, limit: number) {
       });
     },
 
-    onError: (error: Error | AxiosError<unknown>) => {
-      let errorMessage =
-        "Une erreur est survenue lors de la suppression de la reservation";
-
-      if ((error as AxiosError<unknown>).isAxiosError) {
-        if (
-          (error as AxiosError).response &&
-          (error as AxiosError).response!.data &&
-          ((error as AxiosError).response!.data as ErrorResponse)
-        ) {
-          errorMessage = ((error as AxiosError).response!.data as ErrorResponse)
-            .message;
-        }
+    onError: (error: AxiosError) => {
+      if (error.response?.data) {
+        const errorData = (error.response.data as ErrorResponse).message;
+        onErrorCommon(errorData);
+      } else {
+        onErrorCommon("Problème avec la connexion réseau");
       }
-
-      onErrorCommon(errorMessage);
     },
   });
 
@@ -112,22 +94,13 @@ function DashboardHook(page: number, limit: number) {
       });
     },
 
-    onError: (error: Error | AxiosError<unknown>) => {
-      let errorMessage =
-        "Une erreur est survenue lors de la suppression de la reservation";
-
-      if ((error as AxiosError<unknown>).isAxiosError) {
-        if (
-          (error as AxiosError).response &&
-          (error as AxiosError).response!.data &&
-          ((error as AxiosError).response!.data as ErrorResponse)
-        ) {
-          errorMessage = ((error as AxiosError).response!.data as ErrorResponse)
-            .message;
-        }
+    onError: (error: AxiosError) => {
+      if (error.response?.data) {
+        const errorData = (error.response.data as ErrorResponse).message;
+        onErrorCommon(errorData);
+      } else {
+        onErrorCommon("Problème avec la connexion réseau");
       }
-
-      onErrorCommon(errorMessage);
     },
   });
 

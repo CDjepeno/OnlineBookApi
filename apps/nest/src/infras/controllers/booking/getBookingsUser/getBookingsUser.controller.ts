@@ -1,10 +1,7 @@
 import {
-  BadRequestException,
-  ConflictException,
   Controller,
   Get,
   Inject,
-  InternalServerErrorException,
   Param,
   ParseIntPipe,
   Query,
@@ -32,28 +29,16 @@ export class GetBookingUserController {
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '6',
   ): Promise<GetBookingUserPaginationResponse> {
-    try {
-      const pageNumber = parseInt(page, 10);
-      const limitNumber = parseInt(limit, 10);
- 
-      const {bookings, pagination} = await this.getBookingsUserUsecaseProxy
-        .getInstance()
-        .execute(userId, pageNumber,limitNumber);
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
 
-      return {
-        bookings,
-        pagination
-      }
-    } catch (error) {
-      console.error('Error occurred while getbooking user:', typeof error);
-      if (
-        error instanceof BadRequestException ||
-        error instanceof ConflictException
-      ) {
-        throw error;
-      }
+    const { bookings, pagination } = await this.getBookingsUserUsecaseProxy
+      .getInstance()
+      .execute(userId, pageNumber, limitNumber);
 
-      throw new InternalServerErrorException('Failed to booking book');
-    }
+    return {
+      bookings,
+      pagination,
+    };
   }
 }
