@@ -9,7 +9,7 @@ import { UpdateBookUseCase } from 'src/application/usecases/book/updateBook/upda
 import { BookingBookUseCase } from 'src/application/usecases/booking/bookingBook/bookingBook.usecase';
 import { DeleteBookingsUserUsecase } from 'src/application/usecases/booking/deleteBookingsUser/deleteBookingsUser.usecase';
 import { DeleteBookingUserUsecase } from 'src/application/usecases/booking/deleteBookingUser/deleteBookingUser.usecase';
-import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsDates.usecase';
+import { GetBookingsDatesByBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsDates.usecase';
 import { GetBookingsUserUseCase } from 'src/application/usecases/booking/getBookingsUser/getBookingsUser.usecase';
 import { UpdateBookingUserUseCase } from 'src/application/usecases/booking/updateBooking/updateBookingUser.usecase';
 import { ContactUseCase } from 'src/application/usecases/contact/contact.usecase';
@@ -53,7 +53,7 @@ export enum UsecaseProxyEnum {
   UPDATE_BOOK_USECASE_PROXY = 'updateBookUsecaseProxy',
 
   BOOKING_BOOK_USECASE_PROXY = 'BookingBookUsecaseProxy',
-  GET_BOOKINGS_BOOK_USECASE_PROXY = 'getBookingBookUsecaseProxy',
+  GET_BOOKINGS_DATES_BY_BOOK_USECASE_PROXY = 'getBookingDatesByBookUsecaseProxy',
   GET_BOOKINGS_USER_USECASE_PROXY = 'getBookingUserUsecaseProxy',
   UPDATE_BOOKING_USER_USECASE_PROXY = 'updateBookingUserUsecaseProxy',
   DELETE_BOOKING_USER_USECASE_PROXY = 'deleteBookingUserUsecaseProxy',
@@ -211,9 +211,9 @@ export const useCasesConfig = [
   },
   {
     inject: [BookingRepositoryTypeorm],
-    provide: UsecaseProxyEnum.GET_BOOKINGS_BOOK_USECASE_PROXY,
+    provide: UsecaseProxyEnum.GET_BOOKINGS_DATES_BY_BOOK_USECASE_PROXY,
     useFactory: (bookingRepository: BookingRepositoryTypeorm) =>
-      new UseCaseProxy(new GetBookingsBookUseCase(bookingRepository)),
+      new UseCaseProxy(new GetBookingsDatesByBookUseCase(bookingRepository)),
   },
   {
     inject: [BookingRepositoryTypeorm],

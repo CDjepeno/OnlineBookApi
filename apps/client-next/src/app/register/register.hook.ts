@@ -5,6 +5,7 @@ import { registerUser } from "@/services/user.services";
 import { RouterEnum } from "@/types/enum/enum";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/types/book/response.types";
+import { ErrorsMessagesEnum } from "@/enums/errorMessage.enum";
 
 export default function RegisterHook() {
   const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
@@ -19,7 +20,7 @@ export default function RegisterHook() {
         const errorData = (error.response.data as ErrorResponse).message;
         onErrorCommon(errorData);
       } else {
-        onErrorCommon("Problème avec la connexion réseau");
+        onErrorCommon(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
       }
     },
   });

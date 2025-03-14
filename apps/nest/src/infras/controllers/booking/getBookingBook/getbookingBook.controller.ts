@@ -1,6 +1,6 @@
 import { Controller, Get, Inject, Param, ParseIntPipe } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { GetBookingsBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsDates.usecase';
+import { GetBookingsDatesByBookUseCase } from 'src/application/usecases/booking/getBookingsBook/getBookingsDates.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
 
@@ -8,8 +8,8 @@ import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config'
 @Controller('/bookings/book')
 export class GetBookingBookController {
   constructor(
-    @Inject(UsecaseProxyEnum.GET_BOOKINGS_BOOK_USECASE_PROXY)
-    private readonly getBookingsBookUsecaseProxy: UseCaseProxy<GetBookingsBookUseCase>,
+    @Inject(UsecaseProxyEnum.GET_BOOKINGS_DATES_BY_BOOK_USECASE_PROXY)
+    private readonly getBookingsDatesByBookUsecaseProxy: UseCaseProxy<GetBookingsDatesByBookUseCase>,
   ) {}
 
   @Get(':id')
@@ -17,6 +17,8 @@ export class GetBookingBookController {
     summary: 'get Bookings for a Book',
   })
   async getbookingsBook(@Param('id', ParseIntPipe) bookId: number) {
-    return await this.getBookingsBookUsecaseProxy.getInstance().execute(bookId);
+    return await this.getBookingsDatesByBookUsecaseProxy
+      .getInstance()
+      .execute(bookId);
   }
 }

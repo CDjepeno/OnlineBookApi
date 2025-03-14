@@ -13,8 +13,6 @@ import { VerifyOtpResponse } from 'src/application/usecases/user/auth/verifyOtp/
 import { CurrentUserByIdResponse } from 'src/application/usecases/user/GetUserById/current.user.response';
 import { UpdateUserRequest } from 'src/application/usecases/user/updateUser/update.user.request';
 import {
-  BadRequestException,
-  InternalServerException,
   NotFoundException,
   TypeOrmException,
   UnauthorizedException,
@@ -48,7 +46,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error;
     }
   }
 
@@ -59,7 +57,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
         where: { email },
       });
       if (!user) {
-        throw new NotFoundException("L'utilisateur n'existe pas.");
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
 
       const match = await bcrypt.compare(
@@ -68,17 +66,15 @@ export class UserRepositoryTypeorm implements UsersRepository {
       );
 
       if (!match) {
-        throw new BadRequestException('Le mot de passe est invalide.');
+        throw new Error(ErrorsMessagesEnum.INVALID_PASSPORT);
       }
 
       return { email: user.email };
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        throw new TypeOrmException();
+        handleDatabaseError(error);
       }
-      throw new InternalServerException(
-        'Probleme serveur impossible de vous connecter',
-      );
+      throw error;
     }
   }
 
@@ -126,9 +122,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException(
-        'Probleme serveur impossible de créer le jwt',
-      );
+      throw error;
     }
   }
 
@@ -142,9 +136,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException(
-        `Probleme serveur une erreur s'est produite lors de la déconnexion`,
-      );
+      throw error;
     }
   }
 
@@ -163,7 +155,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error;
     }
   }
 
@@ -217,9 +209,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException(
-        `Probleme serveur impossible de récuperer le refresh token`,
-      );
+      throw error;
     }
   }
 
@@ -239,9 +229,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException(
-        `Probleme serveur impossible de modifier l'utilisateur`,
-      );
+      throw error;
     }
   }
 
@@ -262,9 +250,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException(
-        `Probleme serveur impossible de recuperer l'utilisateur`,
-      );
+      throw error;
     }
   }
 }

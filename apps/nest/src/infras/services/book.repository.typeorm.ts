@@ -4,10 +4,7 @@ import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.r
 import { GetBookByNameResponse } from 'src/application/usecases/book/getBookByName/getBookByName.response';
 import { GetBooksByUserPaginationResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
-import {
-  InternalServerException,
-  TypeOrmException,
-} from 'src/domaine/errors/onlineBook.error';
+import { TypeOrmException } from 'src/domaine/errors/onlineBook.error';
 import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { BookRepository } from 'src/repositories/book.repository';
 import { QueryFailedError, Repository } from 'typeorm';
@@ -46,7 +43,7 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error;
     }
   }
 
@@ -79,7 +76,7 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error;
     }
   }
 
@@ -130,9 +127,7 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         throw new TypeOrmException();
       }
-      throw new InternalServerException(
-        `Probleme serveur impossible de récupérer les livres de l'utilisateur`,
-      );
+      throw error;
     }
   }
 
@@ -149,7 +144,7 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error;
     }
   }
 
@@ -164,7 +159,7 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error;
     }
   }
 
@@ -178,7 +173,7 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error;
     }
   }
 
@@ -197,7 +192,7 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error;
     }
   }
 
@@ -213,7 +208,7 @@ export class BookRepositoryTypeorm implements BookRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error;
     }
   }
 }
