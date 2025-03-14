@@ -1,6 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContactRequest } from 'src/application/usecases/contact/contact.request';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { ContactRepository } from 'src/repositories/contact.repository';
 import { QueryFailedError, Repository } from 'typeorm';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
@@ -18,7 +17,7 @@ export class ContactRepositoryTypeorm implements ContactRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error;
     }
   }
 }

@@ -1,4 +1,9 @@
-import { HttpException } from '@nestjs/common';
+import {
+  InternalServerException,
+  NotFoundException,
+  UnauthorizedException,
+} from 'src/domaine/errors/onlineBook.error';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { RedisClient } from 'src/infras/clients/redis/redis.client';
 import { UsersRepository } from 'src/repositories/user.repository';
@@ -25,9 +30,21 @@ export class LoginUserUseCase {
 
       return { msg: 'Un code OTP vous a été envoyer par mail' };
     } catch (error) {
-      if (error instanceof HttpException) {
-        // Si c'est une exception NestJS connue, on la relance directement
-        throw error;
+      if (error instanceof Error) {
+        if (error.message === ErrorsMessagesEnum.INVALID_PASSPORT) {
+          throw new UnauthorizedException("Le mot de passe n'est pas correct");
+        }
+        if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
+          throw new InternalServerException('Database Error');
+        }
+        if (error.message === ErrorsMessagesEnum.NOT_FOUND) {
+          throw new NotFoundException('Aucun utilisateur trouvé');
+        }
+        if (error.message === ErrorsMessagesEnum.INTERNAL_SERVER_ERROR) {
+          throw new InternalServerException(
+            "Probleme serveur impossible de vous connecter",
+          );
+        }
       }
       throw error;
     }

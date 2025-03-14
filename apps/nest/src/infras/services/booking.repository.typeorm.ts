@@ -32,7 +32,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error;
     }
   }
 
@@ -54,7 +54,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error ;
     }
   }
 
@@ -70,7 +70,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error
     }
   }
 
@@ -149,7 +149,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error
     }
   }
 
@@ -162,7 +162,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error
     }
   }
 
@@ -176,7 +176,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error
     }
   }
 
@@ -195,7 +195,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       if (error instanceof QueryFailedError) {
         handleDatabaseError(error);
       }
-      throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+      throw error
     }
   }
 }
