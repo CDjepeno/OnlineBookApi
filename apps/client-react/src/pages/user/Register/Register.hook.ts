@@ -6,8 +6,10 @@ import * as yup from "yup";
 import { RouterEnum } from "../../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../../request/commons/useQueryWorkflowCallback";
 import { registerUser } from "../../../services/user.services";
-import { RegisterFormInput } from "../../../types/user/form.types";
-import { AxiosResponse } from "axios";
+import {
+  RegisterFormInput,
+  RegisterResponse,
+} from "../../../types/user/form.types";
 
 export default function RegisterHook() {
   const navigate = useNavigate();
@@ -62,11 +64,8 @@ export default function RegisterHook() {
 
   const { mutateAsync: submit } = useMutation({
     mutationFn: (input: RegisterFormInput) => registerUser(input),
-    onSuccess: (response: AxiosResponse<RegisterResponse>) => {
-      onSuccessCommon(
-        response.data.message,
-        RouterEnum.LOGIN,
-      );
+    onSuccess: (response: RegisterResponse) => {
+      onSuccessCommon(response.data.message, RouterEnum.LOGIN);
       navigate(RouterEnum.LOGIN);
     },
   });

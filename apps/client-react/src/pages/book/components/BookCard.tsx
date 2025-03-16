@@ -28,8 +28,7 @@ export default function BookCard({
   releaseAt,
   coverUrl,
 }: BookCardProps) {
-  const releaseDate =
-    typeof releaseAt === "string" ? new Date(releaseAt) : releaseAt;
+
 
   const truncateDescription = (description: string, limit: number) => {
     return description.length > limit
@@ -58,7 +57,7 @@ export default function BookCard({
           </Typography>
           <Typography>{author}</Typography>
           <Typography>{truncateDescription(description, 100)}</Typography>
-          <Typography>Date de parution : {formatDate(releaseDate)}</Typography>
+          <Typography>Date de parution : {formatDate(releaseAt)}</Typography>
         </CardContent>
         <CardActions>
           <Button

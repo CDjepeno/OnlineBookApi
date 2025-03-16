@@ -3,6 +3,11 @@
     "husky": "^9.1.7"
   },
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "build:nest": "cd apps/nest && npm run build",
+    "build:react": "cd apps/client-react && npm run build",
+    "build:all": "npm run build:react && npm run build:nest"
+
+
   }
 }

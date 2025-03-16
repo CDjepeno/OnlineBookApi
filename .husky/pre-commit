@@ -1,14 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Build NestJS
-echo "Building NestJS project..."
-cd apps/nest
-npm run build
-
-# Build React
-# echo "Building React project..."
-# cd apps/client-react
-# npm run build
+npm run build:all
 
 # chmod +x .husky/pre-commit
