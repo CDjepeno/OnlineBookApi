@@ -36,7 +36,7 @@ export function HomePage() {
                   key={book.id}
                   id={book.id}
                   coverUrl={book.coverUrl}
-                  name={book.name}
+                  name={book.title}
                   author={book.author}
                   description={book.description}
                   releaseAt={book.releaseAt}
