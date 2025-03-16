@@ -8,7 +8,7 @@ const config: UserConfig = {
       "always",
       ["feat", "fix", "chore", "docs", "style", "refactor", "test"],
     ],
-    "subject-case": [0],
+    "subject-case": [0], // disable subject case
     "header-max-length": [2, "always", 100],
     "subject-empty": [0],
     "type-empty": [0],
