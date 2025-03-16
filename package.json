@@ -1,13 +1,18 @@
 {
   "devDependencies": {
-    "husky": "^9.1.7"
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "commitizen": "^4.3.1",
+    "cz-customizable": "^7.3.0",
+    "husky": "^8.0.0"
   },
   "scripts": {
     "prepare": "husky",
     "build:nest": "cd apps/nest && npm run build",
     "build:react": "cd apps/client-react && npm run build",
-    "build:all": "npm run build:react && npm run build:nest"
-
-
+    "build:all": "npm run build:react && npm run build:nest",
+    "lint:nest": "cd apps/nest && npm run lint",
+    "lint:react": "cd apps/client-react && npm run lint",
+    "lint:all": "npm run lint:react && npm run lint:nest"
   }
 }
