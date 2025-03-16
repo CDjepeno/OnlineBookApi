@@ -15,8 +15,7 @@ const config: UserConfig = {
   },
   parserPreset: {
     parserOpts: {
-      headerPattern:
-        /^(feat|fix|chore|docs|style|refactor|test) (\:sparkles:|\:hammer:|\:bug) (ON-\d{3,}) (.+)$/,
+      headerPattern: /^(feat|fix|chore|docs|style|refactor|test):\s+(:.*?:)\s+(ON-\d+)\s+(.+)$/,
       headerCorrespondence: ["type", "emoji", "ticket", "subject"],
     },
   },
