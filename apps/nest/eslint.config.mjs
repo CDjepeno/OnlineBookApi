@@ -19,13 +19,5 @@ export default [
   {
     ignores: ['node_modules', 'dist'],
   },
-  // {
-  //   files: ['**/*.ts', '**/*.js'],
-  //   languageOptions: {
-  //     parserOptions: {
-  //       ecmaVersion: 'latest',
-  //       sourceType: 'module',
-  //     },
-  //   },
-  // },
+
 ];
