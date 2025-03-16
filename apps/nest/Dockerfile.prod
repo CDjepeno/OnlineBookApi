@@ -1,0 +1,40 @@
+# Étape 1 : Builder l'application NestJS avec une image Node légère
+FROM node:20-alpine AS builder
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier uniquement les fichiers nécessaires pour installer les dépendances
+COPY package.json package-lock.json ./
+
+# Installer les dépendances
+RUN npm install
+
+# Installer le CLI de NestJS globalement
+RUN npm install -g @nestjs/cli
+
+# Copier le reste du code source
+COPY . .
+
+# Compiler l'application NestJS
+RUN npm run build
+
+# Étape 2 : Exécuter l'application avec une image encore plus légère
+FROM node:20-alpine
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier uniquement le build et les dépendances du conteneur précédent
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+# Définir l'environnement en production
+ENV NODE_ENV=production
+
+# Exposer le port sur lequel NestJS écoute
+EXPOSE 3000
+
+# Démarrer l'application en mode production
+CMD ["node", "dist/main.js"]
