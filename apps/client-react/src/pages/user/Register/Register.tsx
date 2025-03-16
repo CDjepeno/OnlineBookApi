@@ -8,8 +8,8 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Controller } from "react-hook-form";
-import RegisterHook from "./Register.hook";
 import FormInput from "../../../components/FormInput";
+import RegisterHook from "./Register.hook";
 
 export default function Register() {
   const {
@@ -48,7 +48,7 @@ export default function Register() {
             <Grid item xs={12}>
               <FormInput
                 name="email"
-                label="Email Address"
+                label="Email"
                 errors={errors}
                 control={control}
               />
@@ -60,7 +60,7 @@ export default function Register() {
             <Grid item xs={12}>
               <FormInput
                 name="password"
-                label="password"
+                label="Mot de passe"
                 type="password"
                 control={control}
                 onblur={() => handleConfirmPasswordChange}
@@ -68,7 +68,7 @@ export default function Register() {
               />
             </Grid>
             <Grid item xs={12}>
-            <Controller
+              <Controller
                 name="confirmPassword"
                 control={control}
                 render={({ field }) => (
@@ -76,7 +76,7 @@ export default function Register() {
                     {...field}
                     required
                     fullWidth
-                    label="Confirm Password"
+                    label="Confirmer le mot de passe"
                     type="password"
                     error={!isPasswordMatch}
                     helperText={
@@ -102,7 +102,7 @@ export default function Register() {
             <Grid item xs={12}>
               <FormInput
                 name="phone"
-                label="Phone"
+                label="Numéro de téléphone"
                 control={control}
                 errors={errors}
               />
@@ -118,12 +118,12 @@ export default function Register() {
             sx={{ mt: 3, mb: 2 }}
             disabled={isSubmitting}
           >
-            Sign Up
+            S'inscrire
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Link href="/login" variant="body2">
-                Already have an account? Sign in
+                Vous avez déjà un compte ? Connectez-vous
               </Link>
             </Grid>
           </Grid>

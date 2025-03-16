@@ -8,8 +8,8 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import LoginHook from "./Login.hook";
 import FormInput from "../../../components/FormInput";
+import LoginHook from "./Login.hook";
 
 export default function Login() {
   const { onSubmit, handleSubmit, errors, isSubmitting, control } = LoginHook();
@@ -56,7 +56,7 @@ export default function Login() {
           >
             <FormInput
               name="email"
-              label="Email Address"
+              label="Email"
               control={control}
               errors={errors}
               sx={{ mb: 2 }}
@@ -64,7 +64,7 @@ export default function Login() {
 
             <FormInput
               name="password"
-              label="Password"
+              label="Mot de passe"
               type="password"
               control={control}
               errors={errors}
@@ -72,7 +72,7 @@ export default function Login() {
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              label="Se souvenir de moi"
             />
             {errors.root && <p>{errors.root.message}</p>}
             <Button
@@ -82,17 +82,17 @@ export default function Login() {
               sx={{ mt: 3, mb: 2 }}
               disabled={isSubmitting}
             >
-              Sign In
+              Se Connecter
             </Button>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
-                  Forgot password?
+                  Mot de passe oublié ?
                 </Link>
               </Grid>
               <Grid item>
                 <Link href="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  {"Vous n'avez pas de compte ? Inscrivez-vous"}
                 </Link>
               </Grid>
             </Grid>

@@ -55,7 +55,7 @@ export default function BookListUser() {
   const rows =
     books?.map((book) => ({
       cells: [
-        book.name,
+        book.title,
         book.author,
         book.description,
         formatDate(book.releaseAt),

@@ -31,7 +31,7 @@ export class BookRepositoryTyperom implements BookRepository {
       }
 
       const book = new Book();
-      book.name = addBookRequest.name;
+      book.title = addBookRequest.title;
       book.description = addBookRequest.description;
       book.author = addBookRequest.author;
       book.releaseAt = addBookRequest.releaseAt;

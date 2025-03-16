@@ -61,7 +61,7 @@ function BookUpdateHook() {
   const submit = async (data: UpdateBookFormType) => {
     try {
       const formData = new FormData();
-      formData.append("name", data.name);
+      formData.append("name", data.title);
       formData.append("description", data.description);
       formData.append("author", data.author);
       formData.append("releaseAt", new Date(data.releaseAt).toISOString());

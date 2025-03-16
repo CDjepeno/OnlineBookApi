@@ -4,7 +4,7 @@ export interface ErrorResponse {
 
 export interface GetBookResponse {
   id: string;
-  name: string;
+  title: string;
   description: string;
   author: string;
   releaseAt: string;
@@ -13,7 +13,7 @@ export interface GetBookResponse {
 
 export interface GetBooksResponse {
   id: string;
-  name: string;
+  title: string;
   description: string;
   author: string;
   releaseAt: string;
@@ -21,7 +21,7 @@ export interface GetBooksResponse {
 }
 
 export interface AddBookResponse {
-  name: string;
+  title: string;
   description: string;
   author: string;
   releaseAt: string;
@@ -29,7 +29,7 @@ export interface AddBookResponse {
 }
 
 export interface AddBookInput {
-  name: string;
+  title: string;
   description: string;
   author: string;
   releaseAt: string;
@@ -37,7 +37,7 @@ export interface AddBookInput {
 }
 
 export type AddBookFormType = {
-  name: string;
+  title: string;
   description: string;
   author: string;
   releaseAt: string;
@@ -46,7 +46,7 @@ export type AddBookFormType = {
 
 export interface UpdateBookResponse {
   id: string;
-  name: string;
+  title: string;
   description: string;
   author: string;
   releaseAt: string;
@@ -55,7 +55,7 @@ export interface UpdateBookResponse {
 
 export type UpdateBookFormType = {
   id: string;
-  name: string;
+  title: string;
   description: string;
   author: string;
   releaseAt: string;

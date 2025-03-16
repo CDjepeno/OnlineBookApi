@@ -17,7 +17,7 @@ import {
 import { AuthContextValue } from "../../../../types/user/auth.context.value";
 
 const defaultValues: DefaultValues<AddBookFormType> = {
-  name: "",
+  title: "",
   description: "",
   author: "",
   releaseAt: new Date().toISOString(),
@@ -25,7 +25,7 @@ const defaultValues: DefaultValues<AddBookFormType> = {
 };
 
 const bookSchema = yup.object({
-  name: yup.string().required("Le nom doit être renseigné"),
+  title: yup.string().required("Le nom doit être renseigné"),
   description: yup.string().required("La description doit être renseignée"),
   author: yup.string().required("L'auteur doit être renseigné"),
   releaseAt: yup.string().required("La date de sortie doit être renseignée"),
@@ -88,7 +88,7 @@ function BookAddHook() {
   const submit = async (data: AddBookInput) => {
     try {
       const formData = new FormData();
-      formData.append("name", data.name);
+      formData.append("title", data.title);
       formData.append("description", data.description);
       formData.append("author", data.author);
       formData.append("releaseAt", data.releaseAt);
