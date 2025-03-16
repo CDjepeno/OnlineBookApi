@@ -8,14 +8,15 @@ const config: UserConfig = {
       "always",
       ["feat", "fix", "chore", "docs", "style", "refactor", "test"],
     ],
-    "subject-case": [0], // disable subject case
-    "header-max-length": [2, "always", 100],
-    "subject-empty": [0],
-    "type-empty": [0],
+    "subject-case": [0], // Désactive la vérification de la casse
+    "header-max-length": [2, "always", 100], // Limite la longueur max
+    "subject-empty": [2, "never"], // Interdit les messages vides
   },
   parserPreset: {
+    //fdsf
     parserOpts: {
-      headerPattern: /^(feat|fix|chore|docs|style|refactor|test):\s+(:.*?:)\s+(ON-\d+)\s+(.+)$/,
+      headerPattern:
+        /^(feat|fix|chore|docs|style|refactor|test): (\:sparkles:|\:hammer:|\:bug:) (ON-\d{3,}) (.+)$/,
       headerCorrespondence: ["type", "emoji", "ticket", "subject"],
     },
   },
