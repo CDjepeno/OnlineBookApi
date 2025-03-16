@@ -17,7 +17,7 @@ export class Book {
 
   @Column()
   @IsString()
-  name: string;
+  title: string;
 
   @Column()
   @IsString()

@@ -75,8 +75,8 @@ function BookUpdateForm({ bookUpdate, onClose }: BookUpdateFormProps) {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormInput
-                name="name"
-                label="Nom"
+                name="title"
+                label="Titre"
                 control={control}
                 errors={errors}
               />

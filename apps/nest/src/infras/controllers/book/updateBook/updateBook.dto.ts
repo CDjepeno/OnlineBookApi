@@ -4,8 +4,8 @@ import { IsDate, IsNotEmpty, IsString, IsUrl } from 'class-validator';
 export class UpdateBookDto {
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ description: 'Nom du livre' })
-  name: string;
+  @ApiProperty({ description: 'Titre du livre' })
+  title: string;
 
   @IsString()
   @IsNotEmpty()

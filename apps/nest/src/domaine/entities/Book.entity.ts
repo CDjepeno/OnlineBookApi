@@ -1,7 +1,7 @@
 export class BookEntity {
   constructor(
     readonly id: number,
-    readonly name: string,
+    readonly title: string,
     readonly description: string,
     readonly author: string,
     readonly releaseAt: Date,
