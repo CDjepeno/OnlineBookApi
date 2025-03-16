@@ -3,7 +3,6 @@ import pluginReact from 'eslint-plugin-react';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-/** @type {import('eslint').Linter.Config[]} */
 export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
   {
@@ -19,5 +18,4 @@ export default [
   {
     ignores: ['node_modules', 'dist'],
   },
-
 ];
