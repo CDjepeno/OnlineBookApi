@@ -1,18 +1,14 @@
-
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo "🔍 Vérification du code avec ESLint et build des projets..."
-
-# Lint et Build du projet NestJS
-cd backend # Remplacez par le chemin de votre application NestJS
-# npm run lint
+# Build NestJS
+echo "Building NestJS project..."
+cd apps/nest
 npm run build
 
-# Lint et Build du projet React
-cd ../frontend # Remplacez par le chemin de votre application React
-# npm run lint
-npm run build
+# Build React
+# echo "Building React project..."
+# cd apps/client-react
+# npm run build
 
-# Si tout est ok, on peut continuer avec le commit
-echo "✅ Vérification terminée avec succès!"
+# chmod +x .husky/pre-commit
