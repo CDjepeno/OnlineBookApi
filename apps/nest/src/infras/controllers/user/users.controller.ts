@@ -20,16 +20,12 @@ export class UsersController {
   })
   @ApiCreatedResponse({ description: 'User created.', type: User })
   async createUser(@Body() createUserDto: CreateUserDto) {
-    try {
-      const result = await this.createUserUsecaseProxy
-        .getInstance()
-        .execute(createUserDto);
+    const result = await this.createUserUsecaseProxy
+      .getInstance()
+      .execute(createUserDto);
 
-      return {
-        data: result,
-      };
-    } catch (err) {
-      throw err;
-    }
+    return {
+      data: result,
+    };
   }
 }

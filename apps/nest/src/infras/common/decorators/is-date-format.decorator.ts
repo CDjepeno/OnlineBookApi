@@ -13,7 +13,7 @@ function isValidDateFormat(value: Date): boolean {
 }
 
 export function IsDateFormat(validationOptions?: ValidationOptions) {
-  return function (object: any, propertyName: string) {
+  return function (object: unknown, propertyName: string) {
     registerDecorator({
       name: 'isDateFormat',
       target: object.constructor,

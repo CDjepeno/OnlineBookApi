@@ -123,7 +123,7 @@ export class BookRepositoryTyperom implements BookRepository {
       }
     } catch (error) {
       throw new InternalServerErrorException(
-        'Impossible de supprimer le livre.',
+        'Impossible de supprimer le livre.', error
       );
     }
   }
