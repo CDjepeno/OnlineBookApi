@@ -1,5 +1,6 @@
 // Routes http
 export const BASE_URL = "http://localhost:3000/";
+export const PROD_URL = "https://nest-api-onlinebook-eac8a2a7.koyeb.app/";
 export const CURRENT_USER_ROUTE = "/auth/current";
 export const GET_USER_BY_ID_ROUTE = "/user";
 export const REFRESH_TOKEN_ROUTE = "/auth/refresh-token";
