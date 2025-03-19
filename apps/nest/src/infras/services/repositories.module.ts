@@ -5,33 +5,30 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AwsS3Module } from '../clients/aws/aws-s3.module';
 import NodemailerClient from '../clients/nodemailer/nodemailer.client';
 import { NodemailerModules } from '../clients/nodemailer/nodemailer.module';
+import { RedisClient } from '../clients/redis/redis.client';
+import { RedisModules } from '../clients/redis/redis.module';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { Book } from '../models/book.model';
 import { Booking } from '../models/booking.model';
-import { User } from '../models/user.model';
-import {
-  BookRepositoryTypeorm,
-} from './book.repository.typeorm';
-import { BookingRepositoryTypeorm } from './booking.repository.typeorm';
-import { UserRepositoryTypeorm } from './user.repository.typeorm';
-import { ContactRepositoryTypeorm } from './contact.repository.typeorm';
 import { Contact } from '../models/contact.model';
-import { RedisModules } from '../clients/redis/redis.module';
-import { RedisClient } from '../clients/redis/redis.client';
+import { User } from '../models/user.model';
+import { BookRepositoryTypeorm } from './book.repository.typeorm';
+import { BookingRepositoryTypeorm } from './booking.repository.typeorm';
+import { ContactRepositoryTypeorm } from './contact.repository.typeorm';
+import { UserRepositoryTypeorm } from './user.repository.typeorm';
 // import { ConfigKafkaModule } from '../clients/kafka/kafka.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Book, Booking, Contact]),
-    ConfigModule,
-    NodemailerModules,
-    RedisModules,
-    AwsS3Module,
-    ConfigModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '24h' },
     }),
+    ConfigModule,
+    NodemailerModules,
+    RedisModules,
+    AwsS3Module,
     // ConfigKafkaModule
   ],
   providers: [
@@ -42,13 +39,13 @@ import { RedisClient } from '../clients/redis/redis.client';
     RedisClient,
     ConfigService,
     JwtAuthGuard,
-    ContactRepositoryTypeorm
+    ContactRepositoryTypeorm,
   ],
   exports: [
     UserRepositoryTypeorm,
     BookRepositoryTypeorm,
     BookingRepositoryTypeorm,
-    ContactRepositoryTypeorm
+    ContactRepositoryTypeorm,
   ],
 })
 export class RepositoriesModule {}
