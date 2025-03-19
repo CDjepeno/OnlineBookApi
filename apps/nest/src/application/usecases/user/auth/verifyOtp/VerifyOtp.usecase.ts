@@ -2,7 +2,7 @@ import { UsersRepository } from 'src/repositories/user.repository';
 import { RedisClient } from 'src/infras/clients/redis/redis.client';
 import { VerifyOtpRequest } from './verifyOtp.request';
 import { VerifyOtpResponse } from './verifyOtp.response';
-import { UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from 'src/domaine/errors/onlineBook.error';
 
 export class VerifyOtpUseCase {
   constructor(

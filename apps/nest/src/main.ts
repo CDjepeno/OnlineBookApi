@@ -1,3 +1,8 @@
+import { config } from 'dotenv';
+
+const envFile = process.env.NODE_ENV === 'production' ? '.env.prod' : '.env.dev';
+config({ path: envFile });
+
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -22,6 +27,6 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
 
-  await app.listen(3000, "0.0.0.0");;;
+  await app.listen(3000, "0.0.0.0");
 }
 bootstrap();

@@ -8,7 +8,7 @@ const config: UserConfig = {
       'header-max-length': [2, 'always', 100], // Limite la longueur max
       'subject-empty': [2, 'never'], // Interdit les messages vides
     },
-    parserPreset: { //fdsf
+    parserPreset: { 
       parserOpts: {
         headerPattern: /^(feat|fix|chore|docs|style|refactor|test): (\:sparkles:|\:hammer:|\:bug:) (ON-\d{3,}) (.+)$/,
         headerCorrespondence: ['type', 'emoji', 'ticket', 'subject'],

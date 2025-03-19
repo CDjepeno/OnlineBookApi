@@ -6,14 +6,14 @@ import {
 import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { RedisClient } from 'src/infras/clients/redis/redis.client';
-import { UsersRepository } from 'src/repositories/user.repository';
+import { UserRepositoryTypeorm } from 'src/infras/services/user.repository.typeorm';
 import { LoginUserRequest } from './login.user.request';
 import { LoginUserResponse } from './login.user.response';
 
 export class LoginUserUseCase {
   constructor(
-    private readonly usersRepository: UsersRepository,
-    private readonly redisClient: RedisClient,
+    private usersRepository: UserRepositoryTypeorm,
+    private redisClient: RedisClient,
     private nodemailerClient: NodemailerClient,
   ) {}
 
@@ -26,6 +26,7 @@ export class LoginUserUseCase {
         subject: `Code de vérification`,
         text: `Bonjour voici votre code de vérification: \n${otp}`,
       });
+
       await this.redisClient.saveOtp(email, otp);
 
       return { msg: 'Un code OTP vous a été envoyer par mail' };
@@ -42,7 +43,7 @@ export class LoginUserUseCase {
         }
         if (error.message === ErrorsMessagesEnum.INTERNAL_SERVER_ERROR) {
           throw new InternalServerException(
-            "Probleme serveur impossible de vous connecter",
+            'Probleme serveur impossible de vous connecter',
           );
         }
       }
