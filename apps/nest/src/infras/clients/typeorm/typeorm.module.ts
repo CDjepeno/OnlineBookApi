@@ -27,6 +27,7 @@ import { User } from 'src/infras/models/user.model';
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([User])
   ],
 })
 export class ConfigTypeOrmModule {}
