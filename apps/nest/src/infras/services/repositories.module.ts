@@ -16,26 +16,30 @@ import { BookingRepositoryTypeorm } from './booking.repository.typeorm';
 import { UserRepositoryTypeorm } from './user.repository.typeorm';
 import { ContactRepositoryTypeorm } from './contact.repository.typeorm';
 import { Contact } from '../models/contact.model';
-import { ConfigKafkaModule } from '../clients/kafka/kafka.module';
+import { RedisModules } from '../clients/redis/redis.module';
+import { RedisClient } from '../clients/redis/redis.client';
+// import { ConfigKafkaModule } from '../clients/kafka/kafka.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Book, Booking, Contact]),
     ConfigModule,
     NodemailerModules,
+    RedisModules,
     AwsS3Module,
     ConfigModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '24h' },
     }),
-    ConfigKafkaModule
+    // ConfigKafkaModule
   ],
   providers: [
     BookRepositoryTypeorm,
     BookingRepositoryTypeorm,
     UserRepositoryTypeorm,
     NodemailerClient,
+    RedisClient,
     ConfigService,
     JwtAuthGuard,
     ContactRepositoryTypeorm

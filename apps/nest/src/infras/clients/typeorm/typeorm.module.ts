@@ -11,7 +11,6 @@ import { User } from 'src/infras/models/user.model';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env'
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -22,11 +21,6 @@ import { User } from 'src/infras/models/user.model';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        // host: configService.get('DB_HOST') || "mysql_db",
-        // port: +configService.get('DB_PORT') || 3306,
-        // username: configService.get('DB_USERNAME') || "root",
-        // password: configService.get('DB_PASSWORD') || "Dulonx95",
-        // database: configService.get('DB_NAME') || "book_db",
         entities: [User, Book, Booking, Contact],
         // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,

@@ -1,8 +1,11 @@
 version: "3.8"
 
+
 services:
   ############################# Backend NESTJS
   backend:
+    env_file:
+      - .env.prod
     build:
       context: ./apps/nest
       dockerfile: Dockerfile.prod # 🔥 Utilise un Dockerfile spécifique à la production
@@ -24,7 +27,6 @@ services:
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-
     depends_on:
       db:
         condition: service_started
@@ -37,6 +39,8 @@ services:
 
   ############################# Database MYSQL
   db:
+    env_file:
+      - .env.prod
     image: mysql:8.0
     container_name: mysql_db
     restart: always

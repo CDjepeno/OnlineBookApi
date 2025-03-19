@@ -32,6 +32,8 @@ COPY --from=builder /app/package.json ./package.json
 
 # Définir l'environnement en production
 ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=3000
 
 # Exposer le port sur lequel NestJS écoute
 EXPOSE 3000

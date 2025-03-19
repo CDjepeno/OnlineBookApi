@@ -1,0 +1,7 @@
+services:
+  - name: nest-api
+    image: cdjepeno/nest_onlinebook:latest
+    ports:
+      - 3000
+    env:
+      NODE_ENV: production
