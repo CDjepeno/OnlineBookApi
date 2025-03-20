@@ -17,7 +17,7 @@ RUN npm install -g @nestjs/cli
 COPY . .
 
 # Copie les cerficats kafka
-COPY certs /app/src/infras/clients/kafka/certs
+COPY ./src/infras/clients/kafka/certs /app/src/infras/clients/kafka/certs
 
 
 # Compiler l'application NestJS
@@ -37,10 +37,10 @@ COPY --from=builder /app/package.json ./package.json
 # Définir l'environnement en production
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
-ENV PORT=3000
+ENV PORT=8000
 
 # Exposer le port sur lequel NestJS écoute
-EXPOSE 3000
+EXPOSE 8000
 
 # Démarrer l'application en mode production
 CMD ["node", "dist/main.js"]

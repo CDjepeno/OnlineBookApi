@@ -13,6 +13,7 @@
     "build:nest": "cd apps/nest && npm run build",
     "build:all": "npm run build:next && npm run build:nest",
     "lint:all": "npm run lint:nest && npm run lint:next",
+    "test:all": "",
     "lint:commit": "commitlint --from=HEAD~1"
   }
 }

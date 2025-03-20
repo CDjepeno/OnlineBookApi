@@ -7,7 +7,7 @@ import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config'
 import { RegisterDto } from './register.dto';
 
 @ApiTags('User')
-@Controller('registerrrrrrr')
+@Controller('register')
 export class RegisterController {
   constructor(
     @Inject(UsecaseProxyEnum.CREATE_USER_USECASE_PROXY)
