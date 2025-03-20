@@ -1,0 +1,22 @@
+name: Deploy Backend to Koyeb
+
+on:
+  push:
+    branches:
+      - nextJS  # Change la branche si nécessaire
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Login to Koyeb
+        run: |
+          curl -sL https://get.koyeb.com | bash
+          koyeb login --token ${{ secrets.KOYEB_TOKEN }}
+
+      - name: Deploy to Koyeb
+        run: koyeb service redeploy my-backend-service
