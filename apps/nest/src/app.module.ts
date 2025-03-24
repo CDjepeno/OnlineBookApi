@@ -16,6 +16,10 @@ import { Contact } from './infras/models/contact.model';
 import { User } from './infras/models/user.model';
 import { RepositoriesModule } from './infras/services/repositories.module';
 import { UserRepositoryTypeorm } from './infras/services/user.repository.typeorm';
+import { ConfigKafkaModule } from './infras/clients/kafka/kafka.module';
+import { AddUserUseCase } from './application/usecases/user/adduser/add.user.usecase';
+import { AddBookUseCase } from './application/usecases/book/addBook/addBook.usecase';
+import { BookingBookUseCase } from './application/usecases/booking/bookingBook/bookingBook.usecase';
 
 @Module({
   imports: [
@@ -24,7 +28,7 @@ import { UserRepositoryTypeorm } from './infras/services/user.repository.typeorm
     ConfigTypeOrmModule,
     RedisModules,
     NodemailerModules,
-    // ConfigKafkaModule,
+    ConfigKafkaModule,
     SocketModules,
     ConfigModule.forRoot({
       isGlobal: true, // Rendre ConfigService accessible partout dans l'application
@@ -39,7 +43,7 @@ import { UserRepositoryTypeorm } from './infras/services/user.repository.typeorm
     ConfigModule,
   ],
   controllers: [RegisterController],
-  providers: [UserRepositoryTypeorm],
-  exports: [],
+  providers: [UserRepositoryTypeorm, AddUserUseCase, AddBookUseCase, BookingBookUseCase],
+  exports: [AddUserUseCase, AddBookUseCase, BookingBookUseCase],
 })
 export class AppModule {}

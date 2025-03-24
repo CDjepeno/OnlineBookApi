@@ -22,6 +22,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AuthContext, AuthContextValue } from "@/context/AuthContext";
 import { RouterEnum } from "@/types/enum/enum";
+import { BASE_URL } from "@/request/route-http/route-http";
 
 type LinkMap = {
   [key: string]: string;
@@ -85,7 +86,7 @@ function Header() {
 
   useEffect(() => {
     setIsMounted(true);
-    const socket = io("http://localhost:3000");
+    const socket = io(BASE_URL);
     if (user) {
       const eventKey = `notification:${user.id}`;
 

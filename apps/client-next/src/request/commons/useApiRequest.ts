@@ -1,7 +1,7 @@
 import { AxiosError, RawAxiosRequestHeaders } from "axios";
 import { MethodHttpEnum } from "@/types/enum/enum";
 import { UseRequest } from "@/clients/axios/useRequest";
-import { REFRESH_TOKEN_ROUTE } from "../route-http/route-http";
+import { BASE_URL, REFRESH_TOKEN_ROUTE } from "../route-http/route-http";
 import { RefreshTokenResponse } from "@/types/user/response.types";
 
 interface useApiRequestProps<T> {
@@ -25,7 +25,7 @@ function safeParseJSON<T>(value: string | null): T | null {
   }
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
+
 
 export async function UseRequestApi<TData, T>({
   path,

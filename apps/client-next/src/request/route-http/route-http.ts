@@ -1,5 +1,5 @@
 // Routes http
-export const BASE_URL = "http://localhost:3000/";
+export const BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
 export const PROD_URL = "https://nest-api-onlinebook-eac8a2a7.koyeb.app/";
 export const CURRENT_USER_ROUTE = "/auth/current";
 export const GET_USER_BY_ID_ROUTE = "/user";
@@ -19,3 +19,5 @@ export const UPDATE_BOOKING_USER_ROUTE = "/booking/user";
 export const BOOKING_BOOK_ROUTE = "/booking/book";
 export const DELETE_BOOKING_USER_ROUTE = "/booking/user";
 export const DELETE_BOOKINGS_USER_ROUTE = "/bookings/user";
+
+

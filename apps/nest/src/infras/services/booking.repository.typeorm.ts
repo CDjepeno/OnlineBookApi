@@ -101,7 +101,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
     `,
         [userId],
       );
-
+      
       if (raw.length === 0) {
         throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
@@ -128,7 +128,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
         }),
       );
 
-      if (bookings) {
+      if (bookings.length === 0) {
         throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
 
