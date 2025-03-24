@@ -85,7 +85,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
       const skip = currentPage * take;
 
       const raw = await this.repository.query(
-        `
+       `
       SELECT 
         booking.id AS bookingId,
         book.id AS bookId,
@@ -102,7 +102,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
         [userId],
       );
 
-      if (raw) {
+      if (raw.length === 0) {
         throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
 

@@ -6,10 +6,12 @@ services:
       dockerfile: Dockerfile.dev
     container_name: nest_backend
     ports:
-      - "3000:3000"
+      - "8000:8000"
     volumes:
       - ./apps/nest:/app
       - nest_node_modules:/apps/nest/node_modules 
+    env_file:
+      - .env
     environment:
       DATABASE_HOST: ${DB_HOST}
       DATABASE_PORT: ${DB_PORT}
@@ -29,22 +31,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-    networks:
-      - onelineBook_network
-  ############################# Frontend REACTJS
-  frontend:
-    build:
-      context: ./apps/client-react 
-      dockerfile: Dockerfile
-    container_name: react_frontend
-    ports:
-      - "5173:5173" 
-    volumes:
-      - ./apps/client-react:/app
-      - react_node_modules:/apps/client-react/node_modules
-    environment:
-      NODE_ENV: development 
-    command: npm run dev 
     networks:
       - onelineBook_network
   ############################# Frontend NEXT.JS
