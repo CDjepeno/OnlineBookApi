@@ -16,6 +16,10 @@ RUN npm install -g @nestjs/cli
 # Copier le reste du code source
 COPY . .
 
+# Copie les cerficats kafka
+COPY certs /app/src/infras/clients/kafka/certs
+
+
 # Compiler l'application NestJS
 RUN npm run build
 
