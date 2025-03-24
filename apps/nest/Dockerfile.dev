@@ -10,8 +10,12 @@ WORKDIR /app
 # Copier les fichiers package.json et package-lock.json pour optimiser le cache Docker
 COPY package*.json ./
 
+# Copier les certificats Kafka dans le conteneur
+COPY ./src/infras/clients/kafka/certs /app/dist/infras/clients/kafka/certs
+
 # Copier tout le code source
 COPY . .
+
 
 # Installer les dépendances nécessaires pour le développement
 RUN npm install

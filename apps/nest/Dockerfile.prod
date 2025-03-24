@@ -16,9 +16,8 @@ RUN npm install -g @nestjs/cli
 # Copier le reste du code source
 COPY . .
 
-# Copie les cerficats kafka
-COPY ./src/infras/clients/kafka/certs /app/src/infras/clients/kafka/certs
-
+# Supprimer le dossier dist et nettoyer le cache npm
+RUN rm -rf /app/dist && npm cache clean --force
 
 # Compiler l'application NestJS
 RUN npm run build
@@ -33,6 +32,9 @@ WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+
+# Vérification de la présence des fichiers de certificats dans l'image finale
+RUN ls -l /app
 
 # Définir l'environnement en production
 ENV NODE_ENV=production

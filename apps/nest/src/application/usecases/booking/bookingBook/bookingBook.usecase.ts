@@ -3,8 +3,8 @@ import cron from 'node-cron';
 import { BookingEntity } from 'src/domaine/entities/Booking.entity';
 import { InternalServerException } from 'src/domaine/errors/onlineBook.error';
 import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
-import { ConsumerKafkajsClient } from 'src/infras/clients/kafka/consumer.client';
-import { ProducerKafkaClient } from 'src/infras/clients/kafka/producer.client';
+// import { ConsumerKafkajsClient } from 'src/infras/clients/kafka/consumer.client';
+// import { ProducerKafkaClient } from 'src/infras/clients/kafka/producer.client';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { SocketClient } from 'src/infras/clients/socket/socket.client';
 import { BookingRepository } from 'src/repositories/bookingBook.repository';
@@ -13,8 +13,8 @@ import { BookingBookResponse } from './bookingBook.response';
 export class BookingBookUseCase {
   constructor(
     private readonly bookingRepository: BookingRepository,
-    private readonly producerKafkaClient: ProducerKafkaClient,
-    private readonly consumerKafkaClient: ConsumerKafkajsClient,
+    // private readonly producerKafkaClient: ProducerKafkaClient,
+    // private readonly consumerKafkaClient: ConsumerKafkajsClient,
     private readonly emailService: NodemailerClient,
     private readonly socketService: SocketClient,
   ) {}
@@ -50,19 +50,19 @@ export class BookingBookUseCase {
 
       await this.bookingRepository.Order(book);
 
-      this.producerKafkaClient.produce(
-        {
-          value: JSON.stringify({
-            userId: request.userId,
-            bookId: request.bookId,
-            email: request.email,
-            reminderDate: request.endAt,
-            message: '[JANVIER] => Reminder: Return your book tomorrow!',
-          }),
-        },
-        'notifications',
-      );
-      await this.consumerKafkaClient.consume();
+      // this.producerKafkaClient.produce(
+      //   {
+      //     value: JSON.stringify({
+      //       userId: request.userId,
+      //       bookId: request.bookId,
+      //       email: request.email,
+      //       reminderDate: request.endAt,
+      //       message: '[JANVIER] => Reminder: Return your book tomorrow!',
+      //     }),
+      //   },
+      //   'notifications',
+      // );
+      // await this.consumerKafkaClient.consume();
 
       const endDate = new Date(request.endAt); // Convertir en objet Date
 

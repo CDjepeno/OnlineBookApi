@@ -9,7 +9,8 @@ services:
       - "8000:8000"
     volumes:
       - ./apps/nest:/app
-      - nest_node_modules:/apps/nest/node_modules 
+      - nest_node_modules:/apps/node_modules 
+      - ./apps/nest/src/infras/clients/kafka/certs:/app/src/infras/clients/kafka/certs
     env_file:
       - .env
     environment:
@@ -19,7 +20,10 @@ services:
       DATABASE_PASSWORD: ${DB_PASSWORD}
       DATABASE_NAME: ${DB_NAME}
       NODE_ENV: development
-      KAFKA_BROKER: kafka:9094
+      KAFKA_BROKER: ${KAFKA_BROKER}
+      KAFKA_CA_CERT_PATH: ${KAFKA_CA_CERT_PATH}
+      KAFKA_CLIENT_CERT_PATH: ${KAFKA_CLIENT_CERT_PATH}
+      KAFKA_CLIENT_KEY_PATH: ${KAFKA_CLIENT_KEY_PATH}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
