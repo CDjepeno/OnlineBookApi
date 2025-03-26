@@ -3,23 +3,21 @@
 import CalendarGeneric from "@/components/CalendarGenericForm";
 import { AuthContext, AuthContextValue } from "@/context/AuthContext";
 import { GetBookResponse } from "@/types/book/response.types";
+import { GetBookingsBookResponse } from "@/types/booking/response.types";
 import {
   Box,
   Card,
   CardContent,
   CardMedia,
-  CircularProgress,
   Container,
   Typography,
 } from "@mui/material";
 import { DateRange } from "@mui/x-date-pickers-pro/models";
 import dayjs, { Dayjs } from "dayjs";
-import { useParams } from "next/navigation";
 import { useContext, useState } from "react";
 import { formatDate } from "../../../utils/formatDate";
 import { truncateDescription } from "../../../utils/truncateText";
 import BookDetailHook from "./BookDetail.hook";
-import { GetBookingsBookResponse } from "@/types/booking/response.types";
 
 function BookDetail({
   book,
@@ -30,10 +28,8 @@ function BookDetail({
 }) {
   const [dateRange, setDateRange] = useState<DateRange<Dayjs>>([null, null]);
   const { user } = useContext(AuthContext) as AuthContextValue;
-  const params = useParams();
-  const id = params.id as string;
 
-  const { isPending, error, onSubmit } = BookDetailHook(id);
+  const { onSubmit } = BookDetailHook();
 
   const bookings = bookingsBook?.map((reservation) => ({
     startAt: dayjs(reservation.startAt),
@@ -82,38 +78,6 @@ function BookDetail({
       email: user!.email,
     });
   };
-
-  if (isPending) {
-    return (
-      <Container>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="100vh"
-        >
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="100vh"
-        >
-          <Typography variant="h6" color="error">
-            Error loading book details
-          </Typography>
-        </Box>
-      </Container>
-    );
-  }
 
   if (!book) {
     return (

@@ -1,38 +1,15 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ErrorResponse } from "@/types/book/response.types";
+import { BookingBookFormType } from "@/types/booking/form.types";
+import { BookingsQueriesKeysEnum } from "@/types/enum/enum";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { UseQueryWorkflowCallback } from "../../../request/commons/useQueryWorkflowCallback";
-import { getBook } from "../../../services/book.services";
-import {
-  BookingBook,
-  getBookingsBook,
-} from "../../../services/booking.services";
-import {
-  BookingsQueriesKeysEnum,
-  BookQueriesKeysEnum,
-} from "@/types/enum/enum";
-import { BookingBookFormType } from "@/types/booking/form.types";
-import { ErrorResponse } from "@/types/book/response.types";
+import { BookingBook } from "../../../services/booking.services";
 
-function BookDetailHook(bookId: string) {
+function BookDetailHook() {
   const queryClient = useQueryClient();
-
-  const {
-    isPending,
-    data: book,
-    error,
-  } = useQuery({
-    queryKey: [BookQueriesKeysEnum.Book],
-    queryFn: () => getBook(bookId!),
-    enabled: !!bookId,
-  });
-
-  const { data: bookingsBook } = useQuery({
-    queryKey: [BookingsQueriesKeysEnum.GetBookingsBook],
-    queryFn: () => getBookingsBook(bookId!),
-    enabled: !!bookId,
-  });
 
   const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
 
@@ -59,7 +36,7 @@ function BookDetailHook(bookId: string) {
     return BookingBookMutation(input);
   };
 
-  return { isPending, bookingsBook, book, error, bookId, onSubmit };
+  return { onSubmit };
 }
 
 export default BookDetailHook;
