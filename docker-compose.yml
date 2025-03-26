@@ -5,6 +5,8 @@ services:
       context: ./apps/nest
       dockerfile: Dockerfile.dev
     container_name: nest_backend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "8000:8000"
     volumes:

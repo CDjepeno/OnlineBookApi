@@ -35,7 +35,7 @@ export async function UseRequestApi<TData, T>({
   params,
 }: useApiRequestProps<T>): Promise<TData> {
   try {
-    const storedValue = localStorage.getItem("BookToken");
+    const storedValue = typeof window !== "undefined" ? localStorage.getItem("BookToken") : null
     const parsedObject = safeParseJSON<string>(storedValue);
 
     const headersApiNest = {
@@ -60,7 +60,7 @@ export async function UseRequestApi<TData, T>({
     if (error instanceof AxiosError && error.response?.data.message === "Token invalide") {
       try {
         const refreshToken: RefreshRequest = {
-          refreshToken: localStorage.getItem("RefreshToken"),
+          refreshToken: typeof window !== "undefined" ? localStorage.getItem("RefreshToken") : null,
         };
         const parsedRefreshToken = safeParseJSON<string>(refreshToken.refreshToken);
 
