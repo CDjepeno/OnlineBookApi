@@ -1,6 +1,5 @@
-// "use client";
 
-import BookList from "@/components/BookList";
+import BookList from "@/app/BookList";
 import { getBooks } from "@/services/book.services";
 
 export default async function HomePage({ searchParams }: { searchParams?: { page: string } }) {
