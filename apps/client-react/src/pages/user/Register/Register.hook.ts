@@ -1,17 +1,17 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { RouterEnum } from "../../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../../request/commons/useQueryWorkflowCallback";
 import { registerUser } from "../../../services/user.services";
+import { ErrorResponse } from "../../../types/book/book.types";
 import {
   RegisterFormInput,
   RegisterResponse,
 } from "../../../types/user/form.types";
-import { AxiosError, isAxiosError } from "axios";
-import { ErrorResponse } from "../../../types/book/book.types";
 
 export default function RegisterHook() {
   const navigate = useNavigate();
@@ -70,7 +70,7 @@ export default function RegisterHook() {
       onSuccessCommon(response.data.message, RouterEnum.LOGIN);
       navigate(RouterEnum.LOGIN);
     },
-    onError: (error: Error | AxiosError<unknown>) => {
+    onError: (error: Error) => {
       let errorMessage = "Une erreur est survenue";
 
       if (isAxiosError(error)) {
