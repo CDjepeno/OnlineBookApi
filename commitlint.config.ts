@@ -13,11 +13,9 @@ const config: UserConfig = {
     "subject-empty": [2, "never"], // Interdit les messages vides
   },
   parserPreset: {
-    //fdsf
     parserOpts: {
-      headerPattern:
-        /^(feat|fix|chore|docs|style|refactor|test): (\:sparkles:|\:hammer:|\:bug:) (ON-\d{3,}) (.+)$/,
-      headerCorrespondence: ["type", "emoji", "ticket", "subject"],
+      headerPattern: /^(\w+)(\(.+\))?:\s*(.+)$/,
+      headerCorrespondence: ["type", "scope", "subject"],
     },
   },
 };

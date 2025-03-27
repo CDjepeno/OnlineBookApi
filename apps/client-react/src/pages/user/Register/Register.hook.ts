@@ -10,6 +10,8 @@ import {
   RegisterFormInput,
   RegisterResponse,
 } from "../../../types/user/form.types";
+import { AxiosError, isAxiosError } from "axios";
+import { ErrorResponse } from "../../../types/book/book.types";
 
 export default function RegisterHook() {
   const navigate = useNavigate();
@@ -60,13 +62,28 @@ export default function RegisterHook() {
     const password = watch("password");
     return password === value || "Les mots de passe ne correspondent pas.";
   };
-  const { onSuccessCommon } = UseQueryWorkflowCallback();
+  const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
 
   const { mutateAsync: submit } = useMutation({
     mutationFn: (input: RegisterFormInput) => registerUser(input),
     onSuccess: (response: RegisterResponse) => {
       onSuccessCommon(response.data.message, RouterEnum.LOGIN);
       navigate(RouterEnum.LOGIN);
+    },
+    onError: (error: Error | AxiosError<unknown>) => {
+      let errorMessage = "Une erreur est survenue";
+
+      if (isAxiosError(error)) {
+        if (
+          error.response &&
+          error.response.data &&
+          (error.response.data as ErrorResponse).message
+        ) {
+          errorMessage = (error.response.data as ErrorResponse).message;
+        }
+      }
+
+      onErrorCommon(errorMessage);
     },
   });
 
