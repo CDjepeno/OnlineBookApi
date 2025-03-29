@@ -17,6 +17,7 @@ import {
 import { LoginFormInput, VerifyOtpFormInput } from "@/types/user/input.types";
 import { MethodHttpEnum } from "@/types/enum/enum";
 import { getCurrentUser } from "@/services/user.services";
+import Cookies from "js-cookie";
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -39,16 +40,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     // Vérifie le token côté client uniquement
-    if (typeof window !== "undefined") {
       const token = localStorage.getItem("BookToken");
+      // const tokenCookies = Cookies.get("BookToken");
       if (token) {
         getUser();
-      }
     }
   }, []);
 
   const signin = async (credentials: LoginFormInput) => {
-    console.log("Signin Auth provider function called with:", credentials);
     return await UseRequestApi<SigninResponse, unknown>({
       method: MethodHttpEnum.POST,
       path: LOGIN_ROUTE,
@@ -71,6 +70,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (typeof window !== "undefined") {
         localStorage.setItem("BookToken", JSON.stringify(token));
         localStorage.setItem("RefreshToken", JSON.stringify(refreshToken));
+        Cookies.set("BookTokenCookies", token, { expires: 7 }); // Stocke le token dans un cookie
+        Cookies.set("BookRefreshTokenCookies", refreshToken, { expires: 7 }); // Stocke le token dans un cookie
       }
       await getUser();
     }
@@ -87,6 +88,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("BookToken");
       localStorage.removeItem("RefreshToken");
+      Cookies.remove("BookTokenCookies")
     }
     setUser(null);
     router.push("/"); // Remplace navigate("/")

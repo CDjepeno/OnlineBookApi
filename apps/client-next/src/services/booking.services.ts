@@ -44,11 +44,11 @@ export const BookingBook = async (
 };
 
 export const GetBookingsUser = async (
-  id: string,
+  id: number,
   page: number,
   limit: number
 ): Promise<GetBookingUserPaginationResponse> => {
-  return await UseRequestApi<GetBookingUserPaginationResponse, { id: string }>({
+  return await UseRequestApi<GetBookingUserPaginationResponse, { id: number }>({
     path: `${GET_BOOKINGS_USER_ROUTE}/${id}?page=${page}?limit=${limit}`,
     method: MethodHttpEnum.GET,
     params: { id },

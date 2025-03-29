@@ -23,7 +23,6 @@ export default function BookList({
   const [searchTerm, setSearchTerm] = useState("");
   const [activeSearchTerm, setActiveSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(initalPage);
-  console.log(currentPage);
   
   const {
     control,

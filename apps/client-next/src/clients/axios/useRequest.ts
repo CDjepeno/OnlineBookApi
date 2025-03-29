@@ -7,10 +7,12 @@ export const UseRequest = async <TData, T>(
   path: string,
   method: MethodHttpEnum,
   headers?: RawAxiosRequestHeaders,
-  params?: T
+  params?: T,
+  token?: string 
 ): Promise<TData> => {
   const axiosInstance = restRequestApiInstance(baseURL, headers);
 
+  // Configurer les en-têtes de la requête
   const config: AxiosRequestConfig = {
     method,
     url: path,
@@ -18,6 +20,7 @@ export const UseRequest = async <TData, T>(
       "Content-Type":
         params instanceof FormData ? "multipart/form-data" : "application/json",
       ...headers,
+      ...(token && { Authorization: `Bearer ${token}` }), // Ajouter Bearer token s'il est présent
     },
     data: params,
   };
