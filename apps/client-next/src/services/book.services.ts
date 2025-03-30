@@ -35,11 +35,11 @@ export const getBookByName = async (
 };
 
 export const getBooksByUser = async (
-  id: string,
+  id: number,
   page: number,
   limit: number
 ): Promise<GetBookByUserPaginationResponse> => {
-  return await UseRequestApi<GetBookByUserPaginationResponse, { id: string }>({
+  return await UseRequestApi<GetBookByUserPaginationResponse, { id: number }>({
     path: `${BOOKS_ROUTE}/${id}?page=${page}?limit=${limit}`,
     method: MethodHttpEnum.GET,
     params: { id },

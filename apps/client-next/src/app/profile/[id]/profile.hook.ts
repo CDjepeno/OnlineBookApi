@@ -1,38 +1,20 @@
 import { UseQueryWorkflowCallback } from "@/request/commons/useQueryWorkflowCallback";
-import { deleteBook, deleteBooks, getBooksByUser } from "@/services/book.services";
-import { getUserById } from "@/services/user.services";
-import { DeleteBooksResponse, ErrorResponse } from "@/types/book/response.types";
-import { BookQueriesKeysEnum, UserQueriesKeysEnum } from "@/types/enum/enum";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteBook, deleteBooks } from "@/services/book.services";
+import {
+  DeleteBooksResponse,
+  ErrorResponse,
+} from "@/types/book/response.types";
+import { BookQueriesKeysEnum } from "@/types/enum/enum";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-function ProfileHook(page: number, limit: number, userId: string) {
+function ProfileHook() {
   const queryClient = useQueryClient();
   const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
-
-  const {
-    data: booksPagination,
-    isPending,
-    error,
-  } = useQuery({
-    queryKey: [BookQueriesKeysEnum.BooksUser, page],
-    queryFn: () => getBooksByUser(userId!, page, limit),
-    enabled: !!userId,
-  });
-
-  const {
-    data: user,
-    isPending: isPendingUser,
-    error: errorUser,
-  } = useQuery({
-    queryKey: [UserQueriesKeysEnum.GetUserByID],
-    queryFn: () => getUserById(userId!),
-    enabled: !!userId,
-  });
-
+ 
 
   const { mutateAsync: deleteBookMutation } = useMutation<
-  DeleteBooksResponse,
+    DeleteBooksResponse,
     AxiosError<unknown>,
     number
   >({
@@ -92,19 +74,9 @@ function ProfileHook(page: number, limit: number, userId: string) {
     },
   });
 
-  const books = booksPagination?.books;
-  const totalPage = booksPagination?.pagination.totalPages;
-
   return {
-    books,
-    isPending,
-    error,
     deleteBookMutation,
     deleteBooksMutation,
-    user,
-    isPendingUser,
-    errorUser,
-    totalPage
   };
 }
 
