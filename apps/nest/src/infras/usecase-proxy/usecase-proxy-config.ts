@@ -32,6 +32,7 @@ import { ContactRepositoryTypeorm } from '../services/contact.repository.typeorm
 import { UserRepositoryTypeorm } from '../services/user.repository.typeorm';
 import { UseCaseProxy } from './usecase-proxy';
 import { RedisClient } from '../clients/redis/redis.client';
+import { DeleteUserUsecase } from 'src/application/usecases/user/deleteUser/delete.user.usecase';
 
 export enum UsecaseProxyEnum {
   CREATE_USER_USECASE_PROXY = 'createUserUsecaseProxy',
@@ -42,6 +43,7 @@ export enum UsecaseProxyEnum {
   GET_CURRENT_USER_USECASE_PROXY = 'getCurrentUserUseCaseProxy',
   GET_USER_BY_ID_USECASE_PROXY = 'getUserByIdUseCaseProxy',
   UPDATE_USER_USECASE_PROXY = 'updateUserUseCaseProxy',
+  DELETE_USER_USECASE_PROXY = 'deleteUserUseCaseProxy',
 
   ADD_BOOK_USECASE_PROXY = 'addBookUsecaseProxy',
   GET_ALL_BOOK_USECASE_PROXY = 'getAllBookUsecaseProxy',
@@ -121,6 +123,12 @@ export const useCasesConfig = [
     provide: UsecaseProxyEnum.GET_USER_BY_ID_USECASE_PROXY,
     useFactory: (userRepository: UserRepositoryTypeorm) =>
       new UseCaseProxy(new GetUserByIdUseCase(userRepository)),
+  },
+  {
+    inject: [UserRepositoryTypeorm],
+    provide: UsecaseProxyEnum.DELETE_USER_USECASE_PROXY,
+    useFactory: (userRepository: UserRepositoryTypeorm) =>
+      new UseCaseProxy(new DeleteUserUsecase(userRepository)),
   },
   // ----------------------- BOOK -------------------------------
   {

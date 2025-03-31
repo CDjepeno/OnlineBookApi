@@ -2,19 +2,16 @@ import { getBook } from "@/services/book.services";
 import { getBookingsBook } from "@/services/booking.services";
 import BookDetail from "./BookDetail";
 
-// Typage des Props
 type PageProps = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export default async function Book({ params }: PageProps) {
   try {
-    if (!params || typeof params.id !== "string") {
-      throw new Error("Invalid params");
-    }
+    const {id} = await params;
 
-    const book = await getBook(params.id);
-    const bookingsBook = await getBookingsBook(params.id);
+    const book = await getBook(id);
+    const bookingsBook = await getBookingsBook(id);
 
     return <BookDetail book={book} bookingsBook={bookingsBook} />;
   } catch (error) {
