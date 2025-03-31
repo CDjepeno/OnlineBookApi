@@ -21,6 +21,7 @@ export interface UsersRepository {
   signOut(userId: LogoutUserRequest): Promise<void>;
   getCurrentUser(email: string): Promise<CurrentUserResponse>;
   getUserById(id: number): Promise<CurrentUserResponse>;
+  deleteUser(id: number): Promise<void>;
   getRefreshToken(
     refreshToken: RefreshTokenRequest,
   ): Promise<RefreshTokenResponse>;
