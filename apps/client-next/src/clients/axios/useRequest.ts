@@ -1,6 +1,6 @@
+import { MethodHttpEnum } from "@/types/enum/enum";
 import { AxiosRequestConfig, RawAxiosRequestHeaders } from "axios";
 import { restRequestApiInstance } from "./restRequestApiInstance";
-import { MethodHttpEnum } from "@/types/enum/enum";
 
 export const UseRequest = async <TData, T>(
   baseURL: string,
@@ -8,7 +8,7 @@ export const UseRequest = async <TData, T>(
   method: MethodHttpEnum,
   headers?: RawAxiosRequestHeaders,
   params?: T,
-  token?: string 
+  token?: string
 ): Promise<TData> => {
   const axiosInstance = restRequestApiInstance(baseURL, headers);
 

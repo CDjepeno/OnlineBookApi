@@ -1,11 +1,10 @@
-import { Controller, Get, Inject, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Headers, Inject, UseGuards } from '@nestjs/common';
 
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetCurrentUserUseCase } from 'src/application/usecases/user/auth/GetCurrentUser/get.current.user.usecase';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyEnum } from 'src/infras/usecase-proxy/usecase-proxy-config';
-import { GetCurrentUserDto } from './getCurrentUser.dto';
 
 @ApiTags('User')
 @Controller('auth')
@@ -20,9 +19,8 @@ export class GetCurrentUserController {
     summary: 'Get a current user',
   })
   @UseGuards(JwtAuthGuard)
-  async getCurrentUser(@Req() request: GetCurrentUserDto) {
-    return await this.getCurrentUserUseCase
-      .getInstance()
-      .execute(request.email);
+  async getCurrentUser(@Headers('authorization') authHeader: string) {
+    const token = authHeader.split(' ')[1];
+    return await this.getCurrentUserUseCase.getInstance().execute(token);
   }
 }

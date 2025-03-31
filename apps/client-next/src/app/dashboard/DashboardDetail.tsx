@@ -66,7 +66,7 @@ export default function DashboardDetail({
 
   const bookingsUser = bookingPaginate?.bookings?.length
     ? bookingPaginate.bookings
-    : userBookings.bookings;
+    : userBookings?.bookings;
 
   const bookings = bookingsUser?.map((booking) => ({
     startAt: dayjs(booking.startAt),
@@ -284,6 +284,8 @@ export default function DashboardDetail({
     updateBookingMutation(inputForm);
     setIsFormUpdateBookingUserOpen(false);
   };
+
+
 
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">

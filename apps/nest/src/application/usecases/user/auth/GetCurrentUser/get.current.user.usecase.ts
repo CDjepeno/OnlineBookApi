@@ -9,9 +9,10 @@ import { CurrentUserResponse } from './current.user.response';
 export class GetCurrentUserUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async execute(email: string): Promise<CurrentUserResponse> {
+  async execute(token: string): Promise<CurrentUserResponse> {
     try {
-      const user = await this.usersRepository.getCurrentUser(email);
+      
+      const user = await this.usersRepository.getCurrentUser(token);
       const responses = {
         id: user.id,
         name: user.name,

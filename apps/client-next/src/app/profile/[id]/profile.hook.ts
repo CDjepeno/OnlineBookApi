@@ -11,7 +11,6 @@ import { AxiosError } from "axios";
 function ProfileHook() {
   const queryClient = useQueryClient();
   const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
- 
 
   const { mutateAsync: deleteBookMutation } = useMutation<
     DeleteBooksResponse,

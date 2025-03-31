@@ -48,3 +48,7 @@ export type RegisterResponse = {
   msg: string;
 };
 
+export type DeleteUserResponse = {
+  msg: string;
+};
+

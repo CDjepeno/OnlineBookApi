@@ -16,7 +16,7 @@ function UserUpdateForm({
   userUpdate,
   setIsFormUpdateUserOpen,
 }: UserUpdateFormProps) {
-  const { onSubmit } = UserUpdateHook(setIsFormUpdateUserOpen);
+  const { onSubmit, deleteUserMutation } = UserUpdateHook(setIsFormUpdateUserOpen);
 
   return (
     <UserForm
@@ -24,7 +24,7 @@ function UserUpdateForm({
       onSubmit={onSubmit}
       title="Modifier l'utilisateur"
       userUpdate={userUpdate}
-      
+      deleteUserMutation={deleteUserMutation}
     />
   );
 }

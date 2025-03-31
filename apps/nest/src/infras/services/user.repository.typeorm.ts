@@ -53,6 +53,9 @@ export class UserRepositoryTypeorm implements UsersRepository {
   async signIn(siginIn: LoginUserRequest): Promise<{ email: string }> {
     try {
       const { email, password } = siginIn;
+      console.log(password);
+      console.log(email);
+      
       const user = await this.repository.findOne({
         where: { email },
       });
@@ -140,12 +143,23 @@ export class UserRepositoryTypeorm implements UsersRepository {
     }
   }
 
-  async getCurrentUser(email: string): Promise<CurrentUserResponse> {
+  async getCurrentUser(token: string): Promise<CurrentUserResponse> {
     try {
-      const userEntity = await this.repository.findOne({
-        where: { email },
-      });
 
+      if (!token) {
+        throw new Error(ErrorsMessagesEnum.MISSING_TOKEN);
+      }
+
+      const decodedToken = this.jwtService.decode(token) as { email: string };
+
+      if (!decodedToken || !decodedToken.email) {
+        throw new Error(ErrorsMessagesEnum.INVALID_TOKEN);
+      }
+      
+      const userEntity = await this.repository.findOne({
+        where: { email: decodedToken.email},
+      });
+ 
       if (!userEntity) {
         throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }

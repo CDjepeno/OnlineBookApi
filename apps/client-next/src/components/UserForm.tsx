@@ -1,9 +1,20 @@
 // UserForm.tsx
+import { UserFromData } from "@/types/user/input.types";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import RecyclingIcon from "@mui/icons-material/Recycling";
 import {
   Avatar,
   Box,
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
   Grid2,
   IconButton,
@@ -12,20 +23,18 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
+  Tooltip,
+  Typography,
 } from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Typography } from "@mui/material";
-import { UserFromData } from "@/types/user/input.types";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
-import RecyclingIcon from "@mui/icons-material/Recycling";
 import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+
+import * as yup from "yup";
 
 interface UserFormProps {
   onSubmit: (data: UserFromData) => void;
+  deleteUserMutation?: (id: number) => void;
   userUpdate?: UserFromData;
   title: string;
   button: string;
@@ -35,10 +44,13 @@ const UserForm = ({
   onSubmit,
   title,
   button,
-  userUpdate
+  userUpdate,
+  deleteUserMutation,
 }: UserFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [openUserId, setOpenUserId] = useState<number | null>(null);
+  const [openUserName, setopenUserName] = useState("");
 
   const defaultValues: UserFromData = {
     id: userUpdate?.id || 0,
@@ -50,8 +62,8 @@ const UserForm = ({
     sexe: userUpdate?.sexe || "",
   };
 
-  const isEditing = Boolean(userUpdate); 
-   
+  const isEditing = Boolean(userUpdate);
+
   const signupSchema = yup.object({
     email: yup
       .string()
@@ -61,27 +73,23 @@ const UserForm = ({
         "Veuillez renseigner une adresse email valide"
       )
       .required("Veuillez renseigner une adresse email valide"),
-      password: yup
-      .string()
-      .when("$isEditing", {
-        is: false, // Si userUpdate n'est PAS présent (création)
-        then: (schema) =>
-          schema
-            .required("Veuillez renseigner un mot de passe")
-            .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
-        otherwise: (schema) => schema.notRequired(), // Sinon (modification) → pas obligatoire
-      }),
-  
-      confirmPassword: yup
-      .string()
-      .when("$isEditing", {
-        is: false, // Si userUpdate n'est PAS présent (création)
-        then: (schema) =>
-          schema
-            .required("Veuillez confirmer le mot de passe")
-            .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
-        otherwise: (schema) => schema.notRequired(), // Sinon (modification) → pas obligatoire
-      }),
+    password: yup.string().when("$isEditing", {
+      is: false, // Si userUpdate n'est PAS présent (création)
+      then: (schema) =>
+        schema
+          .required("Veuillez renseigner un mot de passe")
+          .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
+      otherwise: (schema) => schema.notRequired(), // Sinon (modification) → pas obligatoire
+    }),
+
+    confirmPassword: yup.string().when("$isEditing", {
+      is: false, // Si userUpdate n'est PAS présent (création)
+      then: (schema) =>
+        schema
+          .required("Veuillez confirmer le mot de passe")
+          .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
+      otherwise: (schema) => schema.notRequired(), // Sinon (modification) → pas obligatoire
+    }),
     name: yup
       .string()
       .required("Le nom doit être renseigné")
@@ -103,7 +111,11 @@ const UserForm = ({
     watch,
     control,
     formState: { errors, isSubmitting },
-  } = useForm({ defaultValues, context:{isEditing}, resolver: yupResolver(signupSchema) });
+  } = useForm({
+    defaultValues,
+    context: { isEditing },
+    resolver: yupResolver(signupSchema),
+  });
 
   const password = watch("password", "");
   const confirmPassword = watch("confirmPassword", "");
@@ -119,6 +131,40 @@ const UserForm = ({
     }
   };
 
+  const handleDialogOpen = (userId: number, name: string) => {
+    setopenUserName(name);
+    setOpenUserId(userId); // Ouvre la boîte de dialogue pour le livre sélectionné
+  };
+
+  const handleDialogClose = () => {
+    setOpenUserId(null); // Ferme la boîte de dialogue
+  };
+
+  const DeleteUser = async (id: number) => {
+    try {
+      if (deleteUserMutation) {
+        deleteUserMutation(id);
+      }
+      handleDialogClose();
+    } catch (error) {
+      console.error("Error deleting book:", error);
+    }
+  };
+
+  const deleteUserConfirmation = async () => {
+    console.log(openUserId);
+
+    try {
+      if (openUserId !== null) {
+        // Suppression individuelle
+        await DeleteUser(openUserId);
+      }
+      handleDialogClose();
+    } catch (error) {
+      console.error("Error during deletion:", error);
+    }
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -131,6 +177,45 @@ const UserForm = ({
           alignItems: "center",
         }}
       >
+        {title === "Modifier l'utilisateur" && (
+          <span>
+            <Tooltip title="Supprimer utilisateur" arrow>
+              <IconButton
+                onClick={() => {
+                  if (userUpdate?.id !== undefined) {
+                    handleDialogOpen(userUpdate?.id, userUpdate?.name);
+                  }
+                }}
+                aria-label="delete"
+              >
+                <DeleteTwoToneIcon />
+              </IconButton>
+            </Tooltip>
+          </span>
+        )}
+        <Dialog
+          open={openUserId !== null}
+          onClose={handleDialogClose}
+          aria-labelledby="delete-dialog-title"
+          aria-describedby="delete-dialog-description"
+        >
+          <DialogTitle id="delete-dialog-title">
+            Confirmer la suppression
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="delete-dialog-description">
+              Êtes-vous sûr de vouloir supprimer {openUserName}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogClose} color="primary">
+              Annuler
+            </Button>
+            <Button onClick={deleteUserConfirmation} color="error" autoFocus>
+              Supprimer
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           {button === "Modifier" ? <RecyclingIcon /> : <LockOutlinedIcon />}
         </Avatar>

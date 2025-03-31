@@ -30,6 +30,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const getUser = async () => {
     try {
+      const token = localStorage.getItem("BookToken");
+      const tokenCookies = Cookies.get("BookTokenCookies");
+
+      if (!token || !tokenCookies) {
+        setUser(null);
+        return;
+      }
+      
       const currentUser = await getCurrentUser();
       setUser(currentUser);
     } catch (error) {
@@ -41,8 +49,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     // Vérifie le token côté client uniquement
       const token = localStorage.getItem("BookToken");
-      // const tokenCookies = Cookies.get("BookToken");
-      if (token) {
+      const tokenCookies = Cookies.get("BookTokenCookies");
+      if (token || tokenCookies) {
         getUser();
     }
   }, []);
@@ -73,7 +81,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         Cookies.set("BookTokenCookies", token, { expires: 7 }); // Stocke le token dans un cookie
         Cookies.set("BookRefreshTokenCookies", refreshToken, { expires: 7 }); // Stocke le token dans un cookie
       }
-      await getUser();
+      
+      const user = await getCurrentUser()
+      setUser(user);
+      console.log(user);
+      
     }
   };
 
@@ -89,13 +101,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       localStorage.removeItem("BookToken");
       localStorage.removeItem("RefreshToken");
       Cookies.remove("BookTokenCookies")
+      Cookies.remove("BookRefreshTokenCookies")
     }
     setUser(null);
-    router.push("/"); // Remplace navigate("/")
+    router.push("/"); 
   };
 
   return (
-    <AuthContext.Provider value={{ user, signin, signout, verifyOtp }}>
+    <AuthContext.Provider value={{ user, signin, signout, verifyOtp, setUser }}>
       {children}
     </AuthContext.Provider>
   );

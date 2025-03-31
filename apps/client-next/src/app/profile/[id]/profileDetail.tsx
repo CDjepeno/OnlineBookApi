@@ -51,9 +51,9 @@ export default function ProfileDetail({
   const [isFormUpdateUserOpen, setIsFormUpdateUserOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(initalPage);
   const [openBookId, setOpenBookId] = useState<number | null>(null);
+	const [openBookTitle, setOpenBookTitle] = useState("");
   const [selectedBookIds, setSelectedBookIds] = useState<number[]>([]);
   const [isBulkDelete, setIsBulkDelete] = useState(false);
-	const [openBookTitle, setOpenBookTitle] = useState("");
   const params = useParams();
   const id = params.id as string;
 
@@ -371,6 +371,7 @@ export default function ProfileDetail({
           <UserUpdateForm
             userUpdate={user!}
             setIsFormUpdateUserOpen={setIsFormUpdateUserOpen}
+            
           />
         </Box>
       </Modal>

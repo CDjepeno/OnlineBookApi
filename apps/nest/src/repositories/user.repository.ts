@@ -19,7 +19,7 @@ export interface UsersRepository {
   signIn(user: LoginUserRequest): Promise<{email: string}>;
   createJwt(email: string): Promise<VerifyOtpResponse>
   signOut(userId: LogoutUserRequest): Promise<void>;
-  getCurrentUser(email: string): Promise<CurrentUserResponse>;
+  getCurrentUser(token: string): Promise<CurrentUserResponse>;
   getUserById(id: number): Promise<CurrentUserResponse>;
   deleteUser(id: number): Promise<void>;
   getRefreshToken(

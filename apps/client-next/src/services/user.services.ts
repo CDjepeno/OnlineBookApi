@@ -1,9 +1,19 @@
-
-import { MethodHttpEnum } from "@/types/enum/enum";
 import { UseRequestApi } from "@/request/commons/useApiRequest";
-import { CURRENT_USER_ROUTE, GET_USER_BY_ID_ROUTE, REGISTER_ROUTE, USER_ROUTE } from "@/request/route-http/route-http";
-import { CurrentUserResponse, GetUserByIdResponse, RegisterResponse, UpdateUserResponse } from "@/types/user/response.types";
+import {
+  CURRENT_USER_ROUTE,
+  GET_USER_BY_ID_ROUTE,
+  REGISTER_ROUTE,
+  USER_ROUTE,
+} from "@/request/route-http/route-http";
+import { MethodHttpEnum } from "@/types/enum/enum";
 import { UserFromData } from "@/types/user/input.types";
+import {
+  CurrentUserResponse,
+  DeleteUserResponse,
+  GetUserByIdResponse,
+  RegisterResponse,
+  UpdateUserResponse,
+} from "@/types/user/response.types";
 
 export const registerUser = async (
   input: UserFromData
@@ -19,7 +29,7 @@ export const registerUser = async (
 
 export const updateUser = async (
   id: number,
-  data: UserFromData,
+  data: UserFromData
 ): Promise<UpdateUserResponse> => {
   return await UseRequestApi({
     method: MethodHttpEnum.PUT,
@@ -39,7 +49,7 @@ export const getCurrentUser = async () => {
   return response;
 };
 
-export const getUserById = async (id:string) => {
+export const getUserById = async (id: string) => {
   const response = await UseRequestApi<GetUserByIdResponse, { id: string }>({
     method: MethodHttpEnum.GET,
     path: `${GET_USER_BY_ID_ROUTE}/${id}`,
@@ -47,4 +57,13 @@ export const getUserById = async (id:string) => {
   });
 
   return response;
+};
+
+export const deleteUser = async (id: number): Promise<DeleteUserResponse> => {
+  return await UseRequestApi({
+    method: MethodHttpEnum.DELETE,
+    path: `${USER_ROUTE}/${id}`,
+    params: { id },
+    includeAuthorizationHeader: true,
+  });
 };

@@ -101,10 +101,6 @@ export class BookingRepositoryTypeorm implements BookingRepository {
     `,
         [userId],
       );
-      
-      if (raw.length === 0) {
-        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
-      }
 
       // Calcul de hasFuturReservation pour chaque réservation
       const bookings: GetBookingUserResponse[] = await Promise.all(
@@ -127,10 +123,6 @@ export class BookingRepositoryTypeorm implements BookingRepository {
           };
         }),
       );
-
-      if (bookings.length === 0) {
-        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
-      }
 
       const totalBooks = await this.repository
         .createQueryBuilder('booking')

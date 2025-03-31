@@ -19,7 +19,7 @@ export default async function Profile() {
   const limit = 6;
 
   const booksPaginate = await getBooksByUser(user.id, 1, limit);
-
+  
   return (
     <ProfileDetail
       booksPagination={booksPaginate}
