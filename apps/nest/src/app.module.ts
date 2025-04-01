@@ -20,6 +20,7 @@ import { UserRepositoryTypeorm } from './infras/services/user.repository.typeorm
 import { AddUserUseCase } from './application/usecases/user/adduser/add.user.usecase';
 import { AddBookUseCase } from './application/usecases/book/addBook/addBook.usecase';
 import { BookingBookUseCase } from './application/usecases/booking/bookingBook/bookingBook.usecase';
+import { GoogleStrategy } from './infras/clients/googleOAuth/google.strategy';
 
 @Module({
   imports: [
@@ -43,7 +44,7 @@ import { BookingBookUseCase } from './application/usecases/booking/bookingBook/b
     ConfigModule,
   ],
   controllers: [RegisterController],
-  providers: [UserRepositoryTypeorm, AddUserUseCase, AddBookUseCase, BookingBookUseCase],
+  providers: [UserRepositoryTypeorm, AddUserUseCase, AddBookUseCase, BookingBookUseCase, GoogleStrategy],
   exports: [AddUserUseCase, AddBookUseCase, BookingBookUseCase],
 })
 export class AppModule {}

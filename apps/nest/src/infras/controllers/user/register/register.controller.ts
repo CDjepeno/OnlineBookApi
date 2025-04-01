@@ -13,6 +13,7 @@ export class RegisterController {
     @Inject(UsecaseProxyEnum.CREATE_USER_USECASE_PROXY)
     private readonly createUserUsecaseProxy: UseCaseProxy<AddUserUseCase>,
   ) {}
+  
   @Post()
   @ApiOperation({
     summary: 'Creates a User',

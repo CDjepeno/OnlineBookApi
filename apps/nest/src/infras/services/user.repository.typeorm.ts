@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { OAuth2Client } from 'google-auth-library';
 import { AddUserRequest } from 'src/application/usecases/user/adduser/add.user.request';
 import { CurrentUserResponse } from 'src/application/usecases/user/auth/GetCurrentUser/current.user.response';
 import { LoginUserRequest } from 'src/application/usecases/user/auth/login/login.user.request';
@@ -21,6 +22,7 @@ import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { UsersRepository } from 'src/repositories/user.repository';
 import { QueryFailedError, Repository } from 'typeorm';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
+import { credentialGoogleResponse } from '../controllers/user/OAuth-google/oauth.google.controller';
 import { User } from '../models/user.model';
 
 @Injectable()
@@ -50,12 +52,54 @@ export class UserRepositoryTypeorm implements UsersRepository {
     }
   }
 
+  async validateOrCreateGoogleUser(data: credentialGoogleResponse) {
+    console.log(data.credential);
+
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID); // CLIENT_ID provenant de Google Developer Console
+
+    const ticket = await client.verifyIdToken({
+      idToken: data.credential,
+      audience: process.env.GOOGLE_CLIENT_ID, // Vérifie que le token provient de ton application
+    });
+
+    const payload = ticket.getPayload(); // Payload contenant les informations de l'utilisateur
+    console.log('Utilisateur Google :', payload);
+    //     return payload;
+
+    // let user = await this.repository.findOne({
+    //   where: { email: googleUser.user.email },
+    // });
+
+    // if (!user) {
+    //   user = new User();
+    //   user.email = googleUser.user.email;
+    //   user.name = googleUser.user.name;
+    //   user.password = await bcrypt.hash(uuidv4(), 10);
+    //   await this.repository.save(user);
+    // }
+
+    // const payload = { sub: user.id, email: user.email };
+    // const token = this.jwtService.sign(payload, { expiresIn: '7d' });
+    // const refreshToken: string | null = await this.jwtService.signAsync(
+    //   payload,
+    //   {
+    //     secret: this.configService.get('REFRESH_JWT_SECRET'),
+    //     expiresIn: '30d',
+    //   },
+    // );
+
+    return {
+      name: 'user.name',
+      email: ' user.email',
+      token: 'fsdf',
+      refreshToken: 'fdsfsd',
+    };
+  }
+
   async signIn(siginIn: LoginUserRequest): Promise<{ email: string }> {
     try {
       const { email, password } = siginIn;
-      console.log(password);
-      console.log(email);
-      
+
       const user = await this.repository.findOne({
         where: { email },
       });
@@ -145,7 +189,6 @@ export class UserRepositoryTypeorm implements UsersRepository {
 
   async getCurrentUser(token: string): Promise<CurrentUserResponse> {
     try {
-
       if (!token) {
         throw new Error(ErrorsMessagesEnum.MISSING_TOKEN);
       }
@@ -155,11 +198,11 @@ export class UserRepositoryTypeorm implements UsersRepository {
       if (!decodedToken || !decodedToken.email) {
         throw new Error(ErrorsMessagesEnum.INVALID_TOKEN);
       }
-      
+
       const userEntity = await this.repository.findOne({
-        where: { email: decodedToken.email},
+        where: { email: decodedToken.email },
       });
- 
+
       if (!userEntity) {
         throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
@@ -281,5 +324,4 @@ export class UserRepositoryTypeorm implements UsersRepository {
       throw error;
     }
   }
-
 }

@@ -46,13 +46,13 @@ export class User {
   @IsString()
   refreshToken!: string;
 
-  @Column()
+  @Column({ nullable: true })
   @IsString()
-  sexe!: string;
+  sexe: string;
 
-  @Column()
+  @Column({ nullable: true })
   @IsString()
-  phone!: string;
+  phone: string;
 
   @OneToMany(() => Book, (book) => book.user)
   books?: Book[];
@@ -68,7 +68,10 @@ export class User {
 
   @BeforeInsert()
   async hashPasswordBeforeInsert() {
-    await this.hashPassword();
+    if (this.password) {
+      // ✅ Vérifier que le password n'est pas undefined
+      await this.hashPassword();
+    }
   }
 
   @BeforeUpdate()
