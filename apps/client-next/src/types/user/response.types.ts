@@ -48,6 +48,15 @@ export type RegisterResponse = {
   msg: string;
 };
 
+export type OAuthGoogleResponse = {
+  name: string;
+  email: string;
+  token: string;
+  refreshToken: string;
+  msg: string;
+  userId: number;
+};
+
 export type DeleteUserResponse = {
   msg: string;
 };

@@ -24,6 +24,7 @@ import { QueryFailedError, Repository } from 'typeorm';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { credentialGoogleResponse } from '../controllers/user/OAuth-google/oauth.google.controller';
 import { User } from '../models/user.model';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UserRepositoryTypeorm implements UsersRepository {
@@ -53,8 +54,6 @@ export class UserRepositoryTypeorm implements UsersRepository {
   }
 
   async validateOrCreateGoogleUser(data: credentialGoogleResponse) {
-    console.log(data.credential);
-
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID); // CLIENT_ID provenant de Google Developer Console
 
     const ticket = await client.verifyIdToken({
@@ -62,37 +61,37 @@ export class UserRepositoryTypeorm implements UsersRepository {
       audience: process.env.GOOGLE_CLIENT_ID, // Vérifie que le token provient de ton application
     });
 
-    const payload = ticket.getPayload(); // Payload contenant les informations de l'utilisateur
-    console.log('Utilisateur Google :', payload);
-    //     return payload;
+    const googleUser = ticket.getPayload(); // Payload contenant les informations de l'utilisateur
 
-    // let user = await this.repository.findOne({
-    //   where: { email: googleUser.user.email },
-    // });
+    let user = await this.repository.findOne({
+      where: { email: googleUser!.email },
+    });
 
-    // if (!user) {
-    //   user = new User();
-    //   user.email = googleUser.user.email;
-    //   user.name = googleUser.user.name;
-    //   user.password = await bcrypt.hash(uuidv4(), 10);
-    //   await this.repository.save(user);
-    // }
+    if (!user && googleUser) {
+      user = new User();
+      user.email = googleUser.email as string;
+      user.name = googleUser.name as string;
+      user.password = await bcrypt.hash(uuidv4(), 10);
+      await this.repository.save(user);
+    }
 
-    // const payload = { sub: user.id, email: user.email };
-    // const token = this.jwtService.sign(payload, { expiresIn: '7d' });
-    // const refreshToken: string | null = await this.jwtService.signAsync(
-    //   payload,
-    //   {
-    //     secret: this.configService.get('REFRESH_JWT_SECRET'),
-    //     expiresIn: '30d',
-    //   },
-    // );
+    const payload = { sub: user!.id, email: user!.email };
+    const token = this.jwtService.sign(payload, { expiresIn: '7d' });
+    const refreshToken: string | null = await this.jwtService.signAsync(
+      payload,
+      {
+        secret: this.configService.get('REFRESH_JWT_SECRET'),
+        expiresIn: '30d',
+      },
+    );
 
     return {
-      name: 'user.name',
-      email: ' user.email',
-      token: 'fsdf',
-      refreshToken: 'fdsfsd',
+      name: user?.name as string,
+      email: user?.email as string,
+      token,
+      refreshToken,
+      msg: "Bienvenu sur OnlineBook",
+      userId: user?.id as number
     };
   }
 

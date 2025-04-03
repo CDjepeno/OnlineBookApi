@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (token || tokenCookies) {
         getUser();
     }
-  }, []);
+  }, [user]);
 
   const signin = async (credentials: LoginFormInput) => {
     return await UseRequestApi<SigninResponse, unknown>({
@@ -108,7 +108,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, signin, signout, verifyOtp, setUser }}>
+    <AuthContext.Provider value={{ user, signin, signout, verifyOtp, setUser, getUser }}>
       {children}
     </AuthContext.Provider>
   );

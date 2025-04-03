@@ -1,10 +1,10 @@
 import { AuthContext, AuthContextValue } from "@/context/AuthContext";
 import { UseQueryWorkflowCallback } from "@/request/commons/useQueryWorkflowCallback";
 import { deleteUser, updateUser } from "@/services/user.services";
-import { RouterEnum, UserQueriesKeysEnum } from "@/types/enum/enum";
+import { RouterEnum } from "@/types/enum/enum";
 import { UserFormInput, UserFromData } from "@/types/user/input.types";
 import { UpdateUserResponse } from "@/types/user/response.types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useContext } from "react";
@@ -15,10 +15,8 @@ interface ErrorResponse {
 
 function UserUpdateHook(setIsFormUpdateUserOpen: (value: boolean) => void) {
   /////////////////// Update
-  const queryClient = useQueryClient();
   const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
-    const { setUser } = useContext(AuthContext) as AuthContextValue;
-  
+  const { setUser } = useContext(AuthContext) as AuthContextValue;
 
   const { mutateAsync: updateUserMutation } = useMutation<
     UpdateUserResponse,
@@ -28,10 +26,7 @@ function UserUpdateHook(setIsFormUpdateUserOpen: (value: boolean) => void) {
     mutationFn: async ({ id, data }) => updateUser(id, data),
 
     onSuccess: (res) => {
-      onSuccessCommon(res.msg);
-      queryClient.invalidateQueries({
-        queryKey: [UserQueriesKeysEnum.GetUserByID],
-      });
+      onSuccessCommon(res.msg, RouterEnum.HOME);
       setIsFormUpdateUserOpen(false);
     },
 
@@ -53,7 +48,7 @@ function UserUpdateHook(setIsFormUpdateUserOpen: (value: boolean) => void) {
       localStorage.removeItem("RefreshToken");
       Cookies.remove("BookTokenCookies");
       Cookies.remove("BookRefreshTokenCookies");
-      setUser(null)
+      setUser(null);
       onSuccessCommon(response.msg, RouterEnum.HOME);
     },
 
@@ -78,9 +73,6 @@ function UserUpdateHook(setIsFormUpdateUserOpen: (value: boolean) => void) {
 
   const onSubmit = async (formData: UserFromData) => {
     try {
-      console.log("update user", formData);
-      console.log(formData);
-
       await updateUserMutation({ id: formData.id!, data: formData });
     } catch (error) {
       console.error("Erreur lors de la mise à jour du livre", error);

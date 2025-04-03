@@ -6,7 +6,7 @@ import { BookFormData } from "@/types/book/form.types";
 import { UpdateBookInput } from "@/types/book/input.types";
 import { GetBookByUserPaginationResponse } from "@/types/book/response.types";
 import { BookQueriesKeysEnum } from "@/types/enum/enum";
-import { UserFromData } from "@/types/user/input.types";
+import { UpdateUserFromData } from "@/types/user/input.types";
 import { GetUserByIdResponse } from "@/types/user/response.types";
 import { formatDate } from "@/utils/formatDate";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
@@ -51,9 +51,10 @@ export default function ProfileDetail({
   const [isFormUpdateUserOpen, setIsFormUpdateUserOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(initalPage);
   const [openBookId, setOpenBookId] = useState<number | null>(null);
-	const [openBookTitle, setOpenBookTitle] = useState("");
+  const [openBookTitle, setOpenBookTitle] = useState("");
   const [selectedBookIds, setSelectedBookIds] = useState<number[]>([]);
   const [isBulkDelete, setIsBulkDelete] = useState(false);
+
   const params = useParams();
   const id = params.id as string;
 
@@ -78,7 +79,7 @@ export default function ProfileDetail({
     coverUrl: "",
   });
 
-  const [userForm, setUserForm] = useState<UserFromData>({
+  const [userForm, setUserForm] = useState<UpdateUserFromData>({
     id: user?.id || 0,
     email: user?.email || "",
     password: "",
@@ -93,7 +94,7 @@ export default function ProfileDetail({
   };
 
   const handleDialogOpen = (bookId: number, title: string) => {
-		setOpenBookTitle(title)
+    setOpenBookTitle(title);
     setOpenBookId(bookId); // Ouvre la boîte de dialogue pour le livre sélectionné
   };
 
@@ -111,7 +112,7 @@ export default function ProfileDetail({
     setIsFormUpdateBookOpen(true);
   };
 
-  const editUser = (user: UserFromData) => {
+  const editUser = (user: UpdateUserFromData) => {
     setUserForm(user);
     setIsFormUpdateUserOpen(true);
   };
@@ -371,7 +372,6 @@ export default function ProfileDetail({
           <UserUpdateForm
             userUpdate={user!}
             setIsFormUpdateUserOpen={setIsFormUpdateUserOpen}
-            
           />
         </Box>
       </Modal>

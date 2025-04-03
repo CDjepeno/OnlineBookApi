@@ -1,5 +1,9 @@
 "use client";
+import FormInput from "@/components/FormInput";
+import OtpModal from "@/components/OtpModal";
+import { LoginFormInput } from "@/types/user/input.types";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { Grid2 } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -10,10 +14,7 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import LoginHook from "./Login.hook";
-import { LoginFormInput } from "@/types/user/input.types";
-import FormInput from "@/components/FormInput";
-import OtpModal from "@/components/OtpModal";
-import { Grid2 } from "@mui/material";
+import { GoogleCredentialResponse, GoogleLogin } from "@react-oauth/google";
 
 export default function Login() {
   const {
@@ -24,6 +25,7 @@ export default function Login() {
     isSubmitting,
     control,
     setValue,
+    onSubmitCallBackGoogle
   } = LoginHook();
 
   const [openOtp, setOpenOtp] = useState(false); // État pour la modal OTP
@@ -33,7 +35,7 @@ export default function Login() {
     try {
       setEmail(data.email);
       const submitLogin = await onSubmitLogin(data);
-      if(submitLogin) {
+      if (submitLogin) {
         setOpenOtp(true); // Ouvrir la modal OTP
       }
     } catch (error) {
@@ -59,6 +61,22 @@ export default function Login() {
     const value = e.target.value;
     setValue("password", value);
   };
+
+   const handleLoginSuccess = async (
+      credentialResponse: GoogleCredentialResponse
+    ) => {
+      try {
+        // Récupérer le token d'authentification fourni par Google
+        const { credential } = credentialResponse;
+  
+        // // Envoie du token au backend pour le traitement
+        if (onSubmitCallBackGoogle) {
+          await onSubmitCallBackGoogle(credential!);
+        }
+      } catch (error) {
+        console.error("Login failed:", error);
+      }
+    };
 
   return (
     <>
@@ -149,6 +167,12 @@ export default function Login() {
                   </Link>
                 </Grid2>
               </Grid2>
+              <GoogleLogin
+                onSuccess={handleLoginSuccess}
+                onError={() => {
+                  console.log("Login Failed");
+                }}
+              />
             </Box>
           </Box>
         </Grid2>

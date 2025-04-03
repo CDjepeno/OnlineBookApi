@@ -2,6 +2,7 @@ import { UseRequestApi } from "@/request/commons/useApiRequest";
 import {
   CURRENT_USER_ROUTE,
   GET_USER_BY_ID_ROUTE,
+  GOOGLE_CALLBACK_ROUTE,
   REGISTER_ROUTE,
   USER_ROUTE,
 } from "@/request/route-http/route-http";
@@ -11,6 +12,7 @@ import {
   CurrentUserResponse,
   DeleteUserResponse,
   GetUserByIdResponse,
+  OAuthGoogleResponse,
   RegisterResponse,
   UpdateUserResponse,
 } from "@/types/user/response.types";
@@ -24,6 +26,18 @@ export const registerUser = async (
     path: REGISTER_ROUTE,
     params,
     includeAuthorizationHeader: true,
+  });
+};
+
+export const googleCallback = async (
+  input: string
+): Promise<OAuthGoogleResponse> => {
+  const params = {credential:input};
+  return await UseRequestApi({
+    method: MethodHttpEnum.POST,
+    path: GOOGLE_CALLBACK_ROUTE,
+    params,
+    includeAuthorizationHeader: false,
   });
 };
 
@@ -49,7 +63,7 @@ export const getCurrentUser = async () => {
   return response;
 };
 
-export const getUserById = async (id: string) => {
+export const getUserById = async (id: number) => {
   const response = await UseRequestApi<GetUserByIdResponse, { id: string }>({
     method: MethodHttpEnum.GET,
     path: `${GET_USER_BY_ID_ROUTE}/${id}`,

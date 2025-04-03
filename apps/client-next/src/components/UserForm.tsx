@@ -1,5 +1,6 @@
-// UserForm.tsx
+"use client";
 import { UserFromData } from "@/types/user/input.types";
+import { OAuthGoogleResponse } from "@/types/user/response.types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
@@ -26,6 +27,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { GoogleCredentialResponse, GoogleLogin } from "@react-oauth/google";
 import Link from "next/link";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -35,6 +37,7 @@ import * as yup from "yup";
 interface UserFormProps {
   onSubmit: (data: UserFromData) => void;
   deleteUserMutation?: (id: number) => void;
+  googleCallback?: (input: string) => Promise<OAuthGoogleResponse>;
   userUpdate?: UserFromData;
   title: string;
   button: string;
@@ -46,6 +49,7 @@ const UserForm = ({
   button,
   userUpdate,
   deleteUserMutation,
+  googleCallback,
 }: UserFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -93,8 +97,7 @@ const UserForm = ({
     name: yup
       .string()
       .required("Le nom doit être renseigné")
-      .min(2, "Le nom doit être explicite")
-      .max(10, "Le titre doit être succinct"),
+      .min(2, "Le nom doit être explicite"),
     phone: yup
       .string()
       .matches(
@@ -162,6 +165,22 @@ const UserForm = ({
       handleDialogClose();
     } catch (error) {
       console.error("Error during deletion:", error);
+    }
+  };
+
+  const handleLoginSuccess = async (
+    credentialResponse: GoogleCredentialResponse
+  ) => {
+    try {
+      // Récupérer le token d'authentification fourni par Google
+      const { credential } = credentialResponse;
+
+      // // Envoie du token au backend pour le traitement
+      if (googleCallback) {
+        await googleCallback(credential!);
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
     }
   };
 
@@ -425,9 +444,19 @@ const UserForm = ({
           {title === "Inscription" && (
             <Grid2 container justifyContent="flex-end">
               <Grid2>
-                <Link href="/login">Already have an account? Sign in</Link>
+                <Box sx={{ mb: 2 }}>
+                  <Link href="/login">Already have an account? Sign in</Link>
+                </Box>
               </Grid2>
             </Grid2>
+          )}
+          {title === "Inscription" && (
+            <GoogleLogin
+              onSuccess={handleLoginSuccess}
+              onError={() => {
+                console.log("Login Failed");
+              }}
+            />
           )}
         </Box>
       </Box>

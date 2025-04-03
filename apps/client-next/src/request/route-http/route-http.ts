@@ -4,6 +4,7 @@ export const PROD_URL = "https://nest-api-onlinebook-eac8a2a7.koyeb.app/";
 export const CURRENT_USER_ROUTE = "/auth/current";
 export const GET_USER_BY_ID_ROUTE = "/user";
 export const REFRESH_TOKEN_ROUTE = "/auth/refresh-token";
+export const GOOGLE_CALLBACK_ROUTE = "/auth/google/callback";
 export const LOGIN_ROUTE = "/auth/login";
 export const VERIFY_OTP_ROUTE = "/auth/verify-otp";
 export const LOGOUT_ROUTE = "/auth/logout";

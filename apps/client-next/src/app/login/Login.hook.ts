@@ -11,9 +11,13 @@ import { AuthContext, AuthContextValue } from "@/context/AuthContext";
 import { UseQueryWorkflowCallback } from "@/request/commons/useQueryWorkflowCallback";
 import { RouterEnum } from "@/types/enum/enum";
 import { ErrorResponse } from "@/types/book/response.types";
+import { googleCallback } from "@/services/user.services";
+import Cookies from "js-cookie";
+import { ErrorsMessagesEnum } from "@/enums/errorMessage.enum";
+
 
 export default function LoginHook() {
-  const { signin, verifyOtp } = useContext(AuthContext) as AuthContextValue;
+  const { signin, verifyOtp, getUser } = useContext(AuthContext) as AuthContextValue;
 
   const validationSchema = yup.object({
     email: yup
@@ -72,17 +76,47 @@ export default function LoginHook() {
     },
   });
 
+  const { mutateAsync: callbackGoogle } = useMutation({
+      mutationFn: (input: string) => googleCallback(input),
+      onSuccess: (response) => {
+        localStorage.setItem("BookToken", JSON.stringify(response.token));
+        localStorage.setItem(
+          "RefreshToken",
+          JSON.stringify(response.refreshToken)
+        );
+        Cookies.set("BookTokenCookies", response.token, { expires: 7 }); 
+        Cookies.set("BookRefreshTokenCookies", response.refreshToken, {
+          expires: 7,
+        }); 
+        getUser()
+        onSuccessCommon(response.msg, `${RouterEnum.PROFILE}/${response.userId}`);
+        // onSuccessCommon(response.msg, RouterEnum.HOME);
+      },
+      onError: (error: AxiosError) => {
+        if (error.response?.data) {
+          const errorData = (error.response.data as ErrorResponse).message;
+          onErrorCommon(errorData);
+        } else {
+          onErrorCommon(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+        }
+      },
+    });
+
   const onSubmitLogin = (input: LoginFormInput) => {
     return submitLogin(input);
   };
   const onSubmitVerifyOtp = (input: VerifyOtpFormInput) => {
     return submitVerifyOtp(input);
   };
+  const onSubmitCallBackGoogle = (input: string) => {
+    return callbackGoogle(input);
+  };
 
   return {
     handleSubmit,
     onSubmitLogin,
     onSubmitVerifyOtp,
+    onSubmitCallBackGoogle,
     errors,
     isSubmitting,
     control,

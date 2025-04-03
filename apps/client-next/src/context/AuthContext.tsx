@@ -10,6 +10,7 @@ export interface AuthContextValue {
     signout: () => Promise<void>;
     verifyOtp: (credentials: VerifyOtpFormInput) => Promise<void>;
     setUser: Dispatch<SetStateAction<CurrentUserResponse | null>>;
+    getUser: () => Promise<void>;
   }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);

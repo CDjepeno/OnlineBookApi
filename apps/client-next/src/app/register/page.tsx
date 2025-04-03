@@ -6,6 +6,7 @@ export default function Register() {
 
   const {
     onSubmit,
+    callbackGoogle
   } = RegisterHook();
 
   return (
@@ -13,6 +14,7 @@ export default function Register() {
       button="Enregistrer"
       onSubmit={onSubmit}
       title="Inscription"
+      googleCallback={callbackGoogle}
     />
   );
 }

@@ -16,6 +16,16 @@ export type UserFormInput = {
   sexe: string;
 };
 
+export type UpdateUserFromData = {
+  id: number
+  email: string;
+  password?: string;
+  confirmPassword?: string;
+  name: string;
+  phone: string;
+  sexe: string;
+};
+
 export type UserFromData = {
   id?: number
   email: string;
