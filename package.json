@@ -7,7 +7,7 @@
     "husky": "^8.0.0"
   },
   "scripts": {
-    "prepare": "husky",
+    "prepare": "husky install",
     "build:nest": "cd apps/nest && npm run build",
     "build:react": "cd apps/client-react && npm run build",
     "build:all": "npm run build:react && npm run build:nest",
