@@ -71,7 +71,7 @@ export default function RegisterHook() {
       navigate(RouterEnum.LOGIN);
     },
     onError: (error: Error) => {
-      let errorMessage = "Une erreur est survenue";
+      let errorMessage = "Une erreur est survenues";
 
       if (isAxiosError(error)) {
         if (
