@@ -4,7 +4,6 @@ import {
   Controller,
   HttpStatus,
   Inject,
-  InternalServerErrorException,
   ParseFilePipeBuilder,
   Post,
   UploadedFile,
@@ -14,7 +13,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AddBookUseCase } from 'src/application/usecases/book/addBook/addBook.usecase';
-import { badrequestexception } from 'src/domaine/errors/onlineBook.error';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
@@ -44,23 +42,14 @@ export class AddBookController {
     )
     coverUrl: Express.Multer.File,
   ) {
-    try {
-      if (!coverUrl) {
-        throw new BadRequestException('Cover file is required to create book');
-      }
-
-      const result = await this.addBookUsecaseProxy
-        .getInstance()
-        .execute({ ...createBookDto, coverUrl });
-
-      return { data: result };
-    } catch (error) {
-      console.error('Error occurred while creating book:', error);
-
-      if (error instanceof badrequestexception) {
-        throw new badrequestexception(error.message);
-      }
-      throw new InternalServerErrorException('Failed to create book');
+    if (!coverUrl) {
+      throw new BadRequestException('Cover file is required to create book');
     }
+
+    const result = await this.addBookUsecaseProxy
+      .getInstance()
+      .execute({ ...createBookDto, coverUrl });
+
+    return { data: result };
   }
 }
