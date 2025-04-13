@@ -14,7 +14,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AddBookUseCase } from 'src/application/usecases/book/addBook/addBook.usecase';
-import { badrequestexception } from 'src/domaine/errors/book.error';
+import { badrequestexception } from 'src/domaine/errors/onlineBook.error';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';

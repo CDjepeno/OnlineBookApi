@@ -1,4 +1,4 @@
-import { NotFoundError } from 'src/domaine/errors/book.error';
+import { NotFoundError } from 'src/domaine/errors/onlineBook.error';
 import { BookRepository } from 'src/repositories/book.repository';
 import { GetBooksByUserResponse } from './getBooksByUser.response';
 

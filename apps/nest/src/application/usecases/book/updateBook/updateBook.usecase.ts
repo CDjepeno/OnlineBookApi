@@ -1,5 +1,5 @@
 import { BookEntity } from 'src/domaine/entities/Book.entity';
-import { NotFoundError } from 'src/domaine/errors/book.error';
+import { NotFoundError } from 'src/domaine/errors/onlineBook.error';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
 import { BookRepository } from 'src/repositories/book.repository';
 import { UpdateBookRequest } from './updateBook.request';
