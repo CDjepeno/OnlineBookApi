@@ -15,7 +15,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdateBookUseCase } from 'src/application/usecases/book/updateBook/updateBook.usecase';
-import { badrequestexception } from 'src/domaine/errors/book.error';
+import { badrequestexception } from 'src/domaine/errors/onlineBook.error';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { UpdateBookDto } from './updateBook.dto';

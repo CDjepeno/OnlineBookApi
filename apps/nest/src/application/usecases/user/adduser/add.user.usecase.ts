@@ -1,5 +1,5 @@
 import { User } from 'src/domaine/entities/User.entity';
-import { InvalidPhoneNumberException } from 'src/domaine/errors/book.error';
+import { InvalidPhoneNumberException } from 'src/domaine/errors/onlineBook.error';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { UsersRepository } from '../../../../repositories/user.repository';
 import { AddUserRequest } from './add.user.request';
