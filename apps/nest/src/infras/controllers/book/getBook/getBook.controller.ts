@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Inject,
-  InternalServerErrorException,
   NotFoundException,
   Param,
   ParseIntPipe,
@@ -26,20 +25,10 @@ export class GetBookController {
     summary: 'Get Book by Id',
   })
   async getBook(@Param('id', ParseIntPipe) id: number): Promise<GetBookDto> {
-    try {
-      const book = await this.getBookUsecaseProxy.getInstance().execute(id);
-      if (!book) {
-        throw new NotFoundException(`Aucun livre trouvé avec le nom "${id}"`);
-      }
-      return book;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new NotFoundException(error.message);
-      } else {
-        throw new InternalServerErrorException(
-          'Impossible de récupérer le livre.',
-        );
-      }
+    const book = await this.getBookUsecaseProxy.getInstance().execute(id);
+    if (!book) {
+      throw new NotFoundException(`Aucun livre trouvé avec le nom "${id}"`);
     }
+    return book;
   }
 }

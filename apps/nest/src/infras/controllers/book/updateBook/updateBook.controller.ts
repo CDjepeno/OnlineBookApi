@@ -4,7 +4,6 @@ import {
   Controller,
   HttpStatus,
   Inject,
-  InternalServerErrorException,
   Param,
   ParseFilePipeBuilder,
   ParseIntPipe,
@@ -15,7 +14,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdateBookUseCase } from 'src/application/usecases/book/updateBook/updateBook.usecase';
-import { badrequestexception } from 'src/domaine/errors/onlineBook.error';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { UpdateBookDto } from './updateBook.dto';
@@ -44,25 +42,17 @@ export class UpdateBookController {
     )
     coverFile: Express.Multer.File,
   ) {
-    try {
-      if (!coverFile && !updateBookDto.coverUrl) {
-        throw new BadRequestException('Cover file is required update book');
-      }
-      const result = await this.updateUsecaseProxy
-        .getInstance()
-        .execute({ ...updateBookDto, id, coverUrl: coverFile });
-
-      // const { name, description, author, releaseAt, coverUrl } = result;
-
-      return {
-        data: result,
-      };
-    } catch (error) {
-      console.error('Error occurred while updating book:', error);
-      if (error instanceof badrequestexception) {
-        throw new badrequestexception(error.message);
-      }
-      throw new InternalServerErrorException('Failed to update book');
+    if (!coverFile && !updateBookDto.coverUrl) {
+      throw new BadRequestException('Cover file is required update book');
     }
+    const result = await this.updateUsecaseProxy
+      .getInstance()
+      .execute({ ...updateBookDto, id, coverUrl: coverFile });
+
+    // const { name, description, author, releaseAt, coverUrl } = result;
+
+    return {
+      data: result,
+    };
   }
 }
