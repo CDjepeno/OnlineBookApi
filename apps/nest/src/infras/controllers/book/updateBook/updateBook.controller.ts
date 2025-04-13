@@ -48,9 +48,6 @@ export class UpdateBookController {
     const result = await this.updateUsecaseProxy
       .getInstance()
       .execute({ ...updateBookDto, id, coverUrl: coverFile });
-
-    // const { name, description, author, releaseAt, coverUrl } = result;
-
     return {
       data: result,
     };
