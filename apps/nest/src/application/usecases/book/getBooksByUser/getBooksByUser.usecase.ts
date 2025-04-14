@@ -1,4 +1,4 @@
-import { NotFoundError } from 'src/domaine/errors/onlineBook.error';
+import { NotFoundException } from 'src/domaine/errors/onlineBook.error';
 import { BookRepository } from 'src/repositories/book.repository';
 import { GetBooksByUserResponse } from './getBooksByUser.response';
 
@@ -13,7 +13,7 @@ export class GetBooksByUserUsecase {
         "Une erreur s'est produite lors de la récupération des livres pour l'utilisateur :",
         error,
       );
-      if (error instanceof NotFoundError) {
+      if (error instanceof NotFoundException) {
         throw new Error(
           `Aucun livre trouvé pour l'utilisateur avec l'ID ${userId}.`,
         );

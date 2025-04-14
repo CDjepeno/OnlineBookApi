@@ -1,5 +1,11 @@
+import { HttpException } from '@nestjs/common';
 import { User } from 'src/domaine/entities/User.entity';
-import { InvalidPhoneNumberException } from 'src/domaine/errors/onlineBook.error';
+import {
+  BadRequestException,
+  ConflictException,
+  InternalServerException,
+} from 'src/domaine/errors/onlineBook.error';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { UsersRepository } from '../../../../repositories/user.repository';
 import { AddUserRequest } from './add.user.request';
@@ -12,27 +18,49 @@ export class AddUserUseCase {
   ) {}
 
   async execute(request: AddUserRequest): Promise<AddUserResponseType> {
-    const regexPhone = /^((\+)33)|(0)[6-7](\d{2}){4}$/;
-    if (!regexPhone.test(request.phone)) {
-      throw new InvalidPhoneNumberException("Numero n'est pas valide");
+    try {
+      const regexPhone = /^((\+)33)|(0)[6-7](\d{2}){4}$/;
+      if (!regexPhone.test(request.phone)) {
+        throw new BadRequestException("Numero n'est pas valide");
+      }
+
+
+
+      await this.nodemailerClient.sendMail({
+        to: request.email,
+        subject: `Confirmation de votre inscription`,
+        text: `Bonjour ${request.name}, \nVotre compte a bien été crée`,
+      });
+
+      const user = new User(
+        request.id,
+        request.name,
+        request.email,
+        request.password,
+        request.phone,
+      );
+
+      await this.usersRepository.signUp(user);
+
+      
+
+      return { message: 'Votre compte a bien été crée' };
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === ErrorsMessagesEnum.DUPLICATE_EMAIL) {
+          throw new ConflictException("l'email est déja utiliser");
+        }
+        if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
+          throw new InternalServerException('Database Error');
+        }
+        throw error;
+      }
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new InternalServerException(
+        "Probleme serveur impossible d'ajouter l'utilisateur",
+      );
     }
-
-    await this.nodemailerClient.sendMail({
-      to: request.email,
-      subject: `Confirmation de votre inscription`,
-      text: `Bonjour ${request.name}, \nVotre compte a bien été crée`,
-    });
-
-    const user = new User(
-      request.id,
-      request.name,
-      request.email,
-      request.password,
-      request.phone,
-    );
-
-    await this.usersRepository.signUp(user);
-
-    return { message: 'Votre compte a bien été crée' };
   }
 }

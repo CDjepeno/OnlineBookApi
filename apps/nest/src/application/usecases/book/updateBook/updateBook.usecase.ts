@@ -1,5 +1,5 @@
 import { BookEntity } from 'src/domaine/entities/Book.entity';
-import { NotFoundError } from 'src/domaine/errors/onlineBook.error';
+import { NotFoundException } from 'src/domaine/errors/onlineBook.error';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
 import { BookRepository } from 'src/repositories/book.repository';
 import { UpdateBookRequest } from './updateBook.request';
@@ -16,7 +16,9 @@ export class UpdateBookUseCase {
       const existingBook = await this.bookRepository.getBook(request.id);
 
       if (!existingBook) {
-        throw new NotFoundError(`Livre avec l'ID ${request.id} introuvable.`);
+        throw new NotFoundException(
+          `Livre avec l'ID ${request.id} introuvable.`,
+        );
       }
 
       let coverUrl = existingBook.coverUrl;

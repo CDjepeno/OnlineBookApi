@@ -17,7 +17,6 @@ import { UserRepositoryTyperom } from './user.repository.typeorm';
     ConfigModule,
     NodemailerModules,
     AwsS3Module,
-    ConfigModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '24h' },

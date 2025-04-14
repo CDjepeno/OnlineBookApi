@@ -14,6 +14,7 @@ import { LoginUserRequest } from 'src/application/usecases/user/getuser/login.us
 import { LoginUserResponse } from 'src/application/usecases/user/getuser/login.user.response';
 import { Repository } from 'typeorm';
 import { UsersRepository } from '../../repositories/user.repository';
+import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { User } from '../models/user.model';
 
 @Injectable()
@@ -35,10 +36,7 @@ export class UserRepositoryTyperom implements UsersRepository {
 
       return await this.repository.save(user);
     } catch (error) {
-      if (error.code === 'ER_DUP_ENTRY') {
-        throw new UnauthorizedException('Cet email est deja utilise.');
-      }
-      throw new Error(error);
+      handleDatabaseError(error);
     }
   }
 
