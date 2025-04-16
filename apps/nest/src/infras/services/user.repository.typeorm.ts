@@ -50,12 +50,9 @@ export class UserRepositoryTyperom implements UsersRepository {
         throw new NotFoundException("L'utilisateur n'existe pas.");
       }
 
-      const match = await bcrypt.compare(
-        password.trim().toLowerCase(),
-        user.password,
-      );
+      const isPasswordValid = await bcrypt.compare(password, user.password);
 
-      if (!match) {
+      if (!isPasswordValid) {
         throw new UnauthorizedException('Le mot de passe est invalide.');
       }
 
@@ -65,7 +62,7 @@ export class UserRepositoryTyperom implements UsersRepository {
       };
 
       const token = await this.jwtService.signAsync(payload, {
-        secret: this.configService.get('JWT_SECRET'),
+        secret: this.configService.get<'string'>('JWT_SECRET'),
         expiresIn: '24h',
       });
 
