@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -19,6 +20,7 @@ import { User } from '../models/user.model';
 
 @Injectable()
 export class UserRepositoryTyperom implements UsersRepository {
+  private readonly logger = new Logger(UserRepositoryTyperom.name);
   constructor(
     @InjectRepository(User)
     private readonly repository: Repository<User>,
@@ -78,12 +80,22 @@ export class UserRepositoryTyperom implements UsersRepository {
       });
 
       if (!userEntity) {
-        throw new NotFoundException();
+        throw new NotFoundException('Utilisateur non trouvé.');
       }
 
-      return userEntity;
-    } catch (err) {
-      console.log(err);
+      const response: CurrentUserResponse = {
+        id: userEntity.id,
+        name: userEntity.name,
+        email: userEntity.email,
+        phone: userEntity.phone,
+      };
+
+      return response;
+    } catch (errors) {
+      this.logger.error(
+        "Erreur lors de la récupération de l'utilisateur:",
+        errors,
+      );
       throw new Error(
         "Une erreur s'est produite lors de la recherche de l'utilisateur.",
       );
