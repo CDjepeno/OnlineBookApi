@@ -41,34 +41,38 @@ export class UserRepositoryTyperom implements UsersRepository {
   }
 
   async signIn(siginIn: LoginUserRequest): Promise<LoginUserResponse> {
-    const { email, password } = siginIn;
-    const user = await this.repository.findOne({
-      where: { email },
-    });
-    if (!user) {
-      throw new NotFoundException("L'utilisateur n'existe pas.");
+    try {
+      const { email, password } = siginIn;
+      const user = await this.repository.findOne({
+        where: { email },
+      });
+      if (!user) {
+        throw new NotFoundException("L'utilisateur n'existe pas.");
+      }
+
+      const match = await bcrypt.compare(
+        password.trim().toLowerCase(),
+        user.password,
+      );
+
+      if (!match) {
+        throw new UnauthorizedException('Le mot de passe est invalide.');
+      }
+
+      const payload = {
+        sub: user.id,
+        email: user.email,
+      };
+
+      const token = await this.jwtService.signAsync(payload, {
+        secret: this.configService.get('JWT_SECRET'),
+        expiresIn: '24h',
+      });
+
+      return { name: user.name, email: user.email, token };
+    } catch (error) {
+      handleDatabaseError(error);
     }
-
-    const match = await bcrypt.compare(
-      password.trim().toLowerCase(),
-      user.password,
-    );
-
-    if (!match) {
-      throw new UnauthorizedException('Le mot de passe est invalide.');
-    }
-
-    const payload = {
-      sub: user.id,
-      email: user.email,
-    };
-
-    const token = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('JWT_SECRET'),
-      expiresIn: '24h',
-    });
-
-    return { name: user.name, email: user.email, token };
   }
 
   async getCurrentUser(email: string): Promise<CurrentUserResponse> {

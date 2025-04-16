@@ -24,8 +24,6 @@ export class AddUserUseCase {
         throw new BadRequestException("Numero n'est pas valide");
       }
 
-
-
       await this.nodemailerClient.sendMail({
         to: request.email,
         subject: `Confirmation de votre inscription`,
@@ -41,8 +39,6 @@ export class AddUserUseCase {
       );
 
       await this.usersRepository.signUp(user);
-
-      
 
       return { message: 'Votre compte a bien été crée' };
     } catch (error) {
