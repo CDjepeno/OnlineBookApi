@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,6 +8,8 @@ import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.
 import { CurrentUserResponse } from 'src/application/usecases/user/auth/current.user.response';
 import { LoginUserRequest } from 'src/application/usecases/user/getuser/login.user.request';
 import { LoginUserResponse } from 'src/application/usecases/user/getuser/login.user.response';
+
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { Repository } from 'typeorm';
 import { UsersRepository } from '../../repositories/user.repository';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
@@ -41,34 +39,35 @@ export class UserRepositoryTyperom implements UsersRepository {
   }
 
   async signIn(siginIn: LoginUserRequest): Promise<LoginUserResponse> {
-    const { email, password } = siginIn;
-    const user = await this.repository.findOne({
-      where: { email },
-    });
-    if (!user) {
-      throw new NotFoundException("L'utilisateur n'existe pas.");
+    try {
+      const { email, password } = siginIn;
+      const user = await this.repository.findOne({
+        where: { email },
+      });
+      if (!user) {
+        throw new NotFoundException(ErrorsMessagesEnum.NOT_FOUND);
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+
+      if (!isPasswordValid) {
+        throw new UnauthorizedException(ErrorsMessagesEnum.INVALID_PASSPORT);
+      }
+
+      const payload = {
+        sub: user.id,
+        email: user.email,
+      };
+
+      const token = await this.jwtService.signAsync(payload, {
+        secret: this.configService.get<'string'>('JWT_SECRET'),
+        expiresIn: '24h',
+      });
+
+      return { name: user.name, email: user.email, token };
+    } catch (error) {
+      handleDatabaseError(error);
     }
-
-    const match = await bcrypt.compare(
-      password.trim().toLowerCase(),
-      user.password,
-    );
-
-    if (!match) {
-      throw new UnauthorizedException('Le mot de passe est invalide.');
-    }
-
-    const payload = {
-      sub: user.id,
-      email: user.email,
-    };
-
-    const token = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('JWT_SECRET'),
-      expiresIn: '24h',
-    });
-
-    return { name: user.name, email: user.email, token };
   }
 
   async getCurrentUser(email: string): Promise<CurrentUserResponse> {
