@@ -18,5 +18,5 @@ export function handleDatabaseError(error: unknown): never {
         throw new Error(ErrorsMessagesEnum.DATABASE_ERROR);
     }
   }
-  throw new Error(ErrorsMessagesEnum.INTERNAL_SERVER_ERROR);
+  throw error;
 }
