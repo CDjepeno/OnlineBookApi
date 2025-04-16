@@ -17,6 +17,7 @@ import { Repository } from 'typeorm';
 import { UsersRepository } from '../../repositories/user.repository';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { User } from '../models/user.model';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 
 @Injectable()
 export class UserRepositoryTyperom implements UsersRepository {
@@ -80,7 +81,7 @@ export class UserRepositoryTyperom implements UsersRepository {
       });
 
       if (!userEntity) {
-        throw new NotFoundException('Utilisateur non trouvé.');
+        throw new NotFoundException(ErrorsMessagesEnum.NOT_FOUND);
       }
 
       const response: CurrentUserResponse = {

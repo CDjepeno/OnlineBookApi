@@ -1,5 +1,7 @@
-import { HttpException } from '@nestjs/common';
-import { InternalServerException } from 'src/domaine/errors/onlineBook.error';
+import {
+  InternalServerException,
+  NotFoundException,
+} from 'src/domaine/errors/onlineBook.error';
 import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { UsersRepository } from 'src/repositories/user.repository';
 import { CurrentUserResponse } from './current.user.response';
@@ -20,11 +22,13 @@ export class GetCurrentUserUseCase {
 
       return responses;
     } catch (error) {
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
       if (error instanceof Error) {
+        if (error.message === ErrorsMessagesEnum.NOT_FOUND) {
+          throw new NotFoundException(
+            'Aucun utilisateur correspondant n’a été trouvé',
+          );
+        }
+
         if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
           throw new InternalServerException('Database Error');
         }
