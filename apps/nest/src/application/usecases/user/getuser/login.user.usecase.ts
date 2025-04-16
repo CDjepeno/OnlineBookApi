@@ -27,7 +27,6 @@ export class LoginUserUseCase {
           throw new InternalServerException('Database Error');
         }
       }
-      //throw error;
       throw new InternalServerException(
         "Une erreur interne du serveur s'est produite, Veuillez réessayer plus tard.",
       );
