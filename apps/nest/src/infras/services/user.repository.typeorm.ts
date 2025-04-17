@@ -13,11 +13,11 @@ import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.
 import { CurrentUserResponse } from 'src/application/usecases/user/auth/current.user.response';
 import { LoginUserRequest } from 'src/application/usecases/user/getuser/login.user.request';
 import { LoginUserResponse } from 'src/application/usecases/user/getuser/login.user.response';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { Repository } from 'typeorm';
 import { UsersRepository } from '../../repositories/user.repository';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { User } from '../models/user.model';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 
 @Injectable()
 export class UserRepositoryTyperom implements UsersRepository {
@@ -92,14 +92,13 @@ export class UserRepositoryTyperom implements UsersRepository {
       };
 
       return response;
-    } catch (errors) {
+    } catch (error) {
       this.logger.error(
         "Erreur lors de la récupération de l'utilisateur:",
-        errors,
+        error,
       );
-      throw new Error(
-        "Une erreur s'est produite lors de la recherche de l'utilisateur.",
-      );
+
+      handleDatabaseError(error);
     }
   }
 }
