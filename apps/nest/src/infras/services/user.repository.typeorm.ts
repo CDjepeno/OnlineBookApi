@@ -1,6 +1,5 @@
 import {
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -21,7 +20,6 @@ import { User } from '../models/user.model';
 
 @Injectable()
 export class UserRepositoryTyperom implements UsersRepository {
-  private readonly logger = new Logger(UserRepositoryTyperom.name);
   constructor(
     @InjectRepository(User)
     private readonly repository: Repository<User>,
@@ -93,11 +91,6 @@ export class UserRepositoryTyperom implements UsersRepository {
 
       return response;
     } catch (error) {
-      this.logger.error(
-        "Erreur lors de la récupération de l'utilisateur:",
-        error,
-      );
-
       handleDatabaseError(error);
     }
   }
