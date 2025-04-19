@@ -9,6 +9,7 @@ import { GetBooksByUserResponse } from 'src/application/usecases/book/getBooksBy
 import { BookEntity } from 'src/domaine/entities/Book.entity';
 import { BookRepository } from 'src/repositories/book.repository';
 import { Repository } from 'typeorm';
+import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
 
@@ -122,9 +123,7 @@ export class BookRepositoryTyperom implements BookRepository {
         throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
       }
     } catch (error) {
-      throw new InternalServerErrorException(
-        'Impossible de supprimer le livre.', error
-      );
+      handleDatabaseError(error);
     }
   }
 }
