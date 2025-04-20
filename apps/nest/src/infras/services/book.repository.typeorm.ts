@@ -7,8 +7,10 @@ import { GetAllBookResponse } from 'src/application/usecases/book/getAllBook/get
 import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
 import { GetBooksByUserResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { BookRepository } from 'src/repositories/book.repository';
 import { Repository } from 'typeorm';
+import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
 
@@ -102,16 +104,10 @@ export class BookRepositoryTyperom implements BookRepository {
       await this.repository.update(id, book);
       const updatedBook = await this.repository.findOneBy({ id });
       if (!updatedBook) {
-        throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
     } catch (error) {
-      console.error("Erreur lors de la modification d'un livre :", error);
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(
-        'Impossible de modifier le livre.',
-      );
+      handleDatabaseError(error);
     }
   }
 
@@ -123,7 +119,8 @@ export class BookRepositoryTyperom implements BookRepository {
       }
     } catch (error) {
       throw new InternalServerErrorException(
-        'Impossible de supprimer le livre.', error
+        'Impossible de supprimer le livre.',
+        error,
       );
     }
   }
