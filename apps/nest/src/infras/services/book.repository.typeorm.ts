@@ -7,8 +7,10 @@ import { GetAllBookResponse } from 'src/application/usecases/book/getAllBook/get
 import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
 import { GetBooksByUserResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { BookRepository } from 'src/repositories/book.repository';
 import { Repository } from 'typeorm';
+import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
 
@@ -59,20 +61,15 @@ export class BookRepositoryTyperom implements BookRepository {
 
   async getBooksByUser(userId: number): Promise<GetBooksByUserResponse[]> {
     try {
-      const books = this.repository.find({
+      const books = await this.repository.find({
         where: { userId },
       });
-      if (!books) {
-        throw new NotFoundException(
-          `Aucun livre trouve pour l'utilisateur avec l'userId ${userId} `,
-        );
+      if (books.length === 0) {
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
       return books;
     } catch (error) {
-      console.error(
-        "Erreur s'est produite lors de la récupération des livres",
-        error,
-      );
+      handleDatabaseError(error);
     }
   }
 
@@ -123,7 +120,8 @@ export class BookRepositoryTyperom implements BookRepository {
       }
     } catch (error) {
       throw new InternalServerErrorException(
-        'Impossible de supprimer le livre.', error
+        'Impossible de supprimer le livre.',
+        error,
       );
     }
   }
