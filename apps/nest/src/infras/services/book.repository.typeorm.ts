@@ -11,6 +11,8 @@ import { BookRepository } from 'src/repositories/book.repository';
 import { Repository } from 'typeorm';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
+import { handleDatabaseError } from '../common/errors/errorsSwitch';
 
 export class BookRepositoryTyperom implements BookRepository {
   constructor(
@@ -83,17 +85,11 @@ export class BookRepositoryTyperom implements BookRepository {
         where: { id },
       });
       if (!book) {
-        throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
       return book;
     } catch (error) {
-      console.error("Erreur lors de la recherche d'un livre :", error);
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(
-        'Impossible de récupérer le livre.',
-      );
+      handleDatabaseError(error);
     }
   }
 
