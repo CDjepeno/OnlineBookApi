@@ -49,12 +49,12 @@ export class BookRepositoryTyperom implements BookRepository {
   async getAllBook(): Promise<GetAllBookResponse[]> {
     try {
       const books = await this.repository.find();
+      if (books.length == 0) {
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
+      }
       return books;
     } catch (error) {
-      console.error('Erreur lors de la récupération des livres :', error);
-      throw new InternalServerErrorException(
-        'Impossible de récupérer les livres.',
-      );
+      handleDatabaseError(error);
     }
   }
 
