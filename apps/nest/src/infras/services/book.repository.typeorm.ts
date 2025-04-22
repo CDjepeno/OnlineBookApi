@@ -62,20 +62,15 @@ export class BookRepositoryTyperom implements BookRepository {
 
   async getBooksByUser(userId: number): Promise<GetBooksByUserResponse[]> {
     try {
-      const books = this.repository.find({
+      const books = await this.repository.find({
         where: { userId },
       });
-      if (!books) {
-        throw new NotFoundException(
-          `Aucun livre trouve pour l'utilisateur avec l'userId ${userId} `,
-        );
+      if (books.length === 0) {
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
       return books;
     } catch (error) {
-      console.error(
-        "Erreur s'est produite lors de la récupération des livres",
-        error,
-      );
+      handleDatabaseError(error);
     }
   }
 
