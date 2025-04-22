@@ -13,6 +13,8 @@ import { Repository } from 'typeorm';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
+import { handleDatabaseError } from '../common/errors/errorsSwitch';
 
 export class BookRepositoryTyperom implements BookRepository {
   constructor(
@@ -29,7 +31,7 @@ export class BookRepositoryTyperom implements BookRepository {
       });
 
       if (!user) {
-        throw new NotFoundException("L'utilisateur n'existe pas.");
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
 
       const book = new Book();
@@ -40,22 +42,21 @@ export class BookRepositoryTyperom implements BookRepository {
       book.coverUrl = addBookRequest.coverUrl;
       book.userId = addBookRequest.userId;
 
-      this.repository.save(book);
+      await this.repository.save(book);
     } catch (error) {
-      console.error("Erreur lors de l'ajout du livre :", error);
-      throw new InternalServerErrorException("Impossible d'ajouter le livre.");
+      handleDatabaseError(error);
     }
   }
 
   async getAllBook(): Promise<GetAllBookResponse[]> {
     try {
       const books = await this.repository.find();
+      if (books.length == 0) {
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
+      }
       return books;
     } catch (error) {
-      console.error('Erreur lors de la récupération des livres :', error);
-      throw new InternalServerErrorException(
-        'Impossible de récupérer les livres.',
-      );
+      handleDatabaseError(error);
     }
   }
 
@@ -85,17 +86,11 @@ export class BookRepositoryTyperom implements BookRepository {
         where: { id },
       });
       if (!book) {
-        throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
       return book;
     } catch (error) {
-      console.error("Erreur lors de la recherche d'un livre :", error);
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(
-        'Impossible de récupérer le livre.',
-      );
+      handleDatabaseError(error);
     }
   }
 
@@ -118,10 +113,7 @@ export class BookRepositoryTyperom implements BookRepository {
         throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
       }
     } catch (error) {
-      throw new InternalServerErrorException(
-        'Impossible de supprimer le livre.',
-        error,
-      );
+      handleDatabaseError(error);
     }
   }
 }

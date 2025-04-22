@@ -8,7 +8,6 @@ import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.
 import { CurrentUserResponse } from 'src/application/usecases/user/auth/current.user.response';
 import { LoginUserRequest } from 'src/application/usecases/user/getuser/login.user.request';
 import { LoginUserResponse } from 'src/application/usecases/user/getuser/login.user.response';
-
 import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { Repository } from 'typeorm';
 import { UsersRepository } from '../../repositories/user.repository';
@@ -77,15 +76,19 @@ export class UserRepositoryTyperom implements UsersRepository {
       });
 
       if (!userEntity) {
-        throw new NotFoundException();
+        throw new NotFoundException(ErrorsMessagesEnum.NOT_FOUND);
       }
 
-      return userEntity;
-    } catch (err) {
-      console.log(err);
-      throw new Error(
-        "Une erreur s'est produite lors de la recherche de l'utilisateur.",
-      );
+      const response: CurrentUserResponse = {
+        id: userEntity.id,
+        name: userEntity.name,
+        email: userEntity.email,
+        phone: userEntity.phone,
+      };
+
+      return response;
+    } catch (error) {
+      handleDatabaseError(error);
     }
   }
 }
