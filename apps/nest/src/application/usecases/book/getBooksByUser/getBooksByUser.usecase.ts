@@ -16,7 +16,7 @@ export class GetBooksByUserUsecase {
       if (error instanceof Error) {
         if (error.message === ErrorsMessagesEnum.NOT_FOUND) {
           throw new NotFoundException(
-            `Aucun livre trouvé pour l'utilisateur avec l'ID ${userId}.`,
+            "Aucun livre trouvé pour l'utilisateur.",
           );
         }
 
