@@ -1,7 +1,4 @@
-import {
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GetAllBookResponse } from 'src/application/usecases/book/getAllBook/getAllBook.response';
 import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
@@ -13,8 +10,6 @@ import { Repository } from 'typeorm';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
-import { handleDatabaseError } from '../common/errors/errorsSwitch';
 
 export class BookRepositoryTyperom implements BookRepository {
   constructor(
