@@ -7,6 +7,7 @@ import { GetAllBookResponse } from 'src/application/usecases/book/getAllBook/get
 import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
 import { GetBooksByUserResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
 import { BookEntity } from 'src/domaine/entities/Book.entity';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { BookRepository } from 'src/repositories/book.repository';
 import { Repository } from 'typeorm';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
@@ -28,7 +29,7 @@ export class BookRepositoryTyperom implements BookRepository {
       });
 
       if (!user) {
-        throw new NotFoundException("L'utilisateur n'existe pas.");
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
 
       const book = new Book();
@@ -39,22 +40,21 @@ export class BookRepositoryTyperom implements BookRepository {
       book.coverUrl = addBookRequest.coverUrl;
       book.userId = addBookRequest.userId;
 
-      this.repository.save(book);
+      await this.repository.save(book);
     } catch (error) {
-      console.error("Erreur lors de l'ajout du livre :", error);
-      throw new InternalServerErrorException("Impossible d'ajouter le livre.");
+      handleDatabaseError(error);
     }
   }
 
   async getAllBook(): Promise<GetAllBookResponse[]> {
     try {
       const books = await this.repository.find();
+      if (books.length == 0) {
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
+      }
       return books;
     } catch (error) {
-      console.error('Erreur lors de la récupération des livres :', error);
-      throw new InternalServerErrorException(
-        'Impossible de récupérer les livres.',
-      );
+      handleDatabaseError(error);
     }
   }
 
