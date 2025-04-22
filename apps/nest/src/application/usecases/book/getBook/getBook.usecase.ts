@@ -12,7 +12,7 @@ export class GetBookUsecase {
     } catch (error) {
       if(error instanceof Error) {
         if(error.message === ErrorsMessagesEnum.NOT_FOUND) {
-          throw new NotFoundException(`Aucun Livre trouvé avec l'id : ${id}.`);
+          throw new NotFoundException('Aucun Livre trouvé');
         }
         if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
           throw new InternalServerException('Erreur de base de données.');
