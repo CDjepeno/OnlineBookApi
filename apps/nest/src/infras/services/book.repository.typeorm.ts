@@ -123,10 +123,7 @@ export class BookRepositoryTyperom implements BookRepository {
         throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
       }
     } catch (error) {
-      throw new InternalServerErrorException(
-        'Impossible de supprimer le livre.',
-        error,
-      );
+      handleDatabaseError(error);
     }
   }
 }
