@@ -1,7 +1,4 @@
-import {
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GetAllBookResponse } from 'src/application/usecases/book/getAllBook/getAllBook.response';
 import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
@@ -13,8 +10,6 @@ import { Repository } from 'typeorm';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
-import { handleDatabaseError } from '../common/errors/errorsSwitch';
 
 export class BookRepositoryTyperom implements BookRepository {
   constructor(
@@ -94,16 +89,10 @@ export class BookRepositoryTyperom implements BookRepository {
       await this.repository.update(id, book);
       const updatedBook = await this.repository.findOneBy({ id });
       if (!updatedBook) {
-        throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
     } catch (error) {
-      console.error("Erreur lors de la modification d'un livre :", error);
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(
-        'Impossible de modifier le livre.',
-      );
+      handleDatabaseError(error);
     }
   }
 
