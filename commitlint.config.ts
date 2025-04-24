@@ -16,7 +16,7 @@ const config: UserConfig = {
     //fdsf
     parserOpts: {
       headerPattern:
-        /^(feat|fix|chore|docs|style|refactor|test): (\:sparkles:|\:hammer:|\:bug:) (ON-\d{3,}) (.+)$/,
+        /^(feat|fix|chore|docs|style|refactor|test): (\:sparkles:|\:hammer:|\:bug:) (ON-\d{1,}) (.+)$/,
       headerCorrespondence: ["type", "emoji", "ticket", "subject"],
     },
   },
