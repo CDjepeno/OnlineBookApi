@@ -1,4 +1,8 @@
-import { NotFoundError } from 'src/domaine/errors/book.error';
+import {
+  InternalServerException,
+  NotFoundException,
+} from 'src/domaine/errors/onlineBook.error';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { BookRepository } from 'src/repositories/book.repository';
 import { GetBooksByUserResponse } from './getBooksByUser.response';
 
@@ -9,19 +13,23 @@ export class GetBooksByUserUsecase {
     try {
       return await this.repository.getBooksByUser(userId);
     } catch (error) {
-      console.error(
-        "Une erreur s'est produite lors de la récupération des livres pour l'utilisateur :",
-        error,
-      );
-      if (error instanceof NotFoundError) {
-        throw new Error(
-          `Aucun livre trouvé pour l'utilisateur avec l'ID ${userId}.`,
-        );
-      } else {
-        throw new Error(
-          `Échec de la récupération des livres pour l'utilisateur avec l'ID ${userId}. Veuillez réessayer plus tard.`,
+      if (error instanceof Error) {
+        if (error.message === ErrorsMessagesEnum.NOT_FOUND) {
+          throw new NotFoundException(
+            "Aucun livre trouvé pour l'utilisateur.",
+          );
+        }
+
+        if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
+          throw new InternalServerException('Erreur de base de données.');
+        }
+        throw new InternalServerException(
+          "Une erreur interne est survenue lors de la récupération des livres pour l'utilisateur.",
         );
       }
+      throw new InternalServerException(
+        'Erreur inconnue. Impossible de récupérer des livres.',
+      );
     }
   }
 }

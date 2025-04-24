@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,8 +8,10 @@ import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.
 import { CurrentUserResponse } from 'src/application/usecases/user/auth/current.user.response';
 import { LoginUserRequest } from 'src/application/usecases/user/getuser/login.user.request';
 import { LoginUserResponse } from 'src/application/usecases/user/getuser/login.user.response';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { Repository } from 'typeorm';
 import { UsersRepository } from '../../repositories/user.repository';
+import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { User } from '../models/user.model';
 
 @Injectable()
@@ -35,42 +33,40 @@ export class UserRepositoryTyperom implements UsersRepository {
 
       return await this.repository.save(user);
     } catch (error) {
-      if (error.code === 'ER_DUP_ENTRY') {
-        throw new UnauthorizedException('Cet email est deja utilise.');
-      }
-      throw new Error(error);
+      handleDatabaseError(error);
     }
   }
 
   async signIn(siginIn: LoginUserRequest): Promise<LoginUserResponse> {
-    const { email, password } = siginIn;
-    const user = await this.repository.findOne({
-      where: { email },
-    });
-    if (!user) {
-      throw new NotFoundException("L'utilisateur n'existe pas.");
+    try {
+      const { email, password } = siginIn;
+      const user = await this.repository.findOne({
+        where: { email },
+      });
+      if (!user) {
+        throw new NotFoundException(ErrorsMessagesEnum.NOT_FOUND);
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+
+      if (!isPasswordValid) {
+        throw new UnauthorizedException(ErrorsMessagesEnum.INVALID_PASSPORT);
+      }
+
+      const payload = {
+        sub: user.id,
+        email: user.email,
+      };
+
+      const token = await this.jwtService.signAsync(payload, {
+        secret: this.configService.get<'string'>('JWT_SECRET'),
+        expiresIn: '24h',
+      });
+
+      return { name: user.name, email: user.email, token };
+    } catch (error) {
+      handleDatabaseError(error);
     }
-
-    const match = await bcrypt.compare(
-      password.trim().toLowerCase(),
-      user.password,
-    );
-
-    if (!match) {
-      throw new UnauthorizedException('Le mot de passe est invalide.');
-    }
-
-    const payload = {
-      sub: user.id,
-      email: user.email,
-    };
-
-    const token = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('JWT_SECRET'),
-      expiresIn: '24h',
-    });
-
-    return { name: user.name, email: user.email, token };
   }
 
   async getCurrentUser(email: string): Promise<CurrentUserResponse> {
@@ -80,15 +76,19 @@ export class UserRepositoryTyperom implements UsersRepository {
       });
 
       if (!userEntity) {
-        throw new NotFoundException();
+        throw new NotFoundException(ErrorsMessagesEnum.NOT_FOUND);
       }
 
-      return userEntity;
-    } catch (err) {
-      console.log(err);
-      throw new Error(
-        "Une erreur s'est produite lors de la recherche de l'utilisateur.",
-      );
+      const response: CurrentUserResponse = {
+        id: userEntity.id,
+        name: userEntity.name,
+        email: userEntity.email,
+        phone: userEntity.phone,
+      };
+
+      return response;
+    } catch (error) {
+      handleDatabaseError(error);
     }
   }
 }

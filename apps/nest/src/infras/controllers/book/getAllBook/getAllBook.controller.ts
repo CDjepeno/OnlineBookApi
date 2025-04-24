@@ -18,7 +18,6 @@ export class GetAllBookController {
     summary: 'GetAll Book',
   })
   async getAllBook(): Promise<GetAllBookDto[]> {
-      return this.getAllBookUsecaseProxy.getInstance().execute();
-   
+    return this.getAllBookUsecaseProxy.getInstance().execute();
   }
 }

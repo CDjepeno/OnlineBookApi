@@ -1,7 +1,7 @@
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { mock, Mock } from 'ts-jest-mocker';
 import { AddUserUseCase } from '../../../../application/usecases/user/adduser/add.user.usecase';
-import { InvalidPhoneNumberException } from '../../../../domaine/errors/book.error';
+import { InvalidPhoneNumberException } from '../../../../domaine/errors/onlineBook.error';
 import { UsersRepository } from '../../../../repositories/user.repository';
 import { userDataDto, userDataResponse } from '../../data/userData';
 

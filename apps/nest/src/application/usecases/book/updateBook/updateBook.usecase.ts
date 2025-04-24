@@ -1,5 +1,9 @@
 import { BookEntity } from 'src/domaine/entities/Book.entity';
-import { NotFoundError } from 'src/domaine/errors/book.error';
+import {
+  InternalServerException,
+  NotFoundException,
+} from 'src/domaine/errors/onlineBook.error';
+import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
 import { BookRepository } from 'src/repositories/book.repository';
 import { UpdateBookRequest } from './updateBook.request';
@@ -16,7 +20,7 @@ export class UpdateBookUseCase {
       const existingBook = await this.bookRepository.getBook(request.id);
 
       if (!existingBook) {
-        throw new NotFoundError(`Livre avec l'ID ${request.id} introuvable.`);
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
 
       let coverUrl = existingBook.coverUrl;
@@ -38,7 +42,23 @@ export class UpdateBookUseCase {
 
       return { message: 'Votre livre a bien été mis à jour' };
     } catch (error) {
-      throw new Error(error);
+      if (error instanceof Error) {
+        if (error.message === ErrorsMessagesEnum.NOT_FOUND) {
+          throw new NotFoundException('Livre introuvable.');
+        }
+
+        if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
+          throw new InternalServerException('Erreur de base de données.');
+        }
+
+        throw new InternalServerException(
+          'Une erreur interne est survenue lors de la mise à jour du livre.',
+        );
+      }
+
+      throw new InternalServerException(
+        'Erreur inconnue. Impossible de mettre à jour le livre.',
+      );
     }
   }
 }
