@@ -1,4 +1,3 @@
-import { NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GetAllBookResponse } from 'src/application/usecases/book/getAllBook/getAllBook.response';
 import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
@@ -71,7 +70,6 @@ export class BookRepositoryTyperom implements BookRepository {
 
   async getBook(id: number): Promise<GetBookResponse> {
     try {
-      console.log(`Recherche de livres avec l'id : ${id}`);
       const book = await this.repository.findOne({
         where: { id },
       });
@@ -100,7 +98,7 @@ export class BookRepositoryTyperom implements BookRepository {
     try {
       const result = await this.repository.delete(id);
       if (result.affected === 0) {
-        throw new NotFoundException(`Aucun livre trouvé avec l'id "${id}"`);
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
     } catch (error) {
       handleDatabaseError(error);
