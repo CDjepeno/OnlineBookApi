@@ -44,7 +44,7 @@ export class UpdateBookUseCase {
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === ErrorsMessagesEnum.NOT_FOUND) {
-          throw new NotFoundException('Livre avec introuvable.');
+          throw new NotFoundException('Livre introuvable.');
         }
 
         if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {

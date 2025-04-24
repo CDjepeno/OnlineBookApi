@@ -22,10 +22,7 @@ export class DeleteBookController {
   @ApiOperation({
     summary: 'Delete Book',
   })
-  async deleteBook(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<{ message: string }> {
-    await this.deleteBookUsecaseProxy.getInstance().execute(id);
-    return { message: `Le livre avec l'id ${id} a bien été supprimé.` };
+  async deleteBook(@Param('id', ParseIntPipe) id: number) {
+    return await this.deleteBookUsecaseProxy.getInstance().execute(id);
   }
 }

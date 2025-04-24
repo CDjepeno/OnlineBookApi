@@ -4,14 +4,15 @@ import {
 } from 'src/domaine/errors/onlineBook.error';
 import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { BookRepository } from 'src/repositories/book.repository';
+import { DeleteBookResponse } from './deleteBook.response';
 
 export class DeleteBookUsecase {
   constructor(private readonly repository: BookRepository) {}
 
-  async execute(id: number): Promise<string> {
+  async execute(id: number): Promise<DeleteBookResponse> {
     try {
       await this.repository.deleteBook(id);
-      return `Le livre a bien été supprimé.`;
+      return { message: 'Le livre a bien été supprimé.' };
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === ErrorsMessagesEnum.NOT_FOUND) {
