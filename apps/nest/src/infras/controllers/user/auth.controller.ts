@@ -36,11 +36,14 @@ export class AuthController {
     return user;
   }
 
-  @Get('current')
+  @Get('current/email')
   @UseGuards(JwtAuthGuard)
   async getCurrentUser(@Req() request) {
-    return await this.getCurrentUserUseCase
-      .getInstance()
-      .execute(request.user.email);
+    const email = request.user?.email;
+
+    if (!email) {
+      throw new UnauthorizedException('Email introuvable dans le token');
+    }
+    return await this.getCurrentUserUseCase.getInstance().execute(email);
   }
 }
