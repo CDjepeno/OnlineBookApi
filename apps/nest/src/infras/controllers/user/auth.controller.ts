@@ -4,13 +4,13 @@ import {
   Get,
   Inject,
   Post,
-  Req,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 
 import { GetCurrentUserUseCase } from 'src/application/usecases/user/auth/get.current.user.usecase';
 import { LoginUserUseCase } from 'src/application/usecases/user/getuser/login.user.usecase';
+import { UserEmail } from 'src/infras/common/decorators/user-email.decorator';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
@@ -38,12 +38,7 @@ export class AuthController {
 
   @Get('current/email')
   @UseGuards(JwtAuthGuard)
-  async getCurrentUser(@Req() request) {
-    const email = request.user?.email;
-
-    if (!email) {
-      throw new UnauthorizedException('Email introuvable dans le token');
-    }
+  async getCurrentUser(@UserEmail() email: string) {
     return await this.getCurrentUserUseCase.getInstance().execute(email);
   }
 }
