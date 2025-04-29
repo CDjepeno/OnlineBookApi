@@ -36,7 +36,7 @@ export class AuthController {
     return user;
   }
 
-  @Get('current/email')
+  @Get('current')
   @UseGuards(JwtAuthGuard)
   async getCurrentUser(@UserEmail() email: string) {
     return await this.getCurrentUserUseCase.getInstance().execute(email);
