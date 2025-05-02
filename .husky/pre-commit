@@ -1,6 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Bloquer le commit si l'une des commandes échoue
 npm run typecheck && npm run lint:all
-
