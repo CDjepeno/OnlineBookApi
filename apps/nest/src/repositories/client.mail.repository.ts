@@ -4,6 +4,6 @@ export interface Imessage {
   text?: string;
 }
 
-export interface RepositoryMailPort {
+export interface ClientMailRepository {
   sendMail(message: Imessage): Promise<void>;
 }
