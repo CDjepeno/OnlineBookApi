@@ -1,7 +1,7 @@
 import * as nodemailer from 'nodemailer';
-import { ClientMailPort, Imessage } from 'src/repositories/client.mail.repository';
+import { ClientMailRepository, Imessage } from 'src/repositories/client.mail.repository';
 
-export default class NodemailerClient implements ClientMailPort {
+export default class NodemailerClient implements ClientMailRepository {
   constructor(
     private readonly transporter = nodemailer.createTransport({
       service: 'gmail',

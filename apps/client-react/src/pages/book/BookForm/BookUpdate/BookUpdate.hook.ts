@@ -35,7 +35,7 @@ function BookUpdateHook() {
     onSuccess: () => {
       onSuccessCommon("Le livre a été mis à jour avec succès");
       queryClient.invalidateQueries({
-        queryKey: [BookQueriesKeysEnum.BooksUser],
+        queryKey: [BookQueriesKeysEnum.BOOKS_USER],
       });
     },
 

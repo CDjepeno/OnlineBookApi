@@ -13,6 +13,7 @@
     "build:all": "npm run build:react && npm run build:nest",
     "lint:nest": "cd apps/nest && npm run lint",
     "lint:react": "cd apps/client-react && npm run lint",
+    "typecheck": "tsc -b tsconfig.build.json",
     "lint:all": "npm run lint:react && npm run lint:nest"
   }
 }

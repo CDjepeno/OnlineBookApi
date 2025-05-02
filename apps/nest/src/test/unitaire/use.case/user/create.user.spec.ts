@@ -1,8 +1,8 @@
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { mock, Mock } from 'ts-jest-mocker';
 import { AddUserUseCase } from '../../../../application/usecases/user/adduser/add.user.usecase';
-import { InvalidPhoneNumberException } from '../../../../domaine/errors/onlineBook.error';
 import { UsersRepository } from '../../../../repositories/user.repository';
+import { BadRequestException } from 'src/domaine/errors/onlineBook.error';
 import { userDataDto, userDataResponse } from '../../data/userData';
 
 describe('Rule: create user', () => {
@@ -40,7 +40,7 @@ describe('Rule: create user', () => {
         password: 'test',
       });
     } catch (err) {
-      expect(err instanceof InvalidPhoneNumberException).toBeTruthy();
+      expect(err instanceof BadRequestException).toBeTruthy();
       expect(err.message).toBe("Numero n'est pas valide");
     }
   });
