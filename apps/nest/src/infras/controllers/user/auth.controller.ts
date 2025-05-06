@@ -39,8 +39,11 @@ export class AuthController {
   @Get('current')
   @UseGuards(JwtAuthGuard)
   async getCurrentUser(@Req() request) {
-    return await this.getCurrentUserUseCase
-      .getInstance()
-      .execute(request.user.email);
+    const email = request.user.email;
+    if (!email) {
+      throw new UnauthorizedException('Token invalide ou manquant!');
+    }
+
+    return await this.getCurrentUserUseCase.getInstance().execute(email);
   }
 }

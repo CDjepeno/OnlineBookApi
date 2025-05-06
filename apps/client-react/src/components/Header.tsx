@@ -39,6 +39,8 @@ function Header() {
   const isSigUpPage = location.pathname === "/register";
   const { user, signout } = useContext(AuthContext) as AuthContextValue;
 
+  console.log("user", user);
+
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -179,7 +181,10 @@ function Header() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar
+                    alt={user.name.toUpperCase()}
+                    src="/static/images/avatar/2.jpg"
+                  />
                 </IconButton>
               </Tooltip>
               <Menu
