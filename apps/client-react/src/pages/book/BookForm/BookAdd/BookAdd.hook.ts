@@ -65,7 +65,7 @@ function BookAddHook() {
       console.log("data", data);
       onSuccessCommon(data.message, RouterEnum.HOME);
       queryClient.invalidateQueries({
-        queryKey: [BookQueriesKeysEnum.GetBooks],
+        queryKey: [BookQueriesKeysEnum.GET_BOOKS],
       });
     },
     onError: (error: Error | AxiosError<unknown>) => {

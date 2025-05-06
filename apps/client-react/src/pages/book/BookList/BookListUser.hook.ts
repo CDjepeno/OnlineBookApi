@@ -11,7 +11,7 @@ function BookListUserHook() {
     isPending,
     error,
   } = useQuery({
-    queryKey: [BookQueriesKeysEnum.BooksUser],
+    queryKey: [BookQueriesKeysEnum.BOOKS_USER],
     queryFn: () => getBooksByUser(userId!),
     enabled: !!userId,
   });

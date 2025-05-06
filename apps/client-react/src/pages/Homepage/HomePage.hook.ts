@@ -8,7 +8,7 @@ export default function HomePageHook() {
     data: books,
     error,
   } = useQuery({
-    queryKey: [BookQueriesKeysEnum.GetBooks],
+    queryKey: [BookQueriesKeysEnum.GET_BOOKS],
     queryFn: getBooks,
   });
 
