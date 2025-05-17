@@ -1,29 +1,29 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsDateString, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class UpdateBookDto {
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  @ApiProperty({ description: 'Titre du livre' })
-  title: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({ description: 'Description du livre' })
-  description: string;
+  @ApiPropertyOptional({ description: 'Titre du livre' })
+  title?: string;
 
   @IsString()
-  @IsNotEmpty()
-  @ApiProperty({ description: "Nom de l'auteur du livre" })
-  author: string;
+  @IsOptional()
+  @ApiPropertyOptional({ description: 'Description du livre' })
+  description?: string;
 
-  @IsNotEmpty()
-  @IsDate()
-  @ApiProperty({ description: 'Date de publication du livre' })
-  releaseAt: Date;
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional({ description: "Nom de l'auteur du livre" })
+  author?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
+  @IsDateString()
+  @ApiPropertyOptional({ description: 'Date de publication du livre' })
+  releaseAt?: Date;
+
+  @IsOptional()
   @IsUrl()
-  @ApiProperty({ description: 'URL de la couverture du livre' })
-  coverUrl: string;
+  @ApiPropertyOptional({ description: 'URL de la couverture du livre' })
+  coverUrl?: string;
 }

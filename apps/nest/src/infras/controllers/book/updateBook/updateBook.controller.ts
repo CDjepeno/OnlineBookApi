@@ -38,18 +38,23 @@ export class UpdateBookController {
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: /.(png|jpe?g)$/ })
         .addMaxSizeValidator({ maxSize: 3 * 1024 * 1024 })
-        .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+          fileIsRequired: false,
+        }),
     )
     coverFile: Express.Multer.File,
   ) {
     if (!coverFile && !updateBookDto.coverUrl) {
-      throw new BadRequestException('Cover file is required update book');
+      throw new BadRequestException(
+        'Vous devez fournir un fichier ou une URL pour la couverture',
+      );
     }
+
     const result = await this.updateUsecaseProxy
       .getInstance()
       .execute({ ...updateBookDto, id, coverUrl: coverFile });
-    return {
-      data: result,
-    };
+
+    return { data: result };
   }
 }

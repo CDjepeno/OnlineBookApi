@@ -1,18 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { BookQueriesKeysEnum } from "../../../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../../../request/commons/useQueryWorkflowCallback";
 import { updateBook } from "../../../../services/book.services";
 import {
+  ErrorResponse,
   UpdateBookFormType,
   UpdateBookResponse,
 } from "../../../../types/book/book.types";
-import { convertImageUrlToBlob } from "../../../../utils/convertImageUrlToBinary";
-
-interface ErrorResponse {
-  message: string;
-}
 
 function BookUpdateHook() {
   const queryClient = useQueryClient();
@@ -27,31 +23,25 @@ function BookUpdateHook() {
 
   const { mutateAsync: updateBookMutation } = useMutation<
     UpdateBookResponse,
-    AxiosError<unknown>,
-    { id: string; data: FormData }
+    AxiosError<ErrorResponse>,
+    { id: number; data: FormData }
   >({
     mutationFn: async ({ id, data }) => updateBook(id, data),
 
     onSuccess: () => {
       onSuccessCommon("Le livre a été mis à jour avec succès");
+
       queryClient.invalidateQueries({
         queryKey: [BookQueriesKeysEnum.BOOKS_USER],
       });
     },
 
-    onError: (error: Error | AxiosError<unknown>) => {
+    onError: (error) => {
       let errorMessage =
         "Une erreur est survenue lors de la mise à jour du livre";
 
-      if ((error as AxiosError<unknown>).isAxiosError) {
-        if (
-          (error as AxiosError).response &&
-          (error as AxiosError).response!.data &&
-          ((error as AxiosError).response!.data as ErrorResponse)
-        ) {
-          errorMessage = ((error as AxiosError).response!.data as ErrorResponse)
-            .message;
-        }
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        errorMessage = error.response.data.message;
       }
 
       onErrorCommon(errorMessage);
@@ -60,25 +50,21 @@ function BookUpdateHook() {
 
   const submit = async (data: UpdateBookFormType) => {
     try {
+      const { id, title, description, author, releaseAt, coverUrl } = data;
       const formData = new FormData();
-      formData.append("name", data.title);
-      formData.append("description", data.description);
-      formData.append("author", data.author);
-      formData.append("releaseAt", new Date(data.releaseAt).toISOString());
 
-      if (typeof data.coverUrl === "string") {
-        const imageBlob = await convertImageUrlToBlob(data.coverUrl);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("author", author);
+      formData.append("releaseAt", new Date(releaseAt).toISOString());
 
-        if (imageBlob) {
-          formData.append("coverUrl", imageBlob, data.coverUrl);
-        }
-      }
-      if (data.coverUrl instanceof File) {
-        formData.append("coverUrl", data.coverUrl);
+      if (coverUrl instanceof File) {
+        formData.append("coverUrl", coverUrl);
+      } else if (typeof coverUrl === "string" && coverUrl.startsWith("http")) {
+        formData.append("coverUrl", coverUrl);
       }
 
-      const id = data && data.id;
-      await updateBookMutation({ id, data: formData });
+      await updateBookMutation({ id: Number(id), data: formData });
     } catch (error) {
       console.error("error updating book", error);
     }

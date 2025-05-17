@@ -1,14 +1,14 @@
-import { AxiosError, RawAxiosRequestHeaders } from "axios";
+import axios, { RawAxiosRequestHeaders } from "axios";
 import { UseRequest } from "../../clients/axios/useRequest";
 import { MethodHttpEnum } from "../../enum/enum";
 import { BASE_URL } from "../route-http/route-http";
 
 interface useApiRequestProps<T> {
-  includeAuthorizationHeader: boolean;
   path: string;
   method: MethodHttpEnum;
-  params?: T;
+  includeAuthorizationHeader: boolean;
   headers?: RawAxiosRequestHeaders;
+  params?: T;
 }
 
 export async function UseRequestApi<TData, T>({
@@ -47,16 +47,14 @@ export async function UseRequestApi<TData, T>({
 }
 
 function handleRequestError(error: unknown) {
-  if (error instanceof Error) {
-    console.error("An unexpected error occurred:", error.message);
-  } else if (isAxiosError(error)) {
-    console.error("An Axios error occurred:", error.message);
+  if (axios.isAxiosError(error)) {
+    console.error("Une erreur Axios s'est produite", error.message);
     if (error.response) {
-      console.error("Response data:", error.response.data);
+      console.error("Données de la réponse:", error.response.data);
     }
+  } else if (error instanceof Error) {
+    console.error("Une erreur inattendue s'est produite:", error.message);
+  } else {
+    console.error("Erreur inconnue", error);
   }
-}
-
-function isAxiosError(error: unknown): error is AxiosError {
-  return !!(error as AxiosError).isAxiosError !== undefined;
 }
