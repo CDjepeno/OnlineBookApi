@@ -8,7 +8,6 @@ export const restRequestApiInstance = (
   apiInstance({
     baseURL: baseURL,
     headers: {
-      "Content-Type": "application/json",
       ...headers,
     },
   });

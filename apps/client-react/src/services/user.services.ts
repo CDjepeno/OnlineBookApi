@@ -1,5 +1,5 @@
 import { MethodHttpEnum } from "../enum/enum";
-import { UseRequestApi } from "../request/commons/useApiRequest";
+import { UseRequestApi } from "../request/commons/useRequestApi";
 import {
   CURRENT_USER_ROUTE,
   REGISTER_ROUTE,

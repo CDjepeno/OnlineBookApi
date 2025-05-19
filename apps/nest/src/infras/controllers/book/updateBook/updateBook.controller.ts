@@ -38,9 +38,13 @@ export class UpdateBookController {
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: /.(png|jpe?g)$/ })
         .addMaxSizeValidator({ maxSize: 3 * 1024 * 1024 })
-        .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+          fileIsRequired: false,
+          exceptionFactory: () => new BadRequestException('Fichier invalide'),
+        }),
     )
-    coverFile: Express.Multer.File,
+    coverFile?: Express.Multer.File,
   ) {
     if (!coverFile && !updateBookDto.coverUrl) {
       throw new BadRequestException('Cover file is required update book');

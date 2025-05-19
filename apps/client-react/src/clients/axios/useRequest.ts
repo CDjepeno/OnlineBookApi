@@ -15,8 +15,8 @@ export const UseRequest = async <TData, T>(
     method,
     url: path,
     headers: {
-      "Content-Type":
-        params instanceof FormData ? "multipart/form-data" : "application/json",
+      // "Content-Type":
+      //   params instanceof FormData ? "multipart/form-data" : "application/json",
       ...headers,
     },
     data: params,
@@ -26,7 +26,7 @@ export const UseRequest = async <TData, T>(
     const response = await axiosInstance.request<TData>(config);
     return response.data;
   } catch (error) {
-    console.error("Error making request:", error);
+    console.error("Erreur lors de la requête:", error);
     throw error;
   }
 };

@@ -83,21 +83,20 @@ function BookUpdateForm({ bookUpdate, onClose }: BookUpdateFormProps) {
             </Grid>
             <Grid item xs={12}>
               <FormInput
-                name="description"
-                label="Description"
-                control={control}
-                errors={errors}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormInput
                 name="author"
                 label="Auteur"
                 control={control}
                 errors={errors}
               />
             </Grid>
-
+            <Grid item xs={12}>
+              <FormInput
+                name="description"
+                label="Description"
+                control={control}
+                errors={errors}
+              />
+            </Grid>
             <Grid item xs={12}>
               <Controller
                 name="releaseAt"
