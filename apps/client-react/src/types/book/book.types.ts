@@ -13,7 +13,7 @@ export interface BookResponse {
 
 export type GetBookResponse = BookResponse;
 
-export type GetBooksResponse = BookResponse[];
+export type GetBooksResponse = BookResponse;
 
 export type AddBookResponse = BookResponse;
 
