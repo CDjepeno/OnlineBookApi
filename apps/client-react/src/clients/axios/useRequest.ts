@@ -15,8 +15,8 @@ export const UseRequest = async <TData, T>(
     method,
     url: path,
     headers: {
-      // "Content-Type":
-      //   params instanceof FormData ? "multipart/form-data" : "application/json",
+      "Content-Type":
+        params instanceof FormData ? "multipart/form-data" : "application/json",
       ...headers,
     },
     data: params,

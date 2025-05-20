@@ -27,7 +27,7 @@ function BookUpdateHook() {
   const { mutateAsync: updateBookMutation } = useMutation<
     UpdateBookResponse,
     AxiosError<unknown>,
-    { id: number; data: FormData }
+    { id: number; data: FormData | Record<string, unknown> }
   >({
     mutationFn: async ({ id, data }) => updateBook(id, data),
 
@@ -54,22 +54,28 @@ function BookUpdateHook() {
   });
 
   const submit = async (data: UpdateBookFormType) => {
+    const { id, title, description, author, releaseAt, coverUrl } = data;
     try {
-      const { id, title, description, author, releaseAt, coverUrl } = data;
-
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("author", author);
-      formData.append("releaseAt", new Date(releaseAt).toISOString());
-
-      if (typeof coverUrl === "string") {
+      if (coverUrl instanceof File) {
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", description);
+        formData.append("author", author);
+        formData.append("releaseAt", new Date(releaseAt).toISOString());
         formData.append("coverUrl", coverUrl);
-      } else if (coverUrl instanceof File) {
-        formData.append("coverUrl", coverUrl);
+        await updateBookMutation({ id: Number(id), data: formData });
+      } else {
+        await updateBookMutation({
+          id: Number(id),
+          data: {
+            title,
+            description,
+            author,
+            releaseAt: new Date(releaseAt).toISOString(),
+            coverUrl,
+          },
+        });
       }
-
-      await updateBookMutation({ id: Number(id), data: formData });
     } catch (error) {
       console.error("Erreur lors de la mise à jour", error);
     }

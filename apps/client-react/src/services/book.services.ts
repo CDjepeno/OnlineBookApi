@@ -61,7 +61,7 @@ export const createBook = async (
 
 export const updateBook = async (
   id: number,
-  data: FormData
+  data: FormData | Record<string, unknown>
 ): Promise<UpdateBookResponse> => {
   return await UseRequestApi({
     method: MethodHttpEnum.PUT,
