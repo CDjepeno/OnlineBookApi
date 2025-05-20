@@ -71,7 +71,7 @@ function BookUpdateHook() {
             title,
             description,
             author,
-            releaseAt: new Date(releaseAt).toISOString(),
+            releaseAt,
             coverUrl,
           },
         });
