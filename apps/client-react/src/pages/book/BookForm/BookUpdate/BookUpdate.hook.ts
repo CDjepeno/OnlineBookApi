@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { BookQueriesKeysEnum } from "../../../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../../../request/commons/useQueryWorkflowCallback";
@@ -8,7 +8,6 @@ import {
   UpdateBookFormType,
   UpdateBookResponse,
 } from "../../../../types/book/book.types";
-import { convertImageUrlToBlob } from "../../../../utils/convertImageUrlToBinary";
 
 interface ErrorResponse {
   message: string;
@@ -28,7 +27,7 @@ function BookUpdateHook() {
   const { mutateAsync: updateBookMutation } = useMutation<
     UpdateBookResponse,
     AxiosError<unknown>,
-    { id: string; data: FormData }
+    { id: number; data: FormData | Record<string, unknown> }
   >({
     mutationFn: async ({ id, data }) => updateBook(id, data),
 
@@ -43,14 +42,10 @@ function BookUpdateHook() {
       let errorMessage =
         "Une erreur est survenue lors de la mise à jour du livre";
 
-      if ((error as AxiosError<unknown>).isAxiosError) {
-        if (
-          (error as AxiosError).response &&
-          (error as AxiosError).response!.data &&
-          ((error as AxiosError).response!.data as ErrorResponse)
-        ) {
-          errorMessage = ((error as AxiosError).response!.data as ErrorResponse)
-            .message;
+      if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data as ErrorResponse;
+        if (responseData?.message) {
+          errorMessage = responseData.message;
         }
       }
 
@@ -59,28 +54,30 @@ function BookUpdateHook() {
   });
 
   const submit = async (data: UpdateBookFormType) => {
+    const { id, title, description, author, releaseAt, coverUrl } = data;
     try {
-      const formData = new FormData();
-      formData.append("name", data.title);
-      formData.append("description", data.description);
-      formData.append("author", data.author);
-      formData.append("releaseAt", new Date(data.releaseAt).toISOString());
-
-      if (typeof data.coverUrl === "string") {
-        const imageBlob = await convertImageUrlToBlob(data.coverUrl);
-
-        if (imageBlob) {
-          formData.append("coverUrl", imageBlob, data.coverUrl);
-        }
+      if (coverUrl instanceof File) {
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", description);
+        formData.append("author", author);
+        formData.append("releaseAt", new Date(releaseAt).toISOString());
+        formData.append("coverUrl", coverUrl);
+        await updateBookMutation({ id: Number(id), data: formData });
+      } else {
+        await updateBookMutation({
+          id: Number(id),
+          data: {
+            title,
+            description,
+            author,
+            releaseAt,
+            coverUrl,
+          },
+        });
       }
-      if (data.coverUrl instanceof File) {
-        formData.append("coverUrl", data.coverUrl);
-      }
-
-      const id = data && data.id;
-      await updateBookMutation({ id, data: formData });
     } catch (error) {
-      console.error("error updating book", error);
+      console.error("Erreur lors de la mise à jour", error);
     }
   };
 

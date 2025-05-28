@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { MethodHttpEnum } from "../enum/enum";
-import { UseRequestApi } from "../request/commons/useApiRequest";
+import { UseRequestApi } from "../request/commons/useRequestApi";
 import { BOOKS_ROUTE, BOOK_ROUTE } from "../request/route-http/route-http";
 import {
   AddBookResponses,
@@ -59,18 +59,9 @@ export const createBook = async (
   return response.data;
 };
 
-export const deleteBook = async (id: string): Promise<void> => {
-  await UseRequestApi({
-    method: MethodHttpEnum.DELETE,
-    path: `${BOOK_ROUTE}/${id}`,
-    params: { id },
-    includeAuthorizationHeader: false,
-  });
-};
-
 export const updateBook = async (
-  id: string,
-  data: FormData
+  id: number,
+  data: FormData | Record<string, unknown>
 ): Promise<UpdateBookResponse> => {
   return await UseRequestApi({
     method: MethodHttpEnum.PUT,
@@ -80,3 +71,11 @@ export const updateBook = async (
   });
 };
 
+export const deleteBook = async (id: string): Promise<void> => {
+  await UseRequestApi({
+    method: MethodHttpEnum.DELETE,
+    path: `${BOOK_ROUTE}/${id}`,
+    params: { id },
+    includeAuthorizationHeader: false,
+  });
+};
