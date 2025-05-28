@@ -14,10 +14,8 @@ export class GetBooksByUserUsecase {
       return await this.repository.getBooksByUser(userId);
     } catch (error) {
       if (error instanceof Error) {
-        if (error.message === ErrorsMessagesEnum.NOT_FOUND) {
-          throw new NotFoundException(
-            "Aucun livre trouvé pour l'utilisateur.",
-          );
+        if (error.message === ErrorsMessagesEnum.USER_NOT_FOUND) {
+          throw new NotFoundException("L'utilisateur demandé n'existe pas.");
         }
 
         if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {

@@ -4,7 +4,7 @@ import BookCard from "../book/components/BookCard";
 import HomePageHook from "./HomePage.hook";
 
 export function HomePage() {
-  const { isPending, books } = HomePageHook();
+  const { isPending, books = [] } = HomePageHook();
 
   return (
     <main>
@@ -28,20 +28,23 @@ export function HomePage() {
       <Container sx={{ py: 8 }} maxWidth="md">
         {isPending ? (
           <Loading />
+        ) : books?.length === 0 ? (
+          <Typography variant="h6" align="center" color="text.secondary">
+            Aucun livre trouvé.
+          </Typography>
         ) : (
           <Grid container spacing={4}>
-            {books &&
-              books?.map((book) => (
-                <BookCard
-                  key={book.id}
-                  id={book.id}
-                  coverUrl={book.coverUrl}
-                  name={book.title}
-                  author={book.author}
-                  description={book.description}
-                  releaseAt={book.releaseAt}
-                />
-              ))}
+            {books.map((book) => (
+              <BookCard
+                key={book.id}
+                id={book.id}
+                coverUrl={book.coverUrl}
+                name={book.title}
+                author={book.author}
+                description={book.description}
+                releaseAt={book.releaseAt}
+              />
+            ))}
           </Grid>
         )}
       </Container>

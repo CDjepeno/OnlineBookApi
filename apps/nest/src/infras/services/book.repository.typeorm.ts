@@ -13,7 +13,7 @@ import { User } from '../models/user.model';
 export class BookRepositoryTyperom implements BookRepository {
   constructor(
     @InjectRepository(Book)
-    private readonly repository: Repository<Book>,
+    private readonly bookRepository: Repository<Book>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
@@ -25,7 +25,7 @@ export class BookRepositoryTyperom implements BookRepository {
       });
 
       if (!user) {
-        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
+        throw new Error(ErrorsMessagesEnum.USER_NOT_FOUND);
       }
 
       const book = new Book();
@@ -36,7 +36,7 @@ export class BookRepositoryTyperom implements BookRepository {
       book.coverUrl = addBookRequest.coverUrl;
       book.userId = addBookRequest.userId;
 
-      await this.repository.save(book);
+      await this.bookRepository.save(book);
     } catch (error) {
       handleDatabaseError(error);
     }
@@ -44,33 +44,53 @@ export class BookRepositoryTyperom implements BookRepository {
 
   async getAllBook(): Promise<GetAllBookResponse[]> {
     try {
-      const books = await this.repository.find();
-      if (books.length == 0) {
-        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
-      }
+      const books = await this.bookRepository.find();
+
+      // if (books.length == 0) {
+      //   throw new Error(ErrorsMessagesEnum.NOT_FOUND);
+      // }
       return books;
     } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === ErrorsMessagesEnum.NOT_FOUND
+      ) {
+        throw error;
+      }
       handleDatabaseError(error);
     }
   }
 
   async getBooksByUser(userId: number): Promise<GetBooksByUserResponse[]> {
     try {
-      const books = await this.repository.find({
-        where: { userId },
+      const userExists = await this.userRepository.findOne({
+        where: { id: userId },
       });
-      if (books.length === 0) {
-        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
+
+      if (!userExists) {
+        throw new Error(ErrorsMessagesEnum.USER_NOT_FOUND);
       }
+
+      const books = await this.bookRepository.find({
+        where: { userId },
+        order: { id: 'DESC' },
+      });
+
       return books;
     } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === ErrorsMessagesEnum.USER_NOT_FOUND
+      ) {
+        throw error;
+      }
       handleDatabaseError(error);
     }
   }
 
   async getBook(id: number): Promise<GetBookResponse> {
     try {
-      const book = await this.repository.findOne({
+      const book = await this.bookRepository.findOne({
         where: { id },
       });
       if (!book) {
@@ -78,14 +98,20 @@ export class BookRepositoryTyperom implements BookRepository {
       }
       return book;
     } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === ErrorsMessagesEnum.NOT_FOUND
+      ) {
+        throw error; // ← Cette ligne permet à l'erreur de remonter au UseCase
+      }
       handleDatabaseError(error);
     }
   }
 
   async updateBook(id: number, book: Partial<BookEntity>): Promise<void> {
     try {
-      await this.repository.update(id, book);
-      const updatedBook = await this.repository.findOneBy({ id });
+      await this.bookRepository.update(id, book);
+      const updatedBook = await this.bookRepository.findOneBy({ id });
       if (!updatedBook) {
         throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
@@ -96,7 +122,7 @@ export class BookRepositoryTyperom implements BookRepository {
 
   async deleteBook(id: number): Promise<void> {
     try {
-      const result = await this.repository.delete(id);
+      const result = await this.bookRepository.delete(id);
       if (result.affected === 0) {
         throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }

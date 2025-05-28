@@ -9,11 +9,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { AuthContext } from "../../../context";
 import { UpdateBookFormType } from "../../../types/book/book.types";
 import { AuthContextValue } from "../../../types/user/auth.context.value";
 import { formatDate } from "../../../utils/formatDate";
+import { getDisplayErrorMessage } from "../../../utils/getDisplayErrorMessage";
 import BookUpdateForm from "../BookForm/BookUpdate/BookUpdateForm";
 import { TableList } from "../components/TableList";
 import DeleteBookUserHook from "../Delete-book-user-hook";
@@ -36,21 +37,42 @@ export default function BookListUser() {
   const { books, isPending, error } = BookListUserHook();
   const { deleteBookMutation } = DeleteBookUserHook();
 
-  const DeleteBook = async (id: string) => {
-    try {
-      await deleteBookMutation(id);
-    } catch (error) {
-      console.error("Error deleting book:", error);
-    }
-  };
+  const deleteBook = useCallback(
+    async (id: string) => {
+      try {
+        await deleteBookMutation(id);
+      } catch (error) {
+        console.error("Error deleting book:", error);
+      }
+    },
+    [deleteBookMutation]
+  );
 
-  const editBook = (book: UpdateBookFormType) => {
+  const editBook = useCallback((book: UpdateBookFormType) => {
     setSelectedBookId(book.id || null);
     setIsFormOpen(true);
-  };
+  }, []);
+
+  const handleCloseModale = useCallback(() => {
+    setIsFormOpen(false);
+    setSelectedBookId(null);
+  }, []);
 
   const bookToUpdate =
     books?.find((book) => book.id === selectedBookId) || null;
+
+  const renderCenteredContent = (content: React.ReactNode) => (
+    <Container>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        {content}
+      </Box>
+    </Container>
+  );
 
   const rows =
     books?.map((book) => ({
@@ -60,15 +82,25 @@ export default function BookListUser() {
         book.description,
         formatDate(book.releaseAt),
         <img
+          key={`cover-${book.id}`}
           src={book.coverUrl}
-          alt="couverture du book"
+          alt={`Couverture du livre ${book.title}`}
           style={{ width: "50px", height: "30px", objectFit: "cover" }}
         />,
-        <Stack direction="row" justifyContent="end">
-          <IconButton aria-label="edit" onClick={() => editBook(book)}>
+        <Stack key={`actions-${book.id}`} direction="row" justifyContent="end">
+          <IconButton
+            onClick={() => editBook(book)}
+            aria-label={`Modifier le livre ${book.title}`}
+            size="small"
+          >
             <EditTwoToneIcon />
           </IconButton>
-          <IconButton onClick={() => DeleteBook(book.id)} aria-label="delete">
+          <IconButton
+            onClick={() => deleteBook(book.id)}
+            aria-label={`Supprimer le livre ${book.title}`}
+            size="small"
+            color="error"
+          >
             <DeleteTwoToneIcon />
           </IconButton>
         </Stack>,
@@ -76,49 +108,21 @@ export default function BookListUser() {
     })) || [];
 
   if (isPending) {
-    return (
-      <Container>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="100vh"
-        >
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
+    return renderCenteredContent(<CircularProgress />);
   }
 
   if (error) {
-    return (
-      <Container>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="100vh"
-        >
-          <Typography variant="h6" color="error">
-            {error.message || "Error loading books user"}
-          </Typography>
-        </Box>
-      </Container>
+    return renderCenteredContent(
+      <Typography variant="h6" color="error">
+        // {getDisplayErrorMessage(error)}
+        //{" "}
+      </Typography>
     );
   }
 
   if (!books || books.length === 0) {
-    return (
-      <Container>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="100vh"
-        >
-          <Typography variant="h6">No books user found</Typography>
-        </Box>
-      </Container>
+    return renderCenteredContent(
+      <Typography variant="h6">Aucun livre trouvé.</Typography>
     );
   }
 
@@ -129,7 +133,12 @@ export default function BookListUser() {
       </Typography>
       <TableList headCells={headCells} rows={rows} />
 
-      <Modal open={isFormOpen} onClose={() => setIsFormOpen(false)}>
+      <Modal
+        open={isFormOpen}
+        onClose={handleCloseModale}
+        aria-labelledby="model-book-update-title"
+        aria-describedby="model-book-update-description"
+      >
         <Box
           sx={{
             p: 4,
@@ -141,11 +150,13 @@ export default function BookListUser() {
             boxShadow: 24,
           }}
         >
-          {selectedBookId && bookToUpdate && (
+          {selectedBookId && bookToUpdate ? (
             <BookUpdateForm
               bookUpdate={bookToUpdate}
-              onClose={() => setIsFormOpen(false)}
+              onClose={handleCloseModale}
             />
+          ) : (
+            <Typography>Erreur : Livre non trouvé</Typography>
           )}
         </Box>
       </Modal>
