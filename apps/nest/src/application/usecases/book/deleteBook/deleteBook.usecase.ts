@@ -13,13 +13,13 @@ export class DeleteBookUsecase {
     try {
       await this.repository.deleteBook(id);
       return { message: 'Le livre a bien été supprimé.' };
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof Error) {
         if (error.message === ErrorsMessagesEnum.NOT_FOUND) {
           throw new NotFoundException("Livre n'existe pas");
         }
         if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
-          throw new InternalServerException('Database Error');
+          throw new InternalServerException('Erreur de la base de donnees');
         }
 
         throw new InternalServerException(

@@ -44,19 +44,8 @@ export class BookRepositoryTyperom implements BookRepository {
 
   async getAllBook(): Promise<GetAllBookResponse[]> {
     try {
-      const books = await this.bookRepository.find();
-
-      // if (books.length == 0) {
-      //   throw new Error(ErrorsMessagesEnum.NOT_FOUND);
-      // }
-      return books;
+      return await this.bookRepository.find();
     } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message === ErrorsMessagesEnum.NOT_FOUND
-      ) {
-        throw error;
-      }
       handleDatabaseError(error);
     }
   }
@@ -78,12 +67,6 @@ export class BookRepositoryTyperom implements BookRepository {
 
       return books;
     } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message === ErrorsMessagesEnum.USER_NOT_FOUND
-      ) {
-        throw error;
-      }
       handleDatabaseError(error);
     }
   }
@@ -93,28 +76,26 @@ export class BookRepositoryTyperom implements BookRepository {
       const book = await this.bookRepository.findOne({
         where: { id },
       });
+
       if (!book) {
         throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
+
       return book;
     } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message === ErrorsMessagesEnum.NOT_FOUND
-      ) {
-        throw error; // ← Cette ligne permet à l'erreur de remonter au UseCase
-      }
       handleDatabaseError(error);
     }
   }
 
   async updateBook(id: number, book: Partial<BookEntity>): Promise<void> {
     try {
-      await this.bookRepository.update(id, book);
       const updatedBook = await this.bookRepository.findOneBy({ id });
+
       if (!updatedBook) {
         throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
+
+      await this.bookRepository.update(id, book);
     } catch (error) {
       handleDatabaseError(error);
     }
@@ -123,6 +104,7 @@ export class BookRepositoryTyperom implements BookRepository {
   async deleteBook(id: number): Promise<void> {
     try {
       const result = await this.bookRepository.delete(id);
+
       if (result.affected === 0) {
         throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }

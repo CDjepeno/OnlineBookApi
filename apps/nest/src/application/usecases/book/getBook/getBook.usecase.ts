@@ -8,8 +8,10 @@ import { BookRepository } from 'src/repositories/book.repository';
 import { GetBookResponse } from './getBook.response';
 
 export class GetBookUsecase {
-  constructor(private readonly repository: BookRepository) {}
+  constructor(private readonly repository: BookRepository) { }
+
   async execute(id: number): Promise<GetBookResponse> {
+
     if (!id || id <= 0 || !Number.isInteger(id)) {
       throw new BadRequestException('ID du livre invalide');
     }
@@ -18,7 +20,7 @@ export class GetBookUsecase {
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === ErrorsMessagesEnum.NOT_FOUND) {
-          throw new NotFoundException('Aucun Livre trouvéeee.');
+          throw new NotFoundException('Aucun Livre trouvé.');
         }
         if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
           throw new InternalServerException('Erreur de base de données.');

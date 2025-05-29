@@ -1,17 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { BookQueriesKeysEnum } from "../../../../enum/enum";
+import {
+  ErrorMessageEnum,
+  SuccessMessageEnum,
+} from "../../../../enum/message.enum";
 import { UseQueryWorkflowCallback } from "../../../../request/commons/useQueryWorkflowCallback";
 import { updateBook } from "../../../../services/book.services";
 import {
   UpdateBookFormType,
   UpdateBookResponse,
 } from "../../../../types/book/book.types";
-
-interface ErrorResponse {
-  message: string;
-}
+import { getDisplayErrorMessage } from "../../../../utils/getDisplayErrorMessage";
 
 function BookUpdateHook() {
   const queryClient = useQueryClient();
@@ -32,22 +33,15 @@ function BookUpdateHook() {
     mutationFn: async ({ id, data }) => updateBook(id, data),
 
     onSuccess: () => {
-      onSuccessCommon("Le livre a été mis à jour avec succès");
+      onSuccessCommon(SuccessMessageEnum.BOOK_UPDATE_SUCCESS);
       queryClient.invalidateQueries({
         queryKey: [BookQueriesKeysEnum.BOOKS_USER],
       });
     },
 
     onError: (error: Error | AxiosError<unknown>) => {
-      let errorMessage =
-        "Une erreur est survenue lors de la mise à jour du livre";
-
-      if (axios.isAxiosError(error)) {
-        const responseData = error.response?.data as ErrorResponse;
-        if (responseData?.message) {
-          errorMessage = responseData.message;
-        }
-      }
+      const errorMessage =
+        getDisplayErrorMessage(error) || ErrorMessageEnum.BOOK_UPDATE_ERROR;
 
       onErrorCommon(errorMessage);
     },

@@ -1,20 +1,21 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useContext } from "react";
 import { DefaultValues, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { AuthContext } from "../../../../context";
 import { BookQueriesKeysEnum, RouterEnum } from "../../../../enum/enum";
+import { ErrorMessageEnum } from "../../../../enum/message.enum";
 import { UseQueryWorkflowCallback } from "../../../../request/commons/useQueryWorkflowCallback";
 import { createBook } from "../../../../services/book.services";
 import {
   AddBookFormType,
   AddBookInput,
   AddBookResponses,
-  ErrorResponse,
 } from "../../../../types/book/book.types";
 import { AuthContextValue } from "../../../../types/user/auth.context.value";
+import { getDisplayErrorMessage } from "../../../../utils/getDisplayErrorMessage";
 
 const defaultValues: DefaultValues<AddBookFormType> = {
   title: "",
@@ -39,12 +40,13 @@ const bookSchema = yup.object({
 
 function BookAddHook() {
   const { user } = useContext(AuthContext) as AuthContextValue;
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
 
   const {
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<AddBookFormType>({
     defaultValues,
@@ -62,39 +64,30 @@ function BookAddHook() {
     mutationFn: async (data: FormData) => createBook(data, userId),
 
     onSuccess: (data) => {
-      console.log("data", data);
       onSuccessCommon(data.message, RouterEnum.HOME);
       queryClient.invalidateQueries({
         queryKey: [BookQueriesKeysEnum.GET_BOOKS],
       });
     },
     onError: (error: Error | AxiosError<unknown>) => {
-      let errorMessage = "Une erreur est survenue";
-
-      if (isAxiosError(error)) {
-        if (
-          error.response &&
-          error.response.data &&
-          (error.response.data as ErrorResponse).message
-        ) {
-          errorMessage = (error.response.data as ErrorResponse).message;
-        }
-      }
+      const errorMessage =
+        getDisplayErrorMessage(error) || ErrorMessageEnum.BOOK_CREATE_ERROR;
 
       onErrorCommon(errorMessage);
     },
   });
 
   const submit = async (data: AddBookInput) => {
+    const { title, description, author, releaseAt, coverUrl } = data;
     try {
       const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("description", data.description);
-      formData.append("author", data.author);
-      formData.append("releaseAt", data.releaseAt);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("author", author);
+      formData.append("releaseAt", releaseAt);
 
-      if (data.coverUrl) {
-        formData.append("coverUrl", data.coverUrl);
+      if (coverUrl) {
+        formData.append("coverUrl", coverUrl);
       } else {
         console.error("coverUrl is required");
         return;
@@ -107,16 +100,15 @@ function BookAddHook() {
     }
   };
 
-  return { register, submit, handleSubmit, isSubmitting, errors, control };
+  return {
+    register,
+    submit,
+    handleSubmit,
+    watch,
+    isSubmitting,
+    errors,
+    control,
+  };
 }
 
 export default BookAddHook;
-
-function isAxiosError(error: unknown): error is AxiosError {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "isAxiosError" in error &&
-    error.isAxiosError === true
-  );
-}

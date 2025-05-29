@@ -20,7 +20,7 @@ export class UpdateBookUseCase {
       const existingBook = await this.bookRepository.getBook(request.id);
 
       if (!existingBook) {
-        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
+        throw new NotFoundException(ErrorsMessagesEnum.NOT_FOUND);
       }
 
       let coverUrl = existingBook.coverUrl;
