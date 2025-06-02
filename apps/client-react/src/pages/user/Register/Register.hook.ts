@@ -4,50 +4,91 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { RouterEnum } from "../../../enum/enum";
+import { ErrorMessageEnum } from "../../../enum/message.enum";
 import { UseQueryWorkflowCallback } from "../../../request/commons/useQueryWorkflowCallback";
 import { registerUser } from "../../../services/user.services";
 import {
   RegisterFormInput,
   RegisterResponse,
 } from "../../../types/user/form.types";
-import { isAxiosError } from "axios";
-import { ErrorResponse } from "../../../types/book/book.types";
+import { getDisplayErrorMessage } from "../../../utils/getDisplayErrorMessage";
+
+// Constantes pour éviter la duplication
+const VALIDATION_MESSAGES = {
+  email: {
+    required: "L'adresse email est requise",
+    invalid: "Veuillez renseigner une adresse email valide",
+  },
+  password: {
+    required: "Le mot de passe est requis",
+    minLength: "Le mot de passe doit contenir au moins 6 caractères",
+  },
+  confirmPassword: {
+    required: "Veuillez confirmer le mot de passe",
+    noMatch: "Les mots de passe ne correspondent pas",
+  },
+  name: {
+    required: "Le nom est requis",
+    minLength: "Le nom doit contenir au moins 2 caractères",
+    maxLength: "Le nom ne peut pas dépasser 50 caractères",
+  },
+  phone: {
+    required: "Le numéro de téléphone est requis",
+    invalid: "Veuillez renseigner un numéro de téléphone valide",
+  },
+} as const;
+
+const PASSWORD_MIN_LENGTH = 6;
+const NAME_MIN_LENGTH = 2;
+const NAME_MAX_LENGTH = 50;
+
+// Regex pour validation email plus robuste
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+// Regex pour validation téléphone français
+const PHONE_REGEX = /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/;
+
+const defaultValues: RegisterFormInput = {
+  email: "",
+  password: "",
+  confirmPassword: "",
+  name: "",
+  phone: "",
+};
+
+const signupSchema = yup.object({
+  email: yup
+    .string()
+    .required(VALIDATION_MESSAGES.email.required)
+    .email(VALIDATION_MESSAGES.email.invalid)
+    .matches(EMAIL_REGEX, VALIDATION_MESSAGES.email.invalid),
+
+  password: yup
+    .string()
+    .required(VALIDATION_MESSAGES.password.required)
+    .min(PASSWORD_MIN_LENGTH, VALIDATION_MESSAGES.password.minLength),
+
+  confirmPassword: yup
+    .string()
+    .required(VALIDATION_MESSAGES.confirmPassword.required)
+    .oneOf([yup.ref("password")], VALIDATION_MESSAGES.confirmPassword.noMatch),
+
+  name: yup
+    .string()
+    .required(VALIDATION_MESSAGES.name.required)
+    .min(NAME_MIN_LENGTH, VALIDATION_MESSAGES.name.minLength)
+    .max(NAME_MAX_LENGTH, VALIDATION_MESSAGES.name.maxLength)
+    .trim(),
+
+  phone: yup
+    .string()
+    .required(VALIDATION_MESSAGES.phone.required)
+    .matches(PHONE_REGEX, VALIDATION_MESSAGES.phone.invalid),
+});
 
 export default function RegisterHook() {
   const navigate = useNavigate();
-
-  const defaultValues: RegisterFormInput = {
-    email: "",
-    password: "",
-    confirmPassword: "",
-    name: "",
-    phone: "",
-  };
-
-  const signupSchema = yup.object({
-    email: yup
-      .string()
-      .email("Veuillez renseigner une adresse email valide")
-      .matches(
-        /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-        "Veuillez renseigner une adresse email valide"
-      )
-      .required("Veuillez renseigner une adresse email valide"),
-    password: yup
-      .string()
-      .required("Veuillez renseigner un mot de passe")
-      .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
-    confirmPassword: yup
-      .string()
-      .required("Veuillez confirmer le mot de passe")
-      .min(6, "Votre mot de passe doit contenir au moins 6 caractères"),
-    name: yup
-      .string()
-      .required("Le nom doit être renseigné")
-      .min(2, "Le nom doit être explicite")
-      .max(10, "Le titre doit être succinct"),
-    phone: yup.string().required("Veuillez renseigner un numero valide"),
-  });
+  const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
 
   const {
     register,
@@ -56,13 +97,11 @@ export default function RegisterHook() {
     watch,
     control,
     formState: { errors, isSubmitting },
-  } = useForm({ defaultValues, resolver: yupResolver(signupSchema) });
-
-  const validatePasswordMatch = (value: string) => {
-    const password = watch("password");
-    return password === value || "Les mots de passe ne correspondent pas.";
-  };
-  const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
+  } = useForm({
+    defaultValues,
+    resolver: yupResolver(signupSchema),
+    mode: "onChange",
+  });
 
   const { mutateAsync: submit } = useMutation({
     mutationFn: (input: RegisterFormInput) => registerUser(input),
@@ -71,35 +110,12 @@ export default function RegisterHook() {
       navigate(RouterEnum.LOGIN);
     },
     onError: (error: Error) => {
-      let errorMessage = "Une erreur est survenue";
-
-      if (isAxiosError(error)) {
-        if (
-          error.response &&
-          error.response.data &&
-          (error.response.data as ErrorResponse).message
-        ) {
-          errorMessage = (error.response.data as ErrorResponse).message;
-        }
-      }
+      const errorMessage =
+        getDisplayErrorMessage(error) || ErrorMessageEnum.USER_CREATE_ERROR;
 
       onErrorCommon(errorMessage);
     },
   });
-
-  const password = watch("password", "");
-  const confirmPassword = watch("confirmPassword", "");
-
-  const isPasswordMatch = password === confirmPassword;
-
-  const handleConfirmPasswordChange = () => {
-    if (!isPasswordMatch) {
-      setError("confirmPassword", {
-        type: "manual",
-        message: "Les mots de passe ne correspondent pas.",
-      });
-    }
-  };
 
   const onSubmit = (input: RegisterFormInput) => {
     return submit(input);
@@ -114,8 +130,5 @@ export default function RegisterHook() {
     control,
     errors,
     isSubmitting,
-    handleConfirmPasswordChange,
-    isPasswordMatch,
-    validatePasswordMatch,
   };
 }

@@ -13,6 +13,7 @@ export enum ErrorMessageEnum {
   INVALID_BOOK_ID = "L'ID du livre fourni n'est pas valide",
 
   // Messages d'erreur spécifiques aux utilisateurs
+  USER_CREATE_ERROR = "Une erreur est survenue lors de la création d'utulisateur",
   USER_ID_REQUIRED = "L'ID utilisateur est requis pour récupérer les livres",
   INVALID_USER_ID = "L'ID utilisateur fourni n'est pas valide",
 
