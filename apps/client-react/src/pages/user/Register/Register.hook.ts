@@ -13,7 +13,7 @@ import {
 } from "../../../types/user/form.types";
 import { getDisplayErrorMessage } from "../../../utils/getDisplayErrorMessage";
 
-// Constantes pour éviter la duplication
+
 const VALIDATION_MESSAGES = {
   email: {
     required: "L'adresse email est requise",
@@ -42,10 +42,8 @@ const PASSWORD_MIN_LENGTH = 6;
 const NAME_MIN_LENGTH = 2;
 const NAME_MAX_LENGTH = 50;
 
-// Regex pour validation email plus robuste
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-// Regex pour validation téléphone français
 const PHONE_REGEX = /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/;
 
 const defaultValues: RegisterFormInput = {
