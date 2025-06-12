@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Inject, Req } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { GetBooksByUserUsecase } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
@@ -16,9 +16,8 @@ export class GetBookByUserController {
   @ApiOperation({
     summary: 'Get Books by userId',
   })
-  async getbooksByUser(
-    @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<GetBooksByUserDto[]> {
+  async getbooksByUser(@Req() req): Promise<GetBooksByUserDto[]> {
+    const userId = req.user.id;
     return this.getBooksByUserUsecaseProxy.getInstance().execute(userId);
   }
 }

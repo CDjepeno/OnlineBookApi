@@ -52,14 +52,6 @@ export class BookRepositoryTyperom implements BookRepository {
 
   async getBooksByUser(userId: number): Promise<GetBooksByUserResponse[]> {
     try {
-      const userExists = await this.userRepository.findOne({
-        where: { id: userId },
-      });
-
-      if (!userExists) {
-        throw new Error(ErrorsMessagesEnum.USER_NOT_FOUND);
-      }
-
       const books = await this.bookRepository.find({
         where: { userId },
         order: { id: 'DESC' },

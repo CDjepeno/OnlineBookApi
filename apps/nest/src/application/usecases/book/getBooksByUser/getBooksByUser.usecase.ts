@@ -1,7 +1,4 @@
-import {
-  InternalServerException,
-  NotFoundException,
-} from 'src/domaine/errors/onlineBook.error';
+import { InternalServerException } from 'src/domaine/errors/onlineBook.error';
 import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { BookRepository } from 'src/repositories/book.repository';
 import { GetBooksByUserResponse } from './getBooksByUser.response';
@@ -14,10 +11,6 @@ export class GetBooksByUserUsecase {
       return await this.repository.getBooksByUser(userId);
     } catch (error) {
       if (error instanceof Error) {
-        if (error.message === ErrorsMessagesEnum.USER_NOT_FOUND) {
-          throw new NotFoundException("L'utilisateur demandé n'existe pas.");
-        }
-
         if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
           throw new InternalServerException('Erreur de base de données.');
         }
