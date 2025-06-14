@@ -4,7 +4,7 @@ import BookCard from "../book/components/BookCard";
 import HomePageHook from "./HomePage.hook";
 
 export function HomePage() {
-  const { isPending, books = [] } = HomePageHook();
+  const { isPending, books } = HomePageHook();
 
   return (
     <main>
@@ -34,7 +34,7 @@ export function HomePage() {
           </Typography>
         ) : (
           <Grid container spacing={4}>
-            {books.map((book) => (
+            {books?.map((book) => (
               <BookCard
                 key={book.id}
                 id={book.id}
