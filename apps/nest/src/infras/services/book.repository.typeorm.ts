@@ -44,7 +44,9 @@ export class BookRepositoryTyperom implements BookRepository {
 
   async getAllBook(): Promise<GetAllBookResponse[]> {
     try {
-      return await this.bookRepository.find();
+      return await this.bookRepository.find({
+        order: { id: 'DESC' },
+      });
     } catch (error) {
       handleDatabaseError(error);
     }

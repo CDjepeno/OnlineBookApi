@@ -26,13 +26,10 @@ export const getBook = async (id: string): Promise<GetBookResponse> => {
   });
 };
 
-export const getBooksByUser = async (
-  userId: string
-): Promise<GetBooksResponse[]> => {
+export const getBooksByUser = async (): Promise<GetBooksResponse[]> => {
   return await UseRequestApi<GetBooksResponse[], { userId: string }>({
-    path: `${BOOKS_ROUTE}/${userId}`,
+    path: BOOKS_ROUTE,
     method: MethodHttpEnum.GET,
-    params: { userId },
     includeAuthorizationHeader: false,
   });
 };
