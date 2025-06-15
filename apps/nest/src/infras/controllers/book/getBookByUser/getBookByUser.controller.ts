@@ -19,7 +19,6 @@ export class GetBookByUserController {
     private readonly getBooksByUserUsecaseProxy: UseCaseProxy<GetBooksByUserUsecase>,
   ) {}
 
-  // @Get(':userId')
   @ApiOperation({
     summary: 'Get Books for current user',
   })
