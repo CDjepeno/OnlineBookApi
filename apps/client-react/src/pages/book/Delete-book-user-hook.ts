@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import { BookQueriesKeysEnum } from "../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflowCallback";
 import { deleteBook } from "../../services/book.services";
+import { DeleteBookResponses } from "../../types/book/book.types";
 import { getDisplayErrorMessage } from "../../utils/getDisplayErrorMessage";
 
 function DeleteBookUserHook() {
@@ -10,14 +11,14 @@ function DeleteBookUserHook() {
   const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
 
   const { mutateAsync: deleteBookMutation } = useMutation<
-    void,
+    DeleteBookResponses,
     AxiosError<unknown>,
     string
   >({
     mutationFn: deleteBook,
 
-    onSuccess: () => {
-      onSuccessCommon("Le livre a été supprimé avec succès");
+    onSuccess: (data) => {
+      onSuccessCommon(data.message);
       queryClient.invalidateQueries({
         queryKey: [BookQueriesKeysEnum.BOOKS_USER],
       });

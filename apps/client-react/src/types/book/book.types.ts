@@ -48,6 +48,10 @@ export type UpdateBookResponses = {
   message: string;
 };
 
+export type DeleteBookResponses = {
+  message: string;
+};
+
 export interface ErrorResponse {
   message: string;
 }

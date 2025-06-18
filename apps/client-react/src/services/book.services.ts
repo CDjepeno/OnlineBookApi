@@ -4,6 +4,7 @@ import { UseRequestApi } from "../request/commons/useRequestApi";
 import { BOOKS_ROUTE, BOOK_ROUTE } from "../request/route-http/route-http";
 import {
   AddBookResponses,
+  DeleteBookResponses,
   GetBookResponse,
   GetBooksResponse,
   UpdateBookResponses,
@@ -69,11 +70,12 @@ export const updateBook = async (
   return response.data;
 };
 
-export const deleteBook = async (id: string): Promise<void> => {
-  await UseRequestApi({
+export const deleteBook = async (id: string): Promise<DeleteBookResponses> => {
+  const response = await UseRequestApi<DeleteBookResponses, {id:string}>({
     method: MethodHttpEnum.DELETE,
     path: `${BOOK_ROUTE}/${id}`,
     params: { id },
     includeAuthorizationHeader: false,
   });
+  return response;
 };

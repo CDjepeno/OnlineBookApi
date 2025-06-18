@@ -12,13 +12,8 @@ import FormInput from "../../../components/FormInput";
 import RegisterHook from "./Register.hook";
 
 export default function Register() {
-  const {
-    onSubmit,
-    handleSubmit,
-    control,
-    errors,
-    isSubmitting,
-  } = RegisterHook();
+  const { onSubmit, handleSubmit, control, errors, isSubmitting } =
+    RegisterHook();
 
   return (
     <Container component="main" maxWidth="xs">
@@ -31,7 +26,7 @@ export default function Register() {
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />z
+          <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           Sign up
