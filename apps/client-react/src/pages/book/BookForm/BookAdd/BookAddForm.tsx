@@ -6,7 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { fr } from "date-fns/locale";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Controller } from "react-hook-form";
@@ -23,22 +23,22 @@ registerLocale("fr", fr);
 function BookAddForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { submit, handleSubmit, errors, control, watch } = AddBookHook();
-
   const cover = watch("coverUrl") as File | undefined;
-  const [filePreview, setFilePreview] = useState<string | null>(null);
+
+  const filePreview = useMemo(() => {
+    if (cover && typeof cover === "object") {
+      return URL.createObjectURL(cover);
+    }
+    return null;
+  }, [cover]);
 
   useEffect(() => {
-    if (cover && typeof cover === "object") {
-      const objectUrl = URL.createObjectURL(cover);
-      setFilePreview(objectUrl);
-      return () => {
-        URL.revokeObjectURL(objectUrl);
-        setFilePreview(null);
-      };
-    } else {
-      setFilePreview(null);
-    }
-  }, [cover]);
+    return () => {
+      if (filePreview) {
+        URL.revokeObjectURL(filePreview);
+      }
+    };
+  }, [filePreview]);
 
   return (
     <Container component="main" maxWidth="xs">

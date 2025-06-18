@@ -6,7 +6,6 @@ import { DefaultValues, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { AuthContext } from "../../../../context";
 import { BookQueriesKeysEnum, RouterEnum } from "../../../../enum/enum";
-import { ErrorMessageEnum } from "../../../../enum/message.enum";
 import { UseQueryWorkflowCallback } from "../../../../request/commons/useQueryWorkflowCallback";
 import { createBook } from "../../../../services/book.services";
 import {
@@ -71,7 +70,8 @@ function BookAddHook() {
     },
     onError: (error: Error | AxiosError<unknown>) => {
       const errorMessage =
-        getDisplayErrorMessage(error) || ErrorMessageEnum.BOOK_CREATE_ERROR;
+        getDisplayErrorMessage(error) ||
+        "Une erreur est survenue lors de la création du livre";
 
       onErrorCommon(errorMessage);
     },

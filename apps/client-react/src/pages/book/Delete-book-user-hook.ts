@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { BookQueriesKeysEnum } from "../../enum/enum";
-import { ErrorMessageEnum, SuccessMessageEnum } from "../../enum/message.enum";
 import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflowCallback";
 import { deleteBook } from "../../services/book.services";
 import { getDisplayErrorMessage } from "../../utils/getDisplayErrorMessage";
@@ -18,7 +17,7 @@ function DeleteBookUserHook() {
     mutationFn: deleteBook,
 
     onSuccess: () => {
-      onSuccessCommon(SuccessMessageEnum.BOOK_DELETE_SUCCESS);
+      onSuccessCommon("Le livre a été supprimé avec succès");
       queryClient.invalidateQueries({
         queryKey: [BookQueriesKeysEnum.BOOKS_USER],
       });
@@ -26,7 +25,8 @@ function DeleteBookUserHook() {
 
     onError: (error) => {
       const errorMessage =
-        getDisplayErrorMessage(error) || ErrorMessageEnum.BOOK_DELETE_ERROR;
+        getDisplayErrorMessage(error) ||
+        "Une erreur est survenue lors de la suppression du livre";
 
       onErrorCommon(errorMessage);
     },

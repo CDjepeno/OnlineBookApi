@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { BookQueriesKeysEnum } from "../../../enum/enum";
-import { ErrorMessageEnum } from "../../../enum/message.enum";
 import { getBook } from "../../../services/book.services";
 import { GetBookResponse } from "../../../types/book/book.types";
 
@@ -18,7 +17,7 @@ function BookDetailHook() {
   } = useQuery<GetBookResponse>({
     queryKey,
     queryFn: async () => {
-      if (!id) throw new Error(ErrorMessageEnum.BOOK_ID_REQUIRED);
+      if (!id) throw new Error("L'ID du livre est requis");
 
       return await getBook(id);
     },

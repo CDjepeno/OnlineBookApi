@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { RouterEnum } from "../../../enum/enum";
-import { ErrorMessageEnum } from "../../../enum/message.enum";
 import { UseQueryWorkflowCallback } from "../../../request/commons/useQueryWorkflowCallback";
 import { registerUser } from "../../../services/user.services";
 import {
@@ -12,7 +11,6 @@ import {
   RegisterResponse,
 } from "../../../types/user/form.types";
 import { getDisplayErrorMessage } from "../../../utils/getDisplayErrorMessage";
-
 
 const VALIDATION_MESSAGES = {
   email: {
@@ -109,7 +107,8 @@ export default function RegisterHook() {
     },
     onError: (error: Error) => {
       const errorMessage =
-        getDisplayErrorMessage(error) || ErrorMessageEnum.USER_CREATE_ERROR;
+        getDisplayErrorMessage(error) ||
+        "Une erreur est survenue lors de la création d'utilisateur";
 
       onErrorCommon(errorMessage);
     },

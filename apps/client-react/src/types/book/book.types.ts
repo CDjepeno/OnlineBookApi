@@ -13,6 +13,7 @@ export type GetBooksResponse = BookResponse;
 
 export type AddBookResponse = BookResponse;
 
+export type UpdateBookResponse = BookResponse;
 
 export interface AddBookInput {
   title: string;
@@ -30,8 +31,6 @@ export interface AddBookFormType {
   coverUrl: File;
 }
 
-export type UpdateBookResponse = BookResponse;
-
 export type UpdateBookFormType = {
   id: string;
   title: string;
@@ -42,6 +41,10 @@ export type UpdateBookFormType = {
 };
 
 export type AddBookResponses = {
+  message: string;
+};
+
+export type UpdateBookResponses = {
   message: string;
 };
 

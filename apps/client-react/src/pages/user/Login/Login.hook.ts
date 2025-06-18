@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { AuthContext } from "../../../context";
 import { RouterEnum } from "../../../enum/enum";
-import { ErrorMessageEnum } from "../../../enum/message.enum";
 import { UseQueryWorkflowCallback } from "../../../request/commons/useQueryWorkflowCallback";
 import { AuthContextValue } from "../../../types/user/auth.context.value";
 import { AuthFormInput } from "../../../types/user/input.types";
@@ -70,7 +69,8 @@ export default function LoginHook() {
     },
     onError: (error) => {
       const errorMessage =
-        getDisplayErrorMessage(error) || ErrorMessageEnum.USER_LOGIN_ERROR;
+        getDisplayErrorMessage(error) ||
+        "Une erreur est survenue lors de la connexion d'utilisateur";
       onErrorCommon(errorMessage);
       clearErrors();
     },
