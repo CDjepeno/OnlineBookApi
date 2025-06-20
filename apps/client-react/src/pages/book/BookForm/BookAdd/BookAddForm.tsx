@@ -6,7 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { fr } from "date-fns/locale";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Controller } from "react-hook-form";
@@ -21,16 +21,25 @@ import AddBookHook from "./BookAdd.hook";
 registerLocale("fr", fr);
 
 function BookAddForm() {
-  const [fileName, setFileName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { submit, handleSubmit, errors, control } = AddBookHook();
+  const { submit, handleSubmit, errors, control, watch } = AddBookHook();
+  const cover = watch("coverUrl") as File | undefined;
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const selectedFile = e.target.files[0];
-      setFileName(URL.createObjectURL(selectedFile));
+  const filePreview = useMemo(() => {
+    if (cover && typeof cover === "object") {
+      return URL.createObjectURL(cover);
     }
-  };
+    return null;
+  }, [cover]);
+
+  useEffect(() => {
+    return () => {
+      if (filePreview) {
+        URL.revokeObjectURL(filePreview);
+      }
+    };
+  }, [filePreview]);
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -123,25 +132,23 @@ function BookAddForm() {
                         id="file-upload"
                         accept=".jpg,.jpeg,.png"
                         onChange={(e) => {
-                          handleFileChange(e);
                           onChange(e.target.files && e.target.files[0]);
                         }}
                         ref={fileInputRef}
                         style={{ display: "none" }}
+                        aria-label="Choisir une image de couverture"
                       />
                       <StyledButton
                         variant="contained"
-                        onClick={() =>
-                          fileInputRef.current && fileInputRef.current.click()
-                        }
+                        onClick={() => fileInputRef.current?.click()}
                       >
                         <IconWithMargin />
                         Choisir un fichier
                       </StyledButton>
-                      {fileName && typeof fileName === "string" && (
+                      {filePreview && (
                         <Typography variant="body2" mt={2}>
                           <img
-                            src={fileName}
+                            src={filePreview}
                             alt="Preview"
                             style={{
                               width: "100%",

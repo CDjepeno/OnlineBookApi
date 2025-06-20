@@ -1,19 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
 import { BookQueriesKeysEnum } from "../../../enum/enum";
 import { getBooksByUser } from "../../../services/book.services";
+import { GetBooksResponse } from "../../../types/book/book.types";
 
 function BookListUserHook() {
-  const { userId } = useParams<{ userId: string }>();
-
   const {
     data: books,
     isPending,
     error,
-  } = useQuery({
+  } = useQuery<GetBooksResponse[]>({
     queryKey: [BookQueriesKeysEnum.BOOKS_USER],
-    queryFn: () => getBooksByUser(userId!),
-    enabled: !!userId,
+    queryFn: () => getBooksByUser(),
   });
 
   return { books, isPending, error };

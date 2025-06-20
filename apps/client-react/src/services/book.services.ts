@@ -4,9 +4,10 @@ import { UseRequestApi } from "../request/commons/useRequestApi";
 import { BOOKS_ROUTE, BOOK_ROUTE } from "../request/route-http/route-http";
 import {
   AddBookResponses,
+  DeleteBookResponses,
   GetBookResponse,
   GetBooksResponse,
-  UpdateBookResponse,
+  UpdateBookResponses,
 } from "../types/book/book.types";
 
 export const getBooks = async (): Promise<GetBooksResponse[]> => {
@@ -26,13 +27,10 @@ export const getBook = async (id: string): Promise<GetBookResponse> => {
   });
 };
 
-export const getBooksByUser = async (
-  userId: string
-): Promise<GetBooksResponse[]> => {
+export const getBooksByUser = async (): Promise<GetBooksResponse[]> => {
   return await UseRequestApi<GetBooksResponse[], { userId: string }>({
-    path: `${BOOKS_ROUTE}/${userId}`,
+    path: BOOKS_ROUTE,
     method: MethodHttpEnum.GET,
-    params: { userId },
     includeAuthorizationHeader: false,
   });
 };
@@ -54,7 +52,6 @@ export const createBook = async (
       "Content-Type": "multipart/form-data",
     },
   });
-  console.log("Réponse brute du backend :", response);
 
   return response.data;
 };
@@ -62,20 +59,23 @@ export const createBook = async (
 export const updateBook = async (
   id: number,
   data: FormData | Record<string, unknown>
-): Promise<UpdateBookResponse> => {
-  return await UseRequestApi({
+): Promise<UpdateBookResponses> => {
+  const response: AxiosResponse = await UseRequestApi({
     method: MethodHttpEnum.PUT,
     path: `${BOOK_ROUTE}/${id}`,
     params: data,
     includeAuthorizationHeader: true,
   });
+
+  return response.data;
 };
 
-export const deleteBook = async (id: string): Promise<void> => {
-  await UseRequestApi({
+export const deleteBook = async (id: string): Promise<DeleteBookResponses> => {
+  const response = await UseRequestApi<DeleteBookResponses, {id:string}>({
     method: MethodHttpEnum.DELETE,
     path: `${BOOK_ROUTE}/${id}`,
     params: { id },
     includeAuthorizationHeader: false,
   });
+  return response;
 };

@@ -12,15 +12,8 @@ import FormInput from "../../../components/FormInput";
 import RegisterHook from "./Register.hook";
 
 export default function Register() {
-  const {
-    onSubmit,
-    handleSubmit,
-    control,
-    errors,
-    isSubmitting,
-    isPasswordMatch,
-    handleConfirmPasswordChange,
-  } = RegisterHook();
+  const { onSubmit, handleSubmit, control, errors, isSubmitting } =
+    RegisterHook();
 
   return (
     <Container component="main" maxWidth="xs">
@@ -52,10 +45,6 @@ export default function Register() {
                 errors={errors}
                 control={control}
               />
-
-              {errors.email && (
-                <small style={{ color: "red" }}>{errors.email.message}</small>
-              )}
             </Grid>
             <Grid item xs={12}>
               <FormInput
@@ -63,7 +52,6 @@ export default function Register() {
                 label="Mot de passe"
                 type="password"
                 control={control}
-                onblur={() => handleConfirmPasswordChange}
                 errors={errors}
               />
             </Grid>
@@ -78,12 +66,8 @@ export default function Register() {
                     fullWidth
                     label="Confirmer le mot de passe"
                     type="password"
-                    error={!isPasswordMatch}
-                    helperText={
-                      !isPasswordMatch
-                        ? "Les mots de passe ne correspondent pas."
-                        : ""
-                    }
+                    error={!!errors.confirmPassword}
+                    helperText={errors.confirmPassword?.message}
                   />
                 )}
               />
@@ -95,9 +79,6 @@ export default function Register() {
                 control={control}
                 errors={errors}
               />
-              {errors.name && (
-                <small style={{ color: "red" }}>{errors.name.message}</small>
-              )}
             </Grid>
             <Grid item xs={12}>
               <FormInput
@@ -106,9 +87,6 @@ export default function Register() {
                 control={control}
                 errors={errors}
               />
-              {errors.phone && (
-                <small style={{ color: "red" }}>{errors.phone.message}</small>
-              )}
             </Grid>
           </Grid>
           <Button

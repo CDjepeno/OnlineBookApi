@@ -1,53 +1,39 @@
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
+import { getDisplayErrorMessage } from "../../../utils/getDisplayErrorMessage";
 import BookCardDetail from "../components/BookDetailCard";
 import BookDetailHook from "./BookDetail.hook";
 
 function BookDetail() {
   const { isPending, book, error } = BookDetailHook();
+
+  const renderCenteredContent = (content: React.ReactNode) => (
+    <Container>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        {content}
+      </Box>
+    </Container>
+  );
+
   if (isPending) {
-    return (
-      <Container>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="100vh"
-        >
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
+    return renderCenteredContent(<CircularProgress />);
   }
 
   if (error) {
-    return (
-      <Container>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="100vh"
-        >
-          <Typography variant="h6" color="error">
-            Error loading book details
-          </Typography>
-        </Box>
-      </Container>
+    return renderCenteredContent(
+      <Typography variant="h6" color="error">
+        {getDisplayErrorMessage(error)}
+      </Typography>
     );
   }
 
   if (!book) {
-    return (
-      <Container>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="100vh"
-        >
-          <Typography variant="h6">No book found</Typography>
-        </Box>
-      </Container>
+    return renderCenteredContent(
+      <Typography variant="h6">Aucun livre trouvé</Typography>
     );
   }
 

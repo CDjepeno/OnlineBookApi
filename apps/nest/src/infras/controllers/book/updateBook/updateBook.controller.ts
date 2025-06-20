@@ -46,9 +46,6 @@ export class UpdateBookController {
     )
     coverFile?: Express.Multer.File,
   ) {
-    if (!coverFile && !updateBookDto.coverUrl) {
-      throw new BadRequestException('Cover file is required update book');
-    }
     const result = await this.updateUsecaseProxy
       .getInstance()
       .execute({ ...updateBookDto, id, coverUrl: coverFile });

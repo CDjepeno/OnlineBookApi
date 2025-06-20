@@ -3,43 +3,31 @@ import { AxiosError } from "axios";
 import { BookQueriesKeysEnum } from "../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflowCallback";
 import { deleteBook } from "../../services/book.services";
-
-interface ErrorResponse {
-  message: string;
-}
+import { DeleteBookResponses } from "../../types/book/book.types";
+import { getDisplayErrorMessage } from "../../utils/getDisplayErrorMessage";
 
 function DeleteBookUserHook() {
   const queryClient = useQueryClient();
   const { onSuccessCommon, onErrorCommon } = UseQueryWorkflowCallback();
 
   const { mutateAsync: deleteBookMutation } = useMutation<
-    void,
+    DeleteBookResponses,
     AxiosError<unknown>,
     string
   >({
-    mutationFn: async (id: string) => deleteBook(id),
+    mutationFn: deleteBook,
 
-    onSuccess: () => {
-      onSuccessCommon("Le livre a été supprimé avec succès");
+    onSuccess: (data) => {
+      onSuccessCommon(data.message);
       queryClient.invalidateQueries({
         queryKey: [BookQueriesKeysEnum.BOOKS_USER],
       });
     },
 
-    onError: (error: Error | AxiosError<unknown>) => {
-      let errorMessage =
+    onError: (error) => {
+      const errorMessage =
+        getDisplayErrorMessage(error) ||
         "Une erreur est survenue lors de la suppression du livre";
-
-      if ((error as AxiosError<unknown>).isAxiosError) {
-        if (
-          (error as AxiosError).response &&
-          (error as AxiosError).response!.data &&
-          ((error as AxiosError).response!.data as ErrorResponse)
-        ) {
-          errorMessage = ((error as AxiosError).response!.data as ErrorResponse)
-            .message;
-        }
-      }
 
       onErrorCommon(errorMessage);
     },
