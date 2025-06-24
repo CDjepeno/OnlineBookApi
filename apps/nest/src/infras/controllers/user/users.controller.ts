@@ -1,5 +1,10 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AddUserUseCase } from 'src/application/usecases/user/adduser/add.user.usecase';
 import { User } from 'src/infras/models/user.model';
 import { UseCaseProxy } from '../../../infras/usecase-proxy/usecase-proxy';
@@ -16,9 +21,15 @@ export class UsersController {
 
   @Post()
   @ApiOperation({
-    summary: 'Creates a Post',
+    summary: 'Créer un nouvel utilisateur',
   })
-  @ApiCreatedResponse({ description: 'User created.', type: User })
+  @ApiCreatedResponse({
+    description: 'Utilisateur créé avec succès.',
+    type: User,
+  })
+  @ApiBadRequestResponse({
+    description: 'Requête invalide. Vérifiez les champs du formulaire.',
+  })
   async createUser(@Body() createUserDto: CreateUserDto) {
     const result = await this.createUserUsecaseProxy
       .getInstance()

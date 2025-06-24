@@ -1,5 +1,5 @@
 import { Controller, Get, Inject } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetAllBookUsecase } from 'src/application/usecases/book/getAllBook/getAllBook.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
@@ -15,7 +15,13 @@ export class GetAllBookController {
 
   @Get()
   @ApiOperation({
-    summary: 'GetAll Book',
+    summary: 'Récupérer la liste des livres',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Liste des livres retournée avec succès',
+    type: GetAllBookDto,
+    isArray: true,
   })
   async getAllBook(): Promise<GetAllBookDto[]> {
     return this.getAllBookUsecaseProxy.getInstance().execute();
