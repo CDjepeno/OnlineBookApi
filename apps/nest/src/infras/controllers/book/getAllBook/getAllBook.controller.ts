@@ -5,7 +5,7 @@ import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { GetAllBookDto } from './getAllBook.dto';
 
-@ApiTags('Books')
+@ApiTags('Book')
 @Controller('books')
 export class GetAllBookController {
   constructor(

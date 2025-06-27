@@ -22,7 +22,7 @@ import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { AuthDto } from './auth.dto';
 
-@ApiTags('Authentication')
+@ApiTags('User')
 @Controller('auth')
 export class AuthController {
   constructor(
