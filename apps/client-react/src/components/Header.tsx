@@ -16,7 +16,7 @@ import { useContext, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AuthContext } from "../context";
 import { BOOKS_ROUTE } from "../request/route-http/route-http";
-import { AuthContextValue } from "../types/user/auth.context.value";
+import { AuthContextType } from "../types/user/auth.context.type";
 
 type LinkMap = {
   [key: string]: string;
@@ -37,7 +37,7 @@ function Header() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
   const isSigUpPage = location.pathname === "/register";
-  const { user, signout } = useContext(AuthContext) as AuthContextValue;
+  const { user, signout } = useContext(AuthContext) as AuthContextType;
 
   console.log("user", user);
 

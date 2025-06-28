@@ -1,11 +1,11 @@
-export interface BookResponse {
+export type BookResponse = {
   id: string;
   title: string;
   description: string;
   author: string;
   releaseAt: string;
   coverUrl: string;
-}
+};
 
 export type GetBookResponse = BookResponse;
 
@@ -15,21 +15,15 @@ export type AddBookResponse = BookResponse;
 
 export type UpdateBookResponse = BookResponse;
 
-export interface AddBookInput {
+export type AddBookInput = {
   title: string;
   description: string;
   author: string;
   releaseAt: string;
   coverUrl: File;
-}
+};
 
-export interface AddBookFormType {
-  title: string;
-  description: string;
-  author: string;
-  releaseAt: string;
-  coverUrl: File;
-}
+export type AddBookFormType = AddBookInput;
 
 export type UpdateBookFormType = {
   id: string;
@@ -40,18 +34,16 @@ export type UpdateBookFormType = {
   coverUrl: File | string;
 };
 
-export type AddBookResponses = {
+export type ApiResponse = {
   message: string;
 };
 
-export type UpdateBookResponses = {
+export type AddBookResponses = ApiResponse;
+
+export type UpdateBookResponses = ApiResponse;
+
+export type DeleteBookResponses = ApiResponse;
+
+export type ErrorResponse = {
   message: string;
 };
-
-export type DeleteBookResponses = {
-  message: string;
-};
-
-export interface ErrorResponse {
-  message: string;
-}
