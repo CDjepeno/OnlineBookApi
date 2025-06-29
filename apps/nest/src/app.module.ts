@@ -4,7 +4,7 @@ import { AddBookUseCase } from './application/usecases/book/addBook/addBook.usec
 import { AddUserUseCase } from './application/usecases/user/adduser/add.user.usecase';
 import { TypeOModule } from './infras/clients/typeorm/type-orm.module';
 import { ControllerModule } from './infras/controllers/controller.module';
-import { UsersController } from './infras/controllers/user/users.controller';
+import { AddUserController } from './infras/controllers/user/addUserController/addUser.controller';
 import { UsecaseProxyModule } from './infras/usecase-proxy/usecase-proxy.module';
 
 @Module({
@@ -14,7 +14,7 @@ import { UsecaseProxyModule } from './infras/usecase-proxy/usecase-proxy.module'
     ConfigModule.forRoot(),
     TypeOModule,
   ],
-  controllers: [UsersController],
+  controllers: [AddUserController],
   providers: [AddUserUseCase, AddBookUseCase],
   exports: [AddUserUseCase, AddBookUseCase],
 })
