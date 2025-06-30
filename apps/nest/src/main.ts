@@ -10,7 +10,15 @@ async function bootstrap() {
     .setTitle('Online Book')
     .setDescription('Online Book API')
     .setVersion('1.0')
-    .addTag('Books')
+    .addTag(
+      'Book',
+      'Opérations liées aux livres : création, mise à jour, suppression, récupération.',
+    )
+    .addTag(
+      'User',
+      'Opérations liées aux utilisateurs : création, connexion, profil, etc.',
+    )
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
