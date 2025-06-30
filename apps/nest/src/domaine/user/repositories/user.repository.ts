@@ -1,8 +1,8 @@
-import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.response';
-import { CurrentUserResponse } from 'src/application/usecases/user/auth/current.user.response';
-import { LoginUserRequest } from 'src/application/usecases/user/getuser/login.user.request';
-import { LoginUserResponse } from 'src/application/usecases/user/getuser/login.user.response';
-import { User } from '../domaine/entities/User.entity';
+import { User } from '../entities/User.entity';
+import { AddUserResponse } from '../usecases/adduser/add.user.response';
+import { CurrentUserResponse } from '../usecases/auth/current.user.response';
+import { LoginUserRequest } from '../usecases/getuser/login.user.request';
+import { LoginUserResponse } from '../usecases/getuser/login.user.response';
 
 export interface UsersRepository {
   signUp(user: User): Promise<AddUserResponse>;

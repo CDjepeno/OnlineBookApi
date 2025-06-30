@@ -1,7 +1,7 @@
-import { GetAllBookResponse } from 'src/application/usecases/book/getAllBook/getAllBook.response';
-import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
-import { GetBooksByUserResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
-import { BookEntity } from '../domaine/entities/Book.entity';
+import { BookEntity } from '../entities/Book.entity';
+import { GetAllBookResponse } from '../usecases/getAllBook/getAllBook.response';
+import { GetBookResponse } from '../usecases/getBook/getBook.response';
+import { GetBooksByUserResponse } from '../usecases/getBooksByUser/getBooksByUser.response';
 
 export interface BookRepository {
   addBook(book: BookEntity): Promise<void>;

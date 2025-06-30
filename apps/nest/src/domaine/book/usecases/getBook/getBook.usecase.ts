@@ -4,8 +4,8 @@ import {
   InternalServerException,
   NotFoundException,
 } from 'src/domaine/errors/onlineBook.error';
-import { BookRepository } from '../../../../repositories/book.repository';
 import { GetBookResponse } from './getBook.response';
+import { BookRepository } from '../../repositories/book.repository';
 
 export class GetBookUsecase {
   constructor(private readonly repository: BookRepository) {}

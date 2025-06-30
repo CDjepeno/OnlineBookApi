@@ -3,7 +3,7 @@ import {
   InternalServerException,
   NotFoundException,
 } from 'src/domaine/errors/onlineBook.error';
-import { UsersRepository } from '../repositories/user.repository';
+import { UsersRepository } from '../../repositories/user.repository';
 import { CurrentUserResponse } from './current.user.response';
 
 export class GetCurrentUserUseCase {

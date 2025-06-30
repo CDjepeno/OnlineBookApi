@@ -4,7 +4,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from 'src/domaine/errors/onlineBook.error';
-import { UsersRepository } from '../repositories/user.repository';
+import { UsersRepository } from '../../repositories/user.repository';
 import { LoginUserRequest } from './login.user.request';
 import { LoginUserResponse } from './login.user.response';
 

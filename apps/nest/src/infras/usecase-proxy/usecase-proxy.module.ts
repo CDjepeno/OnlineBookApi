@@ -1,14 +1,14 @@
 import { DynamicModule, Module } from '@nestjs/common';
 
-import { AddBookUseCase } from 'src/application/usecases/book/addBook/addBook.usecase';
-import { DeleteBookUsecase } from 'src/application/usecases/book/deleteBook/deleteBook.usecase';
-import { GetAllBookUsecase } from 'src/application/usecases/book/getAllBook/getAllBook.usecase';
-import { GetBookUsecase } from 'src/application/usecases/book/getBook/getBook.usecase';
-import { GetBooksByUserUsecase } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.usecase';
-import { UpdateBookUseCase } from 'src/application/usecases/book/updateBook/updateBook.usecase';
-import { AddUserUseCase } from 'src/application/usecases/user/adduser/add.user.usecase';
-import { GetCurrentUserUseCase } from 'src/application/usecases/user/auth/get.current.user.usecase';
-import { LoginUserUseCase } from 'src/application/usecases/user/getuser/login.user.usecase';
+import { AddBookUseCase } from 'src/domaine/book/usecases/addBook/addBook.usecase';
+import { DeleteBookUsecase } from 'src/domaine/book/usecases/deleteBook/deleteBook.usecase';
+import { GetAllBookUsecase } from 'src/domaine/book/usecases/getAllBook/getAllBook.usecase';
+import { GetBookUsecase } from 'src/domaine/book/usecases/getBook/getBook.usecase';
+import { GetBooksByUserUsecase } from 'src/domaine/book/usecases/getBooksByUser/getBooksByUser.usecase';
+import { UpdateBookUseCase } from 'src/domaine/book/usecases/updateBook/updateBook.usecase';
+import { AddUserUseCase } from 'src/domaine/user/usecases/adduser/add.user.usecase';
+import { GetCurrentUserUseCase } from 'src/domaine/user/usecases/auth/get.current.user.usecase';
+import { LoginUserUseCase } from 'src/domaine/user/usecases/getuser/login.user.usecase';
 import { AwsS3Client } from '../clients/aws/aws-s3.client';
 import { AwsS3Module } from '../clients/aws/aws-s3.module';
 import NodemailerClient from '../clients/nodemailer/nodemailer.client';

@@ -3,8 +3,8 @@ import {
   InternalServerException,
   TypeormException,
 } from 'src/domaine/errors/onlineBook.error';
-import { BookRepository } from '../../../../repositories/book.repository';
 import { GetAllBookResponse } from './getAllBook.response';
+import { BookRepository } from '../../repositories/book.repository';
 
 export class GetAllBookUsecase {
   constructor(private readonly repository: BookRepository) {}
