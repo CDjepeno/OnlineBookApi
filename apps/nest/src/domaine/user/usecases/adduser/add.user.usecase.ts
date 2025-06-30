@@ -1,13 +1,13 @@
 import { HttpException } from '@nestjs/common';
-import { User } from 'src/domaine/entities/User.entity';
+import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
 import {
   BadRequestException,
   ConflictException,
   InternalServerException,
 } from 'src/domaine/errors/onlineBook.error';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
-import { UsersRepository } from '../../../../repositories/user.repository';
+import { User } from '../../entities/User.entity';
+import { UsersRepository } from '../../repositories/user.repository';
 import { AddUserRequest } from './add.user.request';
 import { AddUserResponseType } from './add.user.response';
 

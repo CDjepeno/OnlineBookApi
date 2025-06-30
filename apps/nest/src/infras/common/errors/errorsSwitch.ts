@@ -1,4 +1,4 @@
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
+import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
 import { QueryFailedError } from 'typeorm';
 
 export function handleDatabaseError(error: unknown): never {

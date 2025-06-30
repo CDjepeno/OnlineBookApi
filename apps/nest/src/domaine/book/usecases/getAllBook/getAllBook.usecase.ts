@@ -1,9 +1,9 @@
+import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
 import {
   InternalServerException,
   TypeormException,
 } from 'src/domaine/errors/onlineBook.error';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
-import { BookRepository } from 'src/repositories/book.repository';
+import { BookRepository } from '../../../../repositories/book.repository';
 import { GetAllBookResponse } from './getAllBook.response';
 
 export class GetAllBookUsecase {
@@ -12,7 +12,7 @@ export class GetAllBookUsecase {
     try {
       return await this.repository.getAllBook();
     } catch (error) {
-      if (error instanceof Error) { 
+      if (error instanceof Error) {
         if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
           throw new TypeormException('Erreur de base de données');
         }

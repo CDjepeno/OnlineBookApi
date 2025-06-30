@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UpdateBookUseCase } from 'src/application/usecases/book/updateBook/updateBook.usecase';
+import { UpdateBookUseCase } from 'src/domaine/book/usecases/updateBook/updateBook.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { UpdateBookDto } from './updateBook.dto';

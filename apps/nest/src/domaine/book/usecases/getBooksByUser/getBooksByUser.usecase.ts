@@ -1,6 +1,6 @@
+import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
 import { InternalServerException } from 'src/domaine/errors/onlineBook.error';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
-import { BookRepository } from 'src/repositories/book.repository';
+import { BookRepository } from '../../../../repositories/book.repository';
 import { GetBooksByUserResponse } from './getBooksByUser.response';
 
 export class GetBooksByUserUsecase {

@@ -1,9 +1,9 @@
+import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
 import {
   InternalServerException,
   NotFoundException,
 } from 'src/domaine/errors/onlineBook.error';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
-import { UsersRepository } from 'src/repositories/user.repository';
+import { UsersRepository } from '../repositories/user.repository';
 import { CurrentUserResponse } from './current.user.response';
 
 export class GetCurrentUserUseCase {

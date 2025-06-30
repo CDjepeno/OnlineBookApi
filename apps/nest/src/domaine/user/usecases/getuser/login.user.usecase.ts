@@ -1,10 +1,10 @@
+import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
 import {
   InternalServerException,
   NotFoundException,
   UnauthorizedException,
 } from 'src/domaine/errors/onlineBook.error';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
-import { UsersRepository } from 'src/repositories/user.repository';
+import { UsersRepository } from '../repositories/user.repository';
 import { LoginUserRequest } from './login.user.request';
 import { LoginUserResponse } from './login.user.response';
 
