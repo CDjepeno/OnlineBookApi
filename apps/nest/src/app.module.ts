@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AddBookUseCase } from './application/usecases/book/addBook/addBook.usecase';
-import { AddUserUseCase } from './application/usecases/user/adduser/add.user.usecase';
+import { AddBookUseCase } from './domaine/book/usecases/addBook/addBook.usecase';
+import { AddUserUseCase } from './domaine/user/usecases/adduser/add.user.usecase';
 import { TypeOModule } from './infras/clients/typeorm/type-orm.module';
 import { ControllerModule } from './infras/controllers/controller.module';
 import { AddUserController } from './infras/controllers/user/addUserController/addUser.controller';

@@ -1,16 +1,20 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { AddUserRequest } from 'src/application/usecases/user/adduser/add.user.request';
-import { AddUserResponse } from 'src/application/usecases/user/adduser/add.user.response';
-import { CurrentUserResponse } from 'src/application/usecases/user/auth/current.user.response';
-import { LoginUserRequest } from 'src/application/usecases/user/getuser/login.user.request';
-import { LoginUserResponse } from 'src/application/usecases/user/getuser/login.user.response';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
+import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
+import { UsersRepository } from 'src/domaine/user/repositories/user.repository';
+import { AddUserRequest } from 'src/domaine/user/usecases/adduser/add.user.request';
+import { AddUserResponse } from 'src/domaine/user/usecases/adduser/add.user.response';
+import { CurrentUserResponse } from 'src/domaine/user/usecases/auth/current.user.response';
+import { LoginUserRequest } from 'src/domaine/user/usecases/getuser/login.user.request';
+import { LoginUserResponse } from 'src/domaine/user/usecases/getuser/login.user.response';
 import { Repository } from 'typeorm';
-import { UsersRepository } from '../../repositories/user.repository';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { User } from '../models/user.model';
 

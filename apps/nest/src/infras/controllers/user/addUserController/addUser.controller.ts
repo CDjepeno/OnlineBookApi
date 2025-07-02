@@ -1,6 +1,6 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AddUserUseCase } from 'src/application/usecases/user/adduser/add.user.usecase';
+import { AddUserUseCase } from 'src/domaine/user/usecases/adduser/add.user.usecase';
 import { User } from 'src/infras/models/user.model';
 import { UseCaseProxy } from '../../../usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from '../../../usecase-proxy/usecase-proxy.module';

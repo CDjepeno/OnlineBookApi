@@ -6,8 +6,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { LoginUserResponse } from 'src/application/usecases/user/getuser/login.user.response';
-import { LoginUserUseCase } from 'src/application/usecases/user/getuser/login.user.usecase';
+import { LoginUserResponse } from 'src/domaine/user/usecases/getuser/login.user.response';
+import { LoginUserUseCase } from 'src/domaine/user/usecases/getuser/login.user.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { LoginDto } from './login.dto';

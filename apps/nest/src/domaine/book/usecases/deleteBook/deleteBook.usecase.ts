@@ -1,10 +1,10 @@
+import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
 import {
   InternalServerException,
   NotFoundException,
 } from 'src/domaine/errors/onlineBook.error';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
-import { BookRepository } from 'src/repositories/book.repository';
 import { DeleteBookResponse } from './deleteBook.response';
+import { BookRepository } from '../../repositories/book.repository';
 
 export class DeleteBookUsecase {
   constructor(private readonly repository: BookRepository) {}

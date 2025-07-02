@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
-import { GetCurrentUserUseCase } from 'src/application/usecases/user/auth/get.current.user.usecase';
+import { GetCurrentUserUseCase } from 'src/domaine/user/usecases/auth/get.current.user.usecase';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';

@@ -1,6 +1,6 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { GetAllBookUsecase } from 'src/application/usecases/book/getAllBook/getAllBook.usecase';
+import { GetAllBookUsecase } from 'src/domaine/book/usecases/getAllBook/getAllBook.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { GetAllBookDto } from './getAllBook.dto';

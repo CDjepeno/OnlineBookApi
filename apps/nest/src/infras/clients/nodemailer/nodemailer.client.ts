@@ -1,5 +1,8 @@
 import * as nodemailer from 'nodemailer';
-import { ClientMailRepository, Imessage } from 'src/repositories/client.mail.repository';
+import {
+  ClientMailRepository,
+  Imessage,
+} from 'src/domaine/user/repositories/client.mail.repository';
 
 export default class NodemailerClient implements ClientMailRepository {
   constructor(

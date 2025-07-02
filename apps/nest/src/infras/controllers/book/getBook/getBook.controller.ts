@@ -1,6 +1,6 @@
 import { Controller, Get, Inject, Param, ParseIntPipe } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { GetBookUsecase } from 'src/application/usecases/book/getBook/getBook.usecase';
+import { GetBookUsecase } from 'src/domaine/book/usecases/getBook/getBook.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { GetBookDto } from './getBook.dto';

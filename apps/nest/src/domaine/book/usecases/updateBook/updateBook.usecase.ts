@@ -1,11 +1,11 @@
-import { BookEntity } from 'src/domaine/entities/Book.entity';
+import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
 import {
   InternalServerException,
   NotFoundException,
 } from 'src/domaine/errors/onlineBook.error';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
-import { BookRepository } from 'src/repositories/book.repository';
+import { BookEntity } from '../../entities/Book.entity';
+import { BookRepository } from '../../repositories/book.repository';
 import { UpdateBookRequest } from './updateBook.request';
 import { UpdateBookResponse } from './updateBook.response';
 

@@ -1,10 +1,10 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { GetAllBookResponse } from 'src/application/usecases/book/getAllBook/getAllBook.response';
-import { GetBookResponse } from 'src/application/usecases/book/getBook/getBook.response';
-import { GetBooksByUserResponse } from 'src/application/usecases/book/getBooksByUser/getBooksByUser.response';
-import { BookEntity } from 'src/domaine/entities/Book.entity';
-import { ErrorsMessagesEnum } from 'src/enums/errors.enums';
-import { BookRepository } from 'src/repositories/book.repository';
+import { BookEntity } from 'src/domaine/book/entities/Book.entity';
+import { BookRepository } from 'src/domaine/book/repositories/book.repository';
+import { GetAllBookResponse } from 'src/domaine/book/usecases/getAllBook/getAllBook.response';
+import { GetBookResponse } from 'src/domaine/book/usecases/getBook/getBook.response';
+import { GetBooksByUserResponse } from 'src/domaine/book/usecases/getBooksByUser/getBooksByUser.response';
+import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
 import { Repository } from 'typeorm';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { Book } from '../models/book.model';

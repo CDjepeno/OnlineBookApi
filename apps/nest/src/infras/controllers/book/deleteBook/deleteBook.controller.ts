@@ -6,7 +6,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { DeleteBookUsecase } from 'src/application/usecases/book/deleteBook/deleteBook.usecase';
+import { DeleteBookUsecase } from 'src/domaine/book/usecases/deleteBook/deleteBook.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 
