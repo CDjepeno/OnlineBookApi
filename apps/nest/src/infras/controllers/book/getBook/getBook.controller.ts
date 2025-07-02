@@ -1,5 +1,5 @@
 import { Controller, Get, Inject, Param, ParseIntPipe } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetBookUsecase } from 'src/application/usecases/book/getBook/getBook.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
@@ -15,7 +15,18 @@ export class GetBookController {
 
   @Get(':id')
   @ApiOperation({
-    summary: 'Get Book by Id',
+    summary: 'Récupérer un livre par son identifiant',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'Identifiant du livre à récupérer',
+    example: 1,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Livre trouvé avec succès',
+    type: GetBookDto,
   })
   async getBook(@Param('id', ParseIntPipe) id: number): Promise<GetBookDto> {
     return await this.getBookUsecaseProxy.getInstance().execute(id);

@@ -6,7 +6,7 @@ import { UseCaseProxy } from '../../../usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from '../../../usecase-proxy/usecase-proxy.module';
 import { AddUserDto } from './addUser.dto';
 
-@ApiTags('register')
+@ApiTags('User')
 @Controller('register')
 export class AddUserController {
   constructor(
@@ -16,7 +16,7 @@ export class AddUserController {
 
   @Post()
   @ApiOperation({
-    summary: 'Creates a Post',
+    summary: 'Créer un nouvel utilisateur',
   })
   @ApiCreatedResponse({ description: 'User created.', type: User })
   async createUser(@Body() addUserDto: AddUserDto) {
