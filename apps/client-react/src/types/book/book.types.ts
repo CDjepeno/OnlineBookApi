@@ -1,4 +1,4 @@
-export type BookResponse = {
+export type GetBookResponse = {
   id: string;
   title: string;
   description: string;
@@ -7,13 +7,32 @@ export type BookResponse = {
   coverUrl: string;
 };
 
-export type GetBookResponse = BookResponse;
+export type GetBooksResponse = {
+  id: string;
+  title: string;
+  description: string;
+  author: string;
+  releaseAt: string;
+  coverUrl: string;
+};
 
-export type GetBooksResponse = BookResponse;
+export type AddBookResponse = {
+  id: string;
+  title: string;
+  description: string;
+  author: string;
+  releaseAt: string;
+  coverUrl: string;
+};
 
-export type AddBookResponse = BookResponse;
-
-export type UpdateBookResponse = BookResponse;
+export type UpdateBookResponse = {
+  id: string;
+  title: string;
+  description: string;
+  author: string;
+  releaseAt: string;
+  coverUrl: string;
+};
 
 export type AddBookInput = {
   title: string;
@@ -23,7 +42,13 @@ export type AddBookInput = {
   coverUrl: File;
 };
 
-export type AddBookFormType = AddBookInput;
+export type AddBookFormType = {
+  title: string;
+  description: string;
+  author: string;
+  releaseAt: string;
+  coverUrl: File;
+};
 
 export type UpdateBookFormType = {
   id: string;
@@ -34,15 +59,17 @@ export type UpdateBookFormType = {
   coverUrl: File | string;
 };
 
-export type ApiResponse = {
+export type AddBookResponses = {
   message: string;
 };
 
-export type AddBookResponses = ApiResponse;
+export type UpdateBookResponses = {
+  message: string;
+};
 
-export type UpdateBookResponses = ApiResponse;
-
-export type DeleteBookResponses = ApiResponse;
+export type DeleteBookResponses = {
+  message: string;
+};
 
 export type ErrorResponse = {
   message: string;
