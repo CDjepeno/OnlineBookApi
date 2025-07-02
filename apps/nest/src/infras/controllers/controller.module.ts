@@ -11,8 +11,9 @@ import { GetAllBookController } from './book/getAllBook/getAllBook.controller';
 import { GetBookController } from './book/getBook/getBook.controller';
 import { GetBookByUserController } from './book/getBookByUser/getBookByUser.controller';
 import { UpdateBookController } from './book/updateBook/updateBook.controller';
-import { AuthController } from './user/auth.controller';
-import { UsersController } from './user/users.controller';
+import { AddUserController } from './user/addUserController/addUser.controller';
+import { LoginController } from './user/authController/login.controller';
+import { GetCurrentUserController } from './user/getCurrentUser/getCurrentUser.controller';
 
 @Module({
   imports: [
@@ -22,14 +23,16 @@ import { UsersController } from './user/users.controller';
     }),
   ],
   controllers: [
-    UsersController,
-    AuthController,
+    AddUserController,
+    LoginController,
+    GetCurrentUserController,
+
     AddBookController,
     GetAllBookController,
     GetBookController,
     GetBookByUserController,
-    DeleteBookController,
     UpdateBookController,
+    DeleteBookController,
   ],
   providers: [JwtAuthGuard, JwtService, AwsS3Client],
 })

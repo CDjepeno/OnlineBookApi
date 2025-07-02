@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
@@ -20,13 +20,22 @@ export class GetBookByUserController {
   ) {}
 
   @ApiOperation({
-    summary: 'Get Books for current user',
+    summary: "Récupérer les livres de l'utilisateur connecté",
+  })
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: 'Liste des livres de l’utilisateur',
+    type: GetBooksByUserDto,
+    isArray: true,
   })
   @UseGuards(JwtAuthGuard)
   async getbooksByUser(@Req() req): Promise<GetBooksByUserDto[]> {
     const userId = req.user.id;
     if (!userId) {
-      throw new UnauthorizedException('Token invalide ou manquant!');
+      throw new UnauthorizedException(
+        'Token invalide ou utilisateur non authentifié',
+      );
     }
     return this.getBooksByUserUsecaseProxy.getInstance().execute(userId);
   }

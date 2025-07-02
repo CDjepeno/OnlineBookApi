@@ -5,7 +5,7 @@ import {
   Param,
   ParseIntPipe,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeleteBookUsecase } from 'src/domaine/book/usecases/deleteBook/deleteBook.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
@@ -20,7 +20,18 @@ export class DeleteBookController {
 
   @Delete(':id')
   @ApiOperation({
-    summary: 'Delete Book',
+    summary: 'Supprimer un livre par son identifiant',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: true,
+    description: 'Identifiant du livre à supprimer',
+    example: 42,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Livre supprimé avec succès',
   })
   async deleteBook(@Param('id', ParseIntPipe) id: number) {
     return await this.deleteBookUsecaseProxy.getInstance().execute(id);

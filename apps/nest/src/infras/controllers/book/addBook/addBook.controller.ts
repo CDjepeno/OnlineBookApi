@@ -11,7 +11,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AddBookUseCase } from 'src/domaine/book/usecases/addBook/addBook.usecase';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
@@ -30,7 +30,14 @@ export class AddBookController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('coverUrl'))
   @ApiOperation({
-    summary: 'Create Book',
+    summary: 'Creer un nouveau livre',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiResponse({ status: 201, description: 'Livre créé avec succès' })
+  @ApiResponse({ status: 400, description: 'Données manquantes ou invalides' })
+  @ApiResponse({
+    status: 422,
+    description: 'Fichier trop volumineux ou type invalide',
   })
   async addBook(
     @Body() createBookDto: CreateBookDto,
@@ -43,7 +50,9 @@ export class AddBookController {
     coverUrl: Express.Multer.File,
   ) {
     if (!coverUrl) {
-      throw new BadRequestException('Cover file is required to create book');
+      throw new BadRequestException(
+        'Le fichier de couverture est requis pour créer un livre',
+      );
     }
 
     const result = await this.addBookUsecaseProxy

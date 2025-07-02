@@ -2,13 +2,13 @@ import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AddUserUseCase } from 'src/domaine/user/usecases/adduser/add.user.usecase';
 import { User } from 'src/infras/models/user.model';
-import { UseCaseProxy } from '../../../infras/usecase-proxy/usecase-proxy';
-import { UsecaseProxyModule } from '../../../infras/usecase-proxy/usecase-proxy.module';
-import { CreateUserDto } from './user.dto';
+import { UseCaseProxy } from '../../../usecase-proxy/usecase-proxy';
+import { UsecaseProxyModule } from '../../../usecase-proxy/usecase-proxy.module';
+import { AddUserDto } from './addUser.dto';
 
-@ApiTags('register')
+@ApiTags('User')
 @Controller('register')
-export class UsersController {
+export class AddUserController {
   constructor(
     @Inject(UsecaseProxyModule.CREATE_USER_USECASE_PROXY)
     private readonly createUserUsecaseProxy: UseCaseProxy<AddUserUseCase>,
@@ -16,13 +16,13 @@ export class UsersController {
 
   @Post()
   @ApiOperation({
-    summary: 'Creates a Post',
+    summary: 'Créer un nouvel utilisateur',
   })
   @ApiCreatedResponse({ description: 'User created.', type: User })
-  async createUser(@Body() createUserDto: CreateUserDto) {
+  async createUser(@Body() addUserDto: AddUserDto) {
     const result = await this.createUserUsecaseProxy
       .getInstance()
-      .execute(createUserDto);
+      .execute(addUserDto);
 
     return {
       data: result,
