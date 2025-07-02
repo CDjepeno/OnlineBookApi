@@ -7,7 +7,7 @@ import * as yup from "yup";
 import { AuthContext } from "../../../context";
 import { RouterEnum } from "../../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../../request/commons/useQueryWorkflowCallback";
-import { AuthContextValue } from "../../../types/user/auth.context.value";
+import { AuthContextType } from "../../../types/user/auth.context.type";
 import { AuthFormInput } from "../../../types/user/input.types";
 import { getDisplayErrorMessage } from "../../../utils/getDisplayErrorMessage";
 
@@ -50,7 +50,7 @@ const validationSchema = yup.object({
 });
 
 export default function LoginHook() {
-  const { signin } = useContext(AuthContext) as AuthContextValue;
+  const { signin } = useContext(AuthContext) as AuthContextType;
   const navigate = useNavigate();
   const { onErrorCommon } = UseQueryWorkflowCallback();
 

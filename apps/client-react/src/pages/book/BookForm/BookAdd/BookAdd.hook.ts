@@ -13,7 +13,7 @@ import {
   AddBookInput,
   AddBookResponses,
 } from "../../../../types/book/book.types";
-import { AuthContextValue } from "../../../../types/user/auth.context.value";
+import { AuthContextType } from "../../../../types/user/auth.context.type";
 import { getDisplayErrorMessage } from "../../../../utils/getDisplayErrorMessage";
 
 const defaultValues: DefaultValues<AddBookFormType> = {
@@ -38,7 +38,7 @@ const bookSchema = yup.object({
 });
 
 function BookAddHook() {
-  const { user } = useContext(AuthContext) as AuthContextValue;
+  const { user } = useContext(AuthContext) as AuthContextType;
   const queryClient = useQueryClient();
 
   const {

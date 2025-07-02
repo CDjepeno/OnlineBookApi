@@ -12,7 +12,7 @@ import {
 import { useCallback, useContext, useState } from "react";
 import { AuthContext } from "../../../context";
 import { UpdateBookFormType } from "../../../types/book/book.types";
-import { AuthContextValue } from "../../../types/user/auth.context.value";
+import { AuthContextType } from "../../../types/user/auth.context.type";
 import { formatDate } from "../../../utils/formatDate";
 import { getDisplayErrorMessage } from "../../../utils/getDisplayErrorMessage";
 import BookUpdateForm from "../BookForm/BookUpdate/BookUpdateForm";
@@ -32,7 +32,7 @@ const headCells = [
 export default function BookListUser() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
-  const { user } = useContext(AuthContext) as AuthContextValue;
+  const { user } = useContext(AuthContext) as AuthContextType;
 
   const { books, isPending, error } = BookListUserHook();
   const { deleteBookMutation } = DeleteBookUserHook();

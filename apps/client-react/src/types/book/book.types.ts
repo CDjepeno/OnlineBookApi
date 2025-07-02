@@ -1,35 +1,54 @@
-export interface BookResponse {
+export type GetBookResponse = {
   id: string;
   title: string;
   description: string;
   author: string;
   releaseAt: string;
   coverUrl: string;
-}
+};
 
-export type GetBookResponse = BookResponse;
+export type GetBooksResponse = {
+  id: string;
+  title: string;
+  description: string;
+  author: string;
+  releaseAt: string;
+  coverUrl: string;
+};
 
-export type GetBooksResponse = BookResponse;
+export type AddBookResponse = {
+  id: string;
+  title: string;
+  description: string;
+  author: string;
+  releaseAt: string;
+  coverUrl: string;
+};
 
-export type AddBookResponse = BookResponse;
+export type UpdateBookResponse = {
+  id: string;
+  title: string;
+  description: string;
+  author: string;
+  releaseAt: string;
+  coverUrl: string;
+};
 
-export type UpdateBookResponse = BookResponse;
-
-export interface AddBookInput {
+export type AddBookInput = {
   title: string;
   description: string;
   author: string;
   releaseAt: string;
   coverUrl: File;
-}
+};
 
-export interface AddBookFormType {
+export type AddBookFormType = {
   title: string;
   description: string;
   author: string;
   releaseAt: string;
   coverUrl: File;
-}
+};
 
 export type UpdateBookFormType = {
   id: string;
@@ -52,6 +71,6 @@ export type DeleteBookResponses = {
   message: string;
 };
 
-export interface ErrorResponse {
+export type ErrorResponse = {
   message: string;
-}
+};
