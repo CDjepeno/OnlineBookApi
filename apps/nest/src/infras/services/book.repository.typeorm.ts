@@ -81,15 +81,18 @@ export class BookRepositoryTyperom implements BookRepository {
     }
   }
 
-  async updateBook(id: number, book: Partial<BookEntity>): Promise<void> {
+  async updateBook(book: Partial<BookEntity>): Promise<void> {
     try {
-      const updatedBook = await this.bookRepository.findOneBy({ id });
+      if (!book.id) {
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
+      }
+      const existingBook = await this.bookRepository.findOneBy({ id: book.id });
 
-      if (!updatedBook) {
+      if (!existingBook) {
         throw new Error(ErrorsMessagesEnum.NOT_FOUND);
       }
 
-      await this.bookRepository.update(id, book);
+      await this.bookRepository.update(book.id, book);
     } catch (error) {
       handleDatabaseError(error);
     }
