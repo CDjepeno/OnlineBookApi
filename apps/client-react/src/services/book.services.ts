@@ -31,7 +31,7 @@ export const getBooksByUser = async (): Promise<GetBooksResponse[]> => {
   return await UseRequestApi<GetBooksResponse[], { userId: string }>({
     path: BOOKS_ROUTE,
     method: MethodHttpEnum.GET,
-    includeAuthorizationHeader: false,
+    includeAuthorizationHeader: true,
   });
 };
 
@@ -75,7 +75,7 @@ export const deleteBook = async (id: string): Promise<DeleteBookResponses> => {
     method: MethodHttpEnum.DELETE,
     path: `${BOOK_ROUTE}/${id}`,
     params: { id },
-    includeAuthorizationHeader: false,
+    includeAuthorizationHeader: true,
   });
   return response;
 };
