@@ -8,6 +8,6 @@ export interface BookRepository {
   getAllBook(): Promise<GetAllBookResponse[]>;
   getBooksByUser(userId: number): Promise<GetBooksByUserResponse[]>;
   getBook(id: number): Promise<GetBookResponse>;
-  updateBook(id: number, book: Partial<BookEntity>): Promise<void>;
+  updateBook(book: Partial<BookEntity>): Promise<void>;
   deleteBook(id: number): Promise<void>;
 }
