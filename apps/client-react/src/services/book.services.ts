@@ -1,11 +1,12 @@
 import { AxiosResponse } from "axios";
 import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useRequestApi";
-import { BOOKS_ROUTE, BOOK_ROUTE } from "../request/route-http/route-http";
+import { BOOK_ROUTE, BOOKS_ROUTE } from "../request/route-http/route-http";
 import {
   AddBookResponses,
   DeleteBookResponses,
   GetBookResponse,
+  GetBooksByUserResponse,
   GetBooksResponse,
   UpdateBookResponses,
 } from "../types/book/book.types";
@@ -27,8 +28,8 @@ export const getBook = async (id: string): Promise<GetBookResponse> => {
   });
 };
 
-export const getBooksByUser = async (): Promise<GetBooksResponse[]> => {
-  return await UseRequestApi<GetBooksResponse[], { userId: string }>({
+export const getBooksByUser = async (): Promise<GetBooksByUserResponse[]> => {
+  return await UseRequestApi<GetBooksByUserResponse[], { userId: string }>({
     path: BOOKS_ROUTE,
     method: MethodHttpEnum.GET,
     includeAuthorizationHeader: true,
@@ -71,7 +72,7 @@ export const updateBook = async (
 };
 
 export const deleteBook = async (id: string): Promise<DeleteBookResponses> => {
-  const response = await UseRequestApi<DeleteBookResponses, {id:string}>({
+  const response = await UseRequestApi<DeleteBookResponses, { id: string }>({
     method: MethodHttpEnum.DELETE,
     path: `${BOOK_ROUTE}/${id}`,
     params: { id },
