@@ -16,6 +16,15 @@ export type GetBooksResponse = {
   coverUrl: string;
 };
 
+export type GetBooksByUserResponse = {
+  id: string;
+  title: string;
+  description: string;
+  author: string;
+  releaseAt: string;
+  coverUrl: string;
+};
+
 export type AddBookResponse = {
   id: string;
   title: string;

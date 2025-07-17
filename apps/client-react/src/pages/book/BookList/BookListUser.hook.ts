@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { BookQueriesKeysEnum } from "../../../enum/enum";
 import { getBooksByUser } from "../../../services/book.services";
-import { GetBooksResponse } from "../../../types/book/book.types";
+import { GetBooksByUserResponse } from "../../../types/book/book.types";
 
 function BookListUserHook() {
   const {
     data: books,
     isPending,
     error,
-  } = useQuery<GetBooksResponse[]>({
+  } = useQuery<GetBooksByUserResponse[]>({
     queryKey: [BookQueriesKeysEnum.BOOKS_USER],
     queryFn: () => getBooksByUser(),
   });
