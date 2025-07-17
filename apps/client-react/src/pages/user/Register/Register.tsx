@@ -1,4 +1,7 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { IconButton, InputAdornment } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -7,6 +10,7 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { useState } from "react";
 import { Controller } from "react-hook-form";
 import FormInput from "../../../components/FormInput";
 import RegisterHook from "./Register.hook";
@@ -14,6 +18,23 @@ import RegisterHook from "./Register.hook";
 export default function Register() {
   const { onSubmit, handleSubmit, control, errors, isSubmitting } =
     RegisterHook();
+
+  const [showPassord, setShowPassword] = useState(false);
+  const [showConfirmPassord, setShowConfirmPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassord);
+  };
+
+  const handleClickShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassord);
+  };
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -40,6 +61,14 @@ export default function Register() {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormInput
+                name="name"
+                label="Name"
+                control={control}
+                errors={errors}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormInput
                 name="email"
                 label="Email"
                 errors={errors}
@@ -48,11 +77,41 @@ export default function Register() {
             </Grid>
             <Grid item xs={12}>
               <FormInput
-                name="password"
-                label="Mot de passe"
-                type="password"
+                name="phone"
+                label="Numéro de téléphone"
                 control={control}
                 errors={errors}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Controller
+                name="password"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    required
+                    fullWidth
+                    label="Mot de passe"
+                    type={showPassord ? "text" : "password"}
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            arial-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleClickShowPassword}
+                            edge="end"
+                          >
+                            {showPassord ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12}>
@@ -65,27 +124,29 @@ export default function Register() {
                     required
                     fullWidth
                     label="Confirmer le mot de passe"
-                    type="password"
+                    type={showConfirmPassord ? "text" : "password"}
                     error={!!errors.confirmPassword}
                     helperText={errors.confirmPassword?.message}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowConfirmPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {showConfirmPassord ? (
+                              <VisibilityOff />
+                            ) : (
+                              <Visibility />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 )}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormInput
-                name="name"
-                label="Name"
-                control={control}
-                errors={errors}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormInput
-                name="phone"
-                label="Numéro de téléphone"
-                control={control}
-                errors={errors}
               />
             </Grid>
           </Grid>
