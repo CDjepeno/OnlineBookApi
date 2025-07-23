@@ -1,16 +1,11 @@
-import {
-  Controller,
-  Inject,
-  Req,
-  UnauthorizedException,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Inject, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { GetBooksByUserUsecase } from 'src/domaine/book/usecases/getBooksByUser/getBooksByUser.usecase';
+import { CurrentUser } from 'src/infras/common/decorators/urrent-user.decorator';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { GetBooksByUserDto } from './getBooksByUser.dto';
-import { GetBooksByUserUsecase } from 'src/domaine/book/usecases/getBooksByUser/getBooksByUser.usecase';
 
 @Controller('books')
 export class GetBookByUserController {
@@ -30,13 +25,10 @@ export class GetBookByUserController {
     isArray: true,
   })
   @UseGuards(JwtAuthGuard)
-  async getbooksByUser(@Req() req): Promise<GetBooksByUserDto[]> {
-    const userId = req.user.id;
-    if (!userId) {
-      throw new UnauthorizedException(
-        'Token invalide ou utilisateur non authentifié',
-      );
-    }
+  async getbooksByUser(
+    @CurrentUser() user: { id: number },
+  ): Promise<GetBooksByUserDto[]> {
+    const userId = user.id;
     return this.getBooksByUserUsecaseProxy.getInstance().execute(userId);
   }
 }

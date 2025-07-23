@@ -28,6 +28,10 @@ export class UpdateBookUseCase {
         coverUrl = await this.awsS3Client.uploadFile(request.coverUrl);
       }
 
+      if (!request.userId) {
+        throw new NotFoundException('ID utilisateur manquant');
+      }
+
       const updatedBook = new BookEntity(
         request.id,
         request.title ?? existingBook.title,
