@@ -1,4 +1,4 @@
-import { Controller, Inject, UseGuards } from '@nestjs/common';
+import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { GetBooksByUserUsecase } from 'src/domaine/book/usecases/getBooksByUser/getBooksByUser.usecase';
 import { CurrentUser } from 'src/infras/common/decorators/urrent-user.decorator';
@@ -14,6 +14,7 @@ export class GetBookByUserController {
     private readonly getBooksByUserUsecaseProxy: UseCaseProxy<GetBooksByUserUsecase>,
   ) {}
 
+  @Get(':userId')
   @ApiOperation({
     summary: "Récupérer les livres de l'utilisateur connecté",
   })
@@ -26,9 +27,8 @@ export class GetBookByUserController {
   })
   @UseGuards(JwtAuthGuard)
   async getbooksByUser(
-    @CurrentUser() user: { id: number },
+    @CurrentUser('id') userId: number,
   ): Promise<GetBooksByUserDto[]> {
-    const userId = user.id;
     return this.getBooksByUserUsecaseProxy.getInstance().execute(userId);
   }
 }

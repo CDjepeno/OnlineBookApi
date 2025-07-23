@@ -38,9 +38,9 @@ export class JwtAuthGuard implements CanActivate {
       }
 
       const normalizedPayload: JwtPayload = {
-        ...payload,
         id: payload.id || payload.sub,
         sub: payload.sub || payload.id,
+        ...payload,
       };
 
       request.user = normalizedPayload;
@@ -72,7 +72,6 @@ export class JwtAuthGuard implements CanActivate {
       throw error;
     }
 
-    // Gestion des erreurs JWT spécifiques
     if (error instanceof Error) {
       switch (error.name) {
         case 'TokenExpiredError':

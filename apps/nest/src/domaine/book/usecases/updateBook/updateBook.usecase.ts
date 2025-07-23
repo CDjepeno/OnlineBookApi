@@ -39,7 +39,7 @@ export class UpdateBookUseCase {
         request.author ?? existingBook.author,
         request.releaseAt ?? existingBook.releaseAt,
         coverUrl,
-        request.userId,
+        request.userId!,
       );
 
       await this.bookRepository.updateBook(updatedBook);
