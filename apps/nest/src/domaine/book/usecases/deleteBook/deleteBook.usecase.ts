@@ -3,8 +3,8 @@ import {
   InternalServerException,
   NotFoundException,
 } from 'src/domaine/errors/onlineBook.error';
-import { DeleteBookResponse } from './deleteBook.response';
 import { BookRepository } from '../../repositories/book.repository';
+import { DeleteBookResponse } from './deleteBook.response';
 
 export class DeleteBookUsecase {
   constructor(private readonly repository: BookRepository) {}
@@ -27,5 +27,8 @@ export class DeleteBookUsecase {
         );
       }
     }
+    throw new InternalServerException(
+      'Erreur inconnue. Impossible de supprimer le livre.',
+    );
   }
 }

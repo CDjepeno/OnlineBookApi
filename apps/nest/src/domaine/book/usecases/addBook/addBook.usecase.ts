@@ -2,6 +2,7 @@ import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
 import {
   ConflictException,
   InternalServerException,
+  NotFoundException,
 } from 'src/domaine/errors/onlineBook.error';
 import { AwsS3Client } from 'src/infras/clients/aws/aws-s3.client';
 import { BookEntity } from '../../entities/Book.entity';
@@ -18,8 +19,12 @@ export class AddBookUseCase {
     try {
       const coverUrl = await this.awsS3Client.uploadFile(request.coverUrl);
 
+      if (!request.id) {
+        throw new NotFoundException('ID du livre manquant');
+      }
+
       const book = new BookEntity(
-        request.id,
+        request.id!,
         request.title,
         request.description,
         request.author,
