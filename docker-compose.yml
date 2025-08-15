@@ -1,0 +1,32 @@
+services:
+  nest:
+    build:
+      context: ./nest
+      dockerfile: dockerfile
+    container_name: nest-app
+    env_file:
+      - ./nest/.env.docker
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    ports:
+      - "3307:3306"
+    env_file:
+      - ./nest/.env.docker
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql-data:
