@@ -11,7 +11,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AddBookUseCase } from 'src/domaine/book/usecases/addBook/addBook.usecase';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';

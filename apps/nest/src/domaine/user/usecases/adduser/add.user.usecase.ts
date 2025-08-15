@@ -4,7 +4,6 @@ import {
   BadRequestException,
   ConflictException,
   InternalServerException,
-  NotFoundException,
 } from 'src/domaine/errors/onlineBook.error';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { User } from '../../entities/User.entity';
@@ -31,9 +30,9 @@ export class AddUserUseCase {
         text: `Bonjour ${request.name}, \nVotre compte a bien été crée`,
       });
 
-      if (!request.id) {
-              throw new NotFoundException('ID utilisateur manquant');
-            }
+      // if (!request.id) {
+      //   throw new NotFoundException('ID utilisateur manquant');
+      // }
 
       const user = new User(
         request.id!,
