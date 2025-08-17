@@ -30,10 +30,6 @@ export class AddUserUseCase {
         text: `Bonjour ${request.name}, \nVotre compte a bien été crée`,
       });
 
-      // if (!request.id) {
-      //   throw new NotFoundException('ID utilisateur manquant');
-      // }
-
       const user = new User(
         request.id!,
         request.name,

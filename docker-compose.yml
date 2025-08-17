@@ -1,16 +1,21 @@
+
 services:
-  nest:
-    build:
-      context: ./nest
-      dockerfile: dockerfile
+  app:
+    build: 
+      context: ./apps/nest
+      dockerfile: Dockerfile
     container_name: nest-app
     env_file:
-      - ./nest/.env.docker
+      - ./apps/nest/.env.docker
     ports:
       - "3000:3000"
     depends_on:
       mysql:
         condition: service_healthy
+    command: npm run start:prod
+    volumes:
+      # À retirer en prod si tu ne veux pas monter le code en live
+      - ./apps/nest:/app
 
   mysql:
     image: mysql:8
@@ -18,8 +23,11 @@ services:
     restart: always
     ports:
       - "3307:3306"
-    env_file:
-      - ./nest/.env.docker
+    environment:
+      MYSQL_ROOT_PASSWORD: Bonjour_12@
+      MYSQL_DATABASE: book_db
+      MYSQL_USER: book_user
+      MYSQL_PASSWORD: Bonjour_12@
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
