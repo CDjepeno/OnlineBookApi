@@ -60,7 +60,6 @@ apps/nest/*.sublime-workspace
 # IDE - VSCode
 apps/nest/.vscode/*
 apps/nest/.env
-apps/nest/.env.docker
 apps/nest/!.vscode/settings.json
 apps/nest/!.vscode/tasks.json
 apps/nest/!.vscode/launch.json
@@ -79,6 +78,8 @@ apps/Lambda/.cdk.staging
 apps/Lambda/cdk.out
 
 apps/Lambda/*.txt
+
+.env.docker
 
 *.js
 !jest.config.js
