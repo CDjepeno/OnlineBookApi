@@ -3,7 +3,7 @@ services:
     build:
       context: ./apps/nest
       dockerfile: Dockerfile
-    container_name: nest-app
+    container_name: nest_backend
     env_file:
       - ./.env.docker
     ports:
