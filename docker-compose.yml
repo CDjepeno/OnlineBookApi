@@ -10,7 +10,7 @@ services:
       - "3000:3000"
     depends_on:
       mysql-db:
-        condition: service_started
+        condition: service_healthy
     volumes:
       # À retirer en prod si tu ne veux pas monter le code en live
       - ./apps/nest:/app
