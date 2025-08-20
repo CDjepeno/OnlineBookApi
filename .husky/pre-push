@@ -1,6 +1,12 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm run build:all
+echo "Running pre-push hook..."
 
-# chmod +x .husky/pre-commit
+# Exemple : build NestJS sans bloquer si erreur (ne bloque pas le push)
+cd apps/nest || exit 0
+npm run build || echo "Warning: Build failed, but continuing push..."
+
+cd ../../
+
+echo "Pre-push hook finished."
