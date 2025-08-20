@@ -1,0 +1,35 @@
+services:
+  nest-api:
+    build:
+      context: ./apps/nest
+      dockerfile: Dockerfile
+    container_name: nest_backend
+    env_file:
+      - ./.env.docker
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    volumes:
+      # À retirer en prod si tu ne veux pas monter le code en live
+      - ./apps/nest:/app
+
+  mysql-db:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    ports:
+      - "3307:3306"
+    env_file:
+      - ./.env.docker
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql-data:

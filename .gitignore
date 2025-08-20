@@ -79,6 +79,8 @@ apps/Lambda/cdk.out
 
 apps/Lambda/*.txt
 
+.env.docker
+
 *.js
 !jest.config.js
 *.d.ts
