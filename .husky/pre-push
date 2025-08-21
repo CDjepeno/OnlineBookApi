@@ -11,6 +11,21 @@
 
 # echo "Pre-push hook finished."
 
+# #!/usr/bin/env bash
+# . "$(dirname -- "$0")/_/husky.sh"
+
+# echo "🚀 Running pre-push hook..."
+
+# cd apps/nest || exit 1
+
+# if ! npm run build; then
+#   echo "❌ Build failed, push aborted."
+#   exit 1
+# fi
+
+# cd ../../
+# echo "✅ Pre-push hook finished successfully."
+
 #!/usr/bin/env bash
 . "$(dirname -- "$0")/_/husky.sh"
 
@@ -18,6 +33,10 @@ echo "🚀 Running pre-push hook..."
 
 cd apps/nest || exit 1
 
+# Supprimer dist pour éviter les problèmes de permissions venant de Docker
+rm -rf dist
+
+# Lancer le build NestJS
 if ! npm run build; then
   echo "❌ Build failed, push aborted."
   exit 1
