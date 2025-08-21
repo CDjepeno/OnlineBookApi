@@ -1,12 +1,27 @@
-#!/usr/bin/env sh
+# #!/usr/bin/env sh
+# . "$(dirname -- "$0")/_/husky.sh"
+
+# echo "Running pre-push hook..."
+
+# # Exemple : build NestJS sans bloquer si erreur (ne bloque pas le push)
+# cd apps/nest || exit 0
+# npm run build || echo "Warning: Build failed, but continuing push..."
+
+# cd ../../
+
+# echo "Pre-push hook finished."
+
+#!/usr/bin/env bash
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo "Running pre-push hook..."
+echo "🚀 Running pre-push hook..."
 
-# Exemple : build NestJS sans bloquer si erreur (ne bloque pas le push)
-cd apps/nest || exit 0
-npm run build || echo "Warning: Build failed, but continuing push..."
+cd apps/nest || exit 1
+
+if ! npm run build; then
+  echo "❌ Build failed, push aborted."
+  exit 1
+fi
 
 cd ../../
-
-echo "Pre-push hook finished."
+echo "✅ Pre-push hook finished successfully."
