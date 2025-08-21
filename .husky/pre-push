@@ -7,6 +7,12 @@ echo "🚀 Running pre-push hook..."
 cd apps/nest || exit 1
 rm -rf dist
 
+echo "🔎 Linting NestJS..."
+if ! npm run lint; then
+  echo "❌ NestJS lint failed, push aborted."
+  exit 1
+fi
+
 echo "📦 Building NestJS..."
 if ! npm run build; then
   echo "❌ NestJS build failed, push aborted."
@@ -19,6 +25,12 @@ cd ../../
 cd apps/client-react || exit 1
 rm -rf dist
 
+echo "🔎 Linting React..."
+if ! npm run lint; then
+  echo "❌ React lint failed, push aborted."
+  exit 1
+fi
+
 echo "🖥️ Building React..."
 if ! npm run build; then
   echo "❌ React build failed, push aborted."
@@ -28,4 +40,3 @@ fi
 cd ../../
 
 echo "✅ Pre-push hook finished successfully."
-
