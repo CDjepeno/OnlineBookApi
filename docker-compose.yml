@@ -15,6 +15,19 @@ services:
       # À retirer en prod si tu ne veux pas monter le code en live
       - ./apps/nest:/app
 
+  client-react:
+    build:
+      context: ./apps/client-react
+      dockerfile: Dockerfile
+    container_name: react_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./apps/client-react:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
   mysql-db:
     image: mysql:8
     container_name: mysql
