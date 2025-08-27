@@ -1,24 +1,6 @@
 #!/usr/bin/env sh
-# . "$(dirname -- "$0")/_/husky.sh"
-
-# npm run build:all
-
-# chmod +x .husky/pre-commit
-
-
-#!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo "🚀 Running pre-push hook..."
+npm run build:all
 
-# Build React
-cd apps/client-react || exit 0
-npm run build || echo "⚠️ Build React échoué, mais on continue..."
-
-# Build NestJS
-cd ../nest || exit 0
-npm run build || echo "⚠️ Build NestJS échoué, mais on continue..."
-
-cd ../../
-
-echo "✅ Pre-push hook terminé (push non bloqué même si build KO)."
+# chmod +x .husky/pre-commit
