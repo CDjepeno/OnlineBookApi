@@ -2,8 +2,14 @@ import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import {
   Box,
+  Button,
   CircularProgress,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   Modal,
   Stack,
@@ -31,22 +37,49 @@ const headCells = [
 
 export default function BookListUser() {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [bookToDelete, setBookToDelete] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
   const { user } = useContext(AuthContext) as AuthContextType;
 
   const { books, isPending, error } = BookListUserHook();
   const { deleteBookMutation } = DeleteBookUserHook();
 
-  const deleteBook = useCallback(
-    async (id: string) => {
+  const confirmDeleteBook = useCallback(
+    (book: { id: string; title: string }) => {
+      if (document.activeElement && "blur" in document.activeElement) {
+        (document.activeElement as HTMLElement).blur();
+      }
+
+      setBookToDelete(book);
+      setDeleteDialogOpen(true);
+    },
+    []
+  );
+
+  const handleDeleteConfirm = useCallback(async () => {
+    if (bookToDelete) {
       try {
-        await deleteBookMutation(id);
+        await deleteBookMutation(bookToDelete.id);
+        setDeleteDialogOpen(false);
+        setBookToDelete(null);
+
+        if (document.activeElement && "blur" in document.activeElement) {
+          (document.activeElement as HTMLElement).blur();
+        }
       } catch (error) {
         console.error("Error deleting book:", error);
       }
-    },
-    [deleteBookMutation]
-  );
+    }
+  }, [deleteBookMutation, bookToDelete]);
+
+  const handleDeleteCancel = useCallback(() => {
+    setDeleteDialogOpen(false);
+    setBookToDelete(null);
+  }, []);
 
   const editBook = useCallback((book: UpdateBookFormType) => {
     setSelectedBookId(book.id || null);
@@ -96,7 +129,9 @@ export default function BookListUser() {
             <EditTwoToneIcon />
           </IconButton>
           <IconButton
-            onClick={() => deleteBook(book.id)}
+            onClick={() =>
+              confirmDeleteBook({ id: book.id, title: book.title })
+            }
             aria-label={`Supprimer le livre ${book.title}`}
             size="small"
             color="error"
@@ -160,6 +195,32 @@ export default function BookListUser() {
           )}
         </Box>
       </Modal>
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteCancel}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+        disableRestoreFocus={true}
+      >
+        <DialogTitle id="delete-dialog-title">
+          Confirmer la suppression
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Êtes-vous sûr de vouloir supprimer le livre "{bookToDelete?.title}"
+            ? Cette action est irréversible.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Non
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" autoFocus>
+            Oui
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
