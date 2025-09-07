@@ -5,11 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AwsS3Module } from '../clients/aws/aws-s3.module';
 import NodemailerClient from '../clients/nodemailer/nodemailer.client';
 import { NodemailerModules } from '../clients/nodemailer/nodemailer.module';
+import { GoogleAuthGuard } from '../common/guards/google-auth.guard';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { GoogleStrategy } from '../common/strategies/google.strategy';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
 import { BookRepositoryTyperom } from './book.repository.typeorm';
-import { UserRepositoryTyperom } from './user.repository.typeorm';
+import { UserRepositoryTypeorm } from './user.repository.typeorm';
 
 @Module({
   imports: [
@@ -23,12 +25,14 @@ import { UserRepositoryTyperom } from './user.repository.typeorm';
     }),
   ],
   providers: [
-    UserRepositoryTyperom,
+    UserRepositoryTypeorm,
     BookRepositoryTyperom,
     NodemailerClient,
     ConfigService,
     JwtAuthGuard,
+    GoogleAuthGuard,
+    GoogleStrategy,
   ],
-  exports: [UserRepositoryTyperom, BookRepositoryTyperom],
+  exports: [UserRepositoryTypeorm, BookRepositoryTyperom],
 })
 export class RepositoriesModule {}

@@ -14,12 +14,14 @@ import { AddUserResponse } from 'src/domaine/user/usecases/adduser/add.user.resp
 import { CurrentUserResponse } from 'src/domaine/user/usecases/auth/current.user.response';
 import { LoginUserRequest } from 'src/domaine/user/usecases/getuser/login.user.request';
 import { LoginUserResponse } from 'src/domaine/user/usecases/getuser/login.user.response';
+import { LoginGoogleRequest } from 'src/domaine/user/usecases/google/login.google.request';
+import { LoginGoogleResponse } from 'src/domaine/user/usecases/google/login.google.response';
 import { Repository } from 'typeorm';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { User } from '../models/user.model';
 
 @Injectable()
-export class UserRepositoryTyperom implements UsersRepository {
+export class UserRepositoryTypeorm implements UsersRepository {
   constructor(
     @InjectRepository(User)
     private readonly repository: Repository<User>,
@@ -91,6 +93,72 @@ export class UserRepositoryTyperom implements UsersRepository {
       };
 
       return response;
+    } catch (error) {
+      handleDatabaseError(error);
+    }
+  }
+
+  async findByEmail(email: string): Promise<LoginGoogleResponse | null> {
+    try {
+      const user = await this.repository.findOne({ where: { email } });
+
+      if (!user) return null;
+
+      const payload = {
+        sub: user.id,
+        email: user.email,
+      };
+
+      const token = await this.jwtService.signAsync(payload, {
+        secret: this.configService.get<'string'>('JWT_SECRET'),
+        expiresIn: '24h',
+      });
+
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        token,
+      };
+    } catch (error) {
+      handleDatabaseError(error);
+    }
+  }
+
+  async create(user: LoginGoogleRequest): Promise<LoginGoogleResponse> {
+    try {
+      const existingUser = await this.repository.findOne({
+        where: { email: user.email },
+      });
+
+      if (existingUser) {
+        throw new Error(ErrorsMessagesEnum.DUPLICATE_EMAIL);
+      }
+
+      const newUser = this.repository.create({
+        name: user.name,
+        email: user.email,
+        
+      });
+
+      const saved = await this.repository.save(newUser);
+
+      const payload = {
+        sub: user.id,
+        email: user.email,
+      };
+
+      const token = await this.jwtService.signAsync(payload, {
+        secret: this.configService.get<'string'>('JWT_SECRET'),
+        expiresIn: '24h',
+      });
+
+      return {
+        id: saved.id,
+        name: saved.name,
+        email: saved.email,
+        token,
+      };
     } catch (error) {
       handleDatabaseError(error);
     }

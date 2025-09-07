@@ -27,7 +27,7 @@ export class User {
   @IsNotEmpty({ message: 'The email is required' })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   @IsString()
   @Length(6, 24)
   @Matches(/^(?=.*?[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-_]).{8,}$/, {
@@ -40,7 +40,7 @@ export class User {
   @IsString()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   @IsString()
   phone: string;
 
