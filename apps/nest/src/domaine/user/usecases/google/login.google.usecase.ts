@@ -12,10 +12,10 @@ export class LoginGoogleUseCase {
 
   async execute(request: LoginGoogleRequest): Promise<LoginGoogleResponse> {
     try {
-      const user = await this.usersRepository.findByEmail(request.email);
+      const user = await this.usersRepository.findGoogleUserAndGenerateToken(request.email);
 
       if (!user) {
-        const created = await this.usersRepository.create({
+        const created = await this.usersRepository.createGoogleUser({
           id: request.id,
           name: request.name,
           email: request.email,

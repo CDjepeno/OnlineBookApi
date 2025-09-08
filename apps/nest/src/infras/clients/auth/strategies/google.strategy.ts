@@ -17,23 +17,20 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     private readonly userRepository: UserRepositoryTypeorm,
   ) {
     super({
-      clientID: configService.get<string>('ID_CLIENT') ?? '',
-      clientSecret: configService.get<string>('CODE_SECRET') ?? '',
+      clientID: configService.get<string>('GOOGLE_CLIENT_ID') ?? '',
+      clientSecret: configService.get<string>('GOOGLE_CLIENT_SECRET') ?? '',
       callbackURL: configService.get<string>('GOOGLE_REDIRECT_URI') ?? '',
       scope: ['email', 'profile'],
     } as StrategyOptions);
   }
 
   async validate(
-    accessToken: string,
-    refreshToken: string,
+    _accessToken: string,
+    _refreshToken: string,
     profile: Profile,
     done: VerifyCallback,
   ) {
-    console.log('accessToken : ', accessToken);
-    console.log('refreshToken : ', refreshToken);
-    console.log('profile : ', profile);
-
+    console.log('profile', profile)
     const { displayName, emails } = profile;
 
     if (!emails || emails.length === 0) {
@@ -43,14 +40,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const email = emails[0].value;
     const name = displayName;
 
-    let user = await this.userRepository.findByEmail(email).catch(() => null);
+    let user = await this.userRepository.findGoogleUserAndGenerateToken(email).catch(() => null);
 
     if (!user) {
       const newUser: LoginGoogleRequest = {
         email,
         name,
       };
-      user = await this.userRepository.create(newUser);
+      user = await this.userRepository.createGoogleUser(newUser);
     }
 
     done(null, user);

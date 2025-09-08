@@ -98,7 +98,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
     }
   }
 
-  async findByEmail(email: string): Promise<LoginGoogleResponse | null> {
+  async findGoogleUserAndGenerateToken(email: string): Promise<LoginGoogleResponse | null> {
     try {
       const user = await this.repository.findOne({ where: { email } });
 
@@ -114,6 +114,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
         expiresIn: '24h',
       });
 
+
       return {
         id: user.id,
         name: user.name,
@@ -125,7 +126,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
     }
   }
 
-  async create(user: LoginGoogleRequest): Promise<LoginGoogleResponse> {
+  async createGoogleUser(user: LoginGoogleRequest): Promise<LoginGoogleResponse> {
     try {
       const existingUser = await this.repository.findOne({
         where: { email: user.email },
@@ -138,20 +139,11 @@ export class UserRepositoryTypeorm implements UsersRepository {
       const newUser = this.repository.create({
         name: user.name,
         email: user.email,
-        
       });
 
       const saved = await this.repository.save(newUser);
 
-      const payload = {
-        sub: user.id,
-        email: user.email,
-      };
-
-      const token = await this.jwtService.signAsync(payload, {
-        secret: this.configService.get<'string'>('JWT_SECRET'),
-        expiresIn: '24h',
-      });
+      const token = this.jwtService.sign({ sub: saved.id, email: saved.email });
 
       return {
         id: saved.id,

@@ -25,7 +25,6 @@ export class GoogleLoginController {
   async googleAuthRedirect(
     @GoogleUser() user: GoogleLoginDto,
   ): Promise<LoginGoogleResponse> {
-    console.log('Google user:', user);
     return await this.googleLoginUseCaseProxy.getInstance().execute(user);
   }
 }
