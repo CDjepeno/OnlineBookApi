@@ -4,6 +4,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import multer from 'multer';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { AwsS3Client } from '../clients/aws/aws-s3.client';
+import { GoogleAuthGuard } from '../common/guards/google-auth.guard';
 import { UsecaseProxyModule } from '../usecase-proxy/usecase-proxy.module';
 import { AddBookController } from './book/addBook/addBook.controller';
 import { DeleteBookController } from './book/deleteBook/deleteBook.controller';
@@ -12,6 +13,7 @@ import { GetBookController } from './book/getBook/getBook.controller';
 import { GetBookByUserController } from './book/getBookByUser/getBookByUser.controller';
 import { UpdateBookController } from './book/updateBook/updateBook.controller';
 import { AddUserController } from './user/addUserController/addUser.controller';
+import { GoogleLoginController } from './user/authController/google-login.controller';
 import { LoginController } from './user/authController/login.controller';
 import { GetCurrentUserController } from './user/getCurrentUser/getCurrentUser.controller';
 
@@ -25,6 +27,7 @@ import { GetCurrentUserController } from './user/getCurrentUser/getCurrentUser.c
   controllers: [
     AddUserController,
     LoginController,
+    GoogleLoginController,
     GetCurrentUserController,
 
     AddBookController,
@@ -34,6 +37,6 @@ import { GetCurrentUserController } from './user/getCurrentUser/getCurrentUser.c
     UpdateBookController,
     DeleteBookController,
   ],
-  providers: [JwtAuthGuard, JwtService, AwsS3Client],
+  providers: [JwtAuthGuard, GoogleAuthGuard, JwtService, AwsS3Client],
 })
 export class ControllerModule {}

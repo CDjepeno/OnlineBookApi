@@ -9,13 +9,14 @@ import { UpdateBookUseCase } from 'src/domaine/book/usecases/updateBook/updateBo
 import { AddUserUseCase } from 'src/domaine/user/usecases/adduser/add.user.usecase';
 import { GetCurrentUserUseCase } from 'src/domaine/user/usecases/auth/get.current.user.usecase';
 import { LoginUserUseCase } from 'src/domaine/user/usecases/getuser/login.user.usecase';
+import { LoginGoogleUseCase } from 'src/domaine/user/usecases/google/login.google.usecase';
 import { AwsS3Client } from '../clients/aws/aws-s3.client';
 import { AwsS3Module } from '../clients/aws/aws-s3.module';
 import NodemailerClient from '../clients/nodemailer/nodemailer.client';
 import { NodemailerModules } from '../clients/nodemailer/nodemailer.module';
 import { BookRepositoryTyperom } from '../services/book.repository.typeorm';
 import { RepositoriesModule } from '../services/repositories.module';
-import { UserRepositoryTyperom } from '../services/user.repository.typeorm';
+import { UserRepositoryTypeorm } from '../services/user.repository.typeorm';
 import { UseCaseProxy } from './usecase-proxy';
 
 @Module({
@@ -24,6 +25,7 @@ import { UseCaseProxy } from './usecase-proxy';
 export class UsecaseProxyModule {
   static CREATE_USER_USECASE_PROXY = 'createUserUsecaseProxy';
   static LOGIN_USER_USECASE_PROXY = 'loginUserUseCaseProxy';
+  static LOGIN_GOOGLE_USECASE_PROXY = 'loginGoogleUseCaseProxy';
   static GET_CURRENT_USER_USECASE_PROXY = 'getCurrentUserUseCaseProxy';
 
   static ADD_BOOK_USECASE_PROXY = 'addBookUsecaseProxy';
@@ -38,10 +40,10 @@ export class UsecaseProxyModule {
       module: UsecaseProxyModule,
       providers: [
         {
-          inject: [UserRepositoryTyperom, NodemailerClient],
+          inject: [UserRepositoryTypeorm, NodemailerClient],
           provide: UsecaseProxyModule.CREATE_USER_USECASE_PROXY,
           useFactory: (
-            userRepository: UserRepositoryTyperom,
+            userRepository: UserRepositoryTypeorm,
             nodemailerClient: NodemailerClient,
           ) =>
             new UseCaseProxy(
@@ -49,15 +51,21 @@ export class UsecaseProxyModule {
             ),
         },
         {
-          inject: [UserRepositoryTyperom],
+          inject: [UserRepositoryTypeorm],
           provide: UsecaseProxyModule.LOGIN_USER_USECASE_PROXY,
-          useFactory: (userRepository: UserRepositoryTyperom) =>
+          useFactory: (userRepository: UserRepositoryTypeorm) =>
             new UseCaseProxy(new LoginUserUseCase(userRepository)),
         },
         {
-          inject: [UserRepositoryTyperom],
+          inject: [UserRepositoryTypeorm],
+          provide: UsecaseProxyModule.LOGIN_GOOGLE_USECASE_PROXY,
+          useFactory: (userRepository: UserRepositoryTypeorm) =>
+            new UseCaseProxy(new LoginGoogleUseCase(userRepository)),
+        },
+        {
+          inject: [UserRepositoryTypeorm],
           provide: UsecaseProxyModule.GET_CURRENT_USER_USECASE_PROXY,
-          useFactory: (userRepository: UserRepositoryTyperom) =>
+          useFactory: (userRepository: UserRepositoryTypeorm) =>
             new UseCaseProxy(new GetCurrentUserUseCase(userRepository)),
         },
         {
@@ -109,6 +117,7 @@ export class UsecaseProxyModule {
       exports: [
         UsecaseProxyModule.CREATE_USER_USECASE_PROXY,
         UsecaseProxyModule.LOGIN_USER_USECASE_PROXY,
+        UsecaseProxyModule.LOGIN_GOOGLE_USECASE_PROXY,
         UsecaseProxyModule.GET_CURRENT_USER_USECASE_PROXY,
 
         UsecaseProxyModule.ADD_BOOK_USECASE_PROXY,

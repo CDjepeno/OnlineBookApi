@@ -1,7 +1,7 @@
 import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { GetBooksByUserUsecase } from 'src/domaine/book/usecases/getBooksByUser/getBooksByUser.usecase';
-import { CurrentUser } from 'src/infras/common/decorators/urrent-user.decorator';
+import { CurrentUser } from 'src/infras/common/decorators/current-user.decorator';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';

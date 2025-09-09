@@ -27,7 +27,7 @@ export class User {
   @IsNotEmpty({ message: 'The email is required' })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   @IsString()
   @Length(6, 24)
   @Matches(/^(?=.*?[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-_]).{8,}$/, {
@@ -40,7 +40,7 @@ export class User {
   @IsString()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   @IsString()
   phone: string;
 
@@ -55,6 +55,7 @@ export class User {
 
   @BeforeInsert()
   async setPassword() {
+    if (!this.password) return;
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
     this.password = await bcrypt.hash(this.password, salt);
