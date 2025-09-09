@@ -30,7 +30,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: Profile,
     done: VerifyCallback,
   ) {
-    console.log('profile', profile)
     const { displayName, emails } = profile;
 
     if (!emails || emails.length === 0) {
@@ -40,14 +39,16 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const email = emails[0].value;
     const name = displayName;
 
-    let user = await this.userRepository.findGoogleUserAndGenerateToken(email).catch(() => null);
+    let user = await this.userRepository
+      .findGoogleUserAndGenerateToken(email)
+      .catch(() => null);
 
     if (!user) {
       const newUser: LoginGoogleRequest = {
         email,
         name,
       };
-      user = await this.userRepository.createGoogleUser(newUser);
+      user = await this.userRepository.signUpByGoogleAuth(newUser);
     }
 
     done(null, user);

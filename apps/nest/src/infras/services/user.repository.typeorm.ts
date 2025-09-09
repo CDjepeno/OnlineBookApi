@@ -126,7 +126,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
     }
   }
 
-  async createGoogleUser(user: LoginGoogleRequest): Promise<LoginGoogleResponse> {
+  async signUpByGoogleAuth(user: LoginGoogleRequest): Promise<LoginGoogleResponse> {
     try {
       const existingUser = await this.repository.findOne({
         where: { email: user.email },
