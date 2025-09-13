@@ -1,5 +1,5 @@
 export interface LoginGoogleRequest {
-  id?: number;
-  email: string;
-  name: string;
+  idToken: string;
+  email?: string;
+  name?: string;
 }

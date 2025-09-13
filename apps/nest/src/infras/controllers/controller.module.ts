@@ -13,7 +13,7 @@ import { GetBookController } from './book/getBook/getBook.controller';
 import { GetBookByUserController } from './book/getBookByUser/getBookByUser.controller';
 import { UpdateBookController } from './book/updateBook/updateBook.controller';
 import { AddUserController } from './user/addUserController/addUser.controller';
-import { GoogleLoginController } from './user/authController/google-login.controller';
+import { GoogleLoginController } from './user/authController/login-google.controller';
 import { LoginController } from './user/authController/login.controller';
 import { GetCurrentUserController } from './user/getCurrentUser/getCurrentUser.controller';
 

@@ -12,18 +12,9 @@ export class LoginGoogleUseCase {
 
   async execute(request: LoginGoogleRequest): Promise<LoginGoogleResponse> {
     try {
-      const user = await this.usersRepository.findGoogleUserAndGenerateToken(request.email);
-
-      if (!user) {
-        const created = await this.usersRepository.createGoogleUser({
-          id: request.id,
-          name: request.name,
-          email: request.email,
-        });
-        return created;
-      }
-
-      return user;
+      return await this.usersRepository.loginOrSignUpWithGoogle(
+        request.idToken,
+      );
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === ErrorsMessagesEnum.DUPLICATE_EMAIL) {

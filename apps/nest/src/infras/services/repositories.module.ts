@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { GoogleStrategy } from '../clients/auth/strategies/google.strategy';
 import { AwsS3Module } from '../clients/aws/aws-s3.module';
 import NodemailerClient from '../clients/nodemailer/nodemailer.client';
 import { NodemailerModules } from '../clients/nodemailer/nodemailer.module';
@@ -29,7 +28,6 @@ import { UserRepositoryTypeorm } from './user.repository.typeorm';
     NodemailerClient,
     ConfigService,
     JwtAuthGuard,
-    GoogleStrategy,
   ],
   exports: [UserRepositoryTypeorm, BookRepositoryTyperom],
 })
