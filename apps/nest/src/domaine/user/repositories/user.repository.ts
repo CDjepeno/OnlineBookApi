@@ -11,6 +11,4 @@ export interface UsersRepository {
   getCurrentUser(email: string): Promise<CurrentUserResponse>;
 
   loginOrSignUpWithGoogle(idToken: string): Promise<LoginGoogleResponse>;
-  // findGoogleUserAndGenerateToken(email: string): Promise<LoginGoogleResponse | null>;
-  // signUpByGoogleAuth(user: LoginGoogleRequest): Promise<LoginGoogleResponse>;
 }

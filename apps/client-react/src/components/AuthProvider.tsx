@@ -24,8 +24,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const getUser = async () => {
     try {
-      // const token = localStorage.getItem("BookToken");
-      // if (!token) return;
       const currentUser = await getCurrentUser();
       setUser(currentUser);
     } catch (error) {

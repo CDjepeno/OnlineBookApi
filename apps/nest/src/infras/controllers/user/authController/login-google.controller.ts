@@ -15,9 +15,7 @@ export class GoogleLoginController {
 
   @Get('login')
   @UseGuards(GoogleAuthGuard)
-  async googleAuth() {
-    // Nest redirige vers Google OAuth
-  }
+  async googleAuth() {}
 
   @Post('callback')
   async googleAuthRedirect(

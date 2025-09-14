@@ -107,17 +107,16 @@ export class UserRepositoryTypeorm implements UsersRepository {
   async loginOrSignUpWithGoogle(idToken: string): Promise<LoginGoogleResponse> {
     try {
       // Vérifie le token Google
-      const ticket = await this.client.verifyIdToken({
+      const tokenGoogle = await this.client.verifyIdToken({
         idToken,
         audience: this.configService.get<string>('GOOGLE_CLIENT_ID'),
       });
 
-      const payload = ticket.getPayload();
+      const payload = tokenGoogle.getPayload();
       if (!payload || !payload.email) {
         throw new InternalServerException('Token Google invalide');
       }
 
-      // Récupérer user depuis la DB
       let user = await this.repository.findOne({
         where: { email: payload.email },
       });
