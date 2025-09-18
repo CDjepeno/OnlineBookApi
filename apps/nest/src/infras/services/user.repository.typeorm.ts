@@ -7,14 +7,15 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { OAuth2Client } from 'google-auth-library';
 import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
+import { InternalServerException } from 'src/domaine/errors/onlineBook.error';
 import { UsersRepository } from 'src/domaine/user/repositories/user.repository';
 import { AddUserRequest } from 'src/domaine/user/usecases/adduser/add.user.request';
 import { AddUserResponse } from 'src/domaine/user/usecases/adduser/add.user.response';
 import { CurrentUserResponse } from 'src/domaine/user/usecases/auth/current.user.response';
 import { LoginUserRequest } from 'src/domaine/user/usecases/getuser/login.user.request';
 import { LoginUserResponse } from 'src/domaine/user/usecases/getuser/login.user.response';
-import { LoginGoogleRequest } from 'src/domaine/user/usecases/google/login.google.request';
 import { LoginGoogleResponse } from 'src/domaine/user/usecases/google/login.google.response';
 import { Repository } from 'typeorm';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
@@ -22,12 +23,17 @@ import { User } from '../models/user.model';
 
 @Injectable()
 export class UserRepositoryTypeorm implements UsersRepository {
+  private client: OAuth2Client;
   constructor(
     @InjectRepository(User)
     private readonly repository: Repository<User>,
     private readonly jwtService: JwtService,
     private configService: ConfigService,
-  ) {}
+  ) {
+    this.client = new OAuth2Client(
+      this.configService.get<string>('GOOGLE_CLIENT_ID'),
+    );
+  }
 
   async signUp(addUserRequest: AddUserRequest): Promise<AddUserResponse> {
     try {
@@ -98,57 +104,46 @@ export class UserRepositoryTypeorm implements UsersRepository {
     }
   }
 
-  async findGoogleUserAndGenerateToken(email: string): Promise<LoginGoogleResponse | null> {
+  async loginOrSignUpWithGoogle(idToken: string): Promise<LoginGoogleResponse> {
     try {
-      const user = await this.repository.findOne({ where: { email } });
+      // Vérifie le token Google
+      const tokenGoogle = await this.client.verifyIdToken({
+        idToken,
+        audience: this.configService.get<string>('GOOGLE_CLIENT_ID'),
+      });
 
-      if (!user) return null;
+      const payload = tokenGoogle.getPayload();
+      if (!payload || !payload.email) {
+        throw new InternalServerException('Token Google invalide');
+      }
 
-      const payload = {
+      let user = await this.repository.findOne({
+        where: { email: payload.email },
+      });
+
+      if (!user) {
+        user = this.repository.create({
+          name: payload.name || 'Utilisateur Google',
+          email: payload.email,
+        });
+
+        user = await this.repository.save(user);
+      }
+
+      const jwtPayload = {
         sub: user.id,
         email: user.email,
       };
 
-      const token = await this.jwtService.signAsync(payload, {
+      const token = await this.jwtService.signAsync(jwtPayload, {
         secret: this.configService.get<'string'>('JWT_SECRET'),
         expiresIn: '24h',
       });
-
 
       return {
         id: user.id,
         name: user.name,
         email: user.email,
-        token,
-      };
-    } catch (error) {
-      handleDatabaseError(error);
-    }
-  }
-
-  async signUpByGoogleAuth(user: LoginGoogleRequest): Promise<LoginGoogleResponse> {
-    try {
-      const existingUser = await this.repository.findOne({
-        where: { email: user.email },
-      });
-
-      if (existingUser) {
-        throw new Error(ErrorsMessagesEnum.DUPLICATE_EMAIL);
-      }
-
-      const newUser = this.repository.create({
-        name: user.name,
-        email: user.email,
-      });
-
-      const saved = await this.repository.save(newUser);
-
-      const token = this.jwtService.sign({ sub: saved.id, email: saved.email });
-
-      return {
-        id: saved.id,
-        name: saved.name,
-        email: saved.email,
         token,
       };
     } catch (error) {

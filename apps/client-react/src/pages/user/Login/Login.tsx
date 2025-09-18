@@ -8,11 +8,14 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
+import { GoogleLogin } from "@react-oauth/google";
 import FormInput from "../../../components/FormInput";
+import LoginGoogleHook from "./Login-google.hook";
 import LoginHook from "./Login.hook";
 
 export default function Login() {
   const { onSubmit, handleSubmit, errors, isSubmitting, control } = LoginHook();
+  const { handleGoogleLogin } = LoginGoogleHook();
 
   return (
     <Grid container component="main" sx={{ height: "100vh" }} maxWidth="xs">
@@ -84,19 +87,33 @@ export default function Login() {
             >
               Se Connecter
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Mot de passe oublié ?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="/register" variant="body2">
-                  {"Vous n'avez pas de compte ? Inscrivez-vous"}
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
+
+          <Typography sx={{ mt: 2, mb: 1 }}>ou</Typography>
+
+          <GoogleLogin
+            onSuccess={(credentialResponse) => {
+              if (credentialResponse.credential) {
+                handleGoogleLogin({ idToken: credentialResponse.credential });
+              }
+            }}
+            onError={() => {
+              console.error("Erreur lors du login Google");
+            }}
+          />
+
+          <Grid container sx={{ mt: 2 }}>
+            <Grid item xs>
+              <Link href="#" variant="body2">
+                Mot de passe oublié ?
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link href="/register" variant="body2">
+                {"Vous n'avez pas de compte ? Inscrivez-vous"}
+              </Link>
+            </Grid>
+          </Grid>
         </Box>
       </Grid>
     </Grid>

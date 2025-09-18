@@ -30,6 +30,7 @@ const routes: CustomRouteObject[] = [
         element: <PrivateRoute element={<BookUser />} />,
       },
       { path: RouterEnum.BOOK, element: <BookDetail /> },
+      { path: RouterEnum.GOOGLE_CALLBACK, element: <Login /> },
     ],
   },
 ];

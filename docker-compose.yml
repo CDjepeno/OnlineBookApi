@@ -24,7 +24,7 @@ services:
       - "5173:5173"
     volumes:
       - ./apps/client-react:/app
-      - /app/node_modules
+      - react-node-modules:/app/node_modules
     stdin_open: true
     tty: true
 
@@ -46,3 +46,4 @@ services:
 
 volumes:
   mysql-data:
+  react-node-modules:

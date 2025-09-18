@@ -1,11 +1,10 @@
-import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
 import { LoginGoogleResponse } from 'src/domaine/user/usecases/google/login.google.response';
 import { LoginGoogleUseCase } from 'src/domaine/user/usecases/google/login.google.usecase';
-import { GoogleUser } from 'src/infras/common/decorators/google-user.decorator';
 import { GoogleAuthGuard } from 'src/infras/common/guards/google-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
-import { GoogleLoginDto } from './google-login.dto';
+import { LoginGoogleDto } from './login-google.dto';
 
 @Controller('auth/google')
 export class GoogleLoginController {
@@ -16,15 +15,15 @@ export class GoogleLoginController {
 
   @Get('login')
   @UseGuards(GoogleAuthGuard)
-  async googleAuth() {
-    // Nest redirige vers Google OAuth
-  }
+  async googleAuth() {}
 
-  @Get('callback')
-  @UseGuards(GoogleAuthGuard)
+  @Post('callback')
   async googleAuthRedirect(
-    @GoogleUser() user: GoogleLoginDto,
+    @Body() user: LoginGoogleDto,
   ): Promise<LoginGoogleResponse> {
-    return await this.googleLoginUseCaseProxy.getInstance().execute(user);
+    const result = await this.googleLoginUseCaseProxy
+      .getInstance()
+      .execute(user);
+    return result;
   }
 }
