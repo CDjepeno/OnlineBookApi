@@ -6,6 +6,7 @@ import { GetAllBookUsecase } from 'src/domaine/book/usecases/getAllBook/getAllBo
 import { GetBookUsecase } from 'src/domaine/book/usecases/getBook/getBook.usecase';
 import { GetBooksByUserUsecase } from 'src/domaine/book/usecases/getBooksByUser/getBooksByUser.usecase';
 import { UpdateBookUseCase } from 'src/domaine/book/usecases/updateBook/updateBook.usecase';
+import { AddBookingUseCase } from 'src/domaine/booking/usecases/addBooking.usecase';
 import { AddUserUseCase } from 'src/domaine/user/usecases/adduser/add.user.usecase';
 import { GetCurrentUserUseCase } from 'src/domaine/user/usecases/auth/get.current.user.usecase';
 import { LoginUserUseCase } from 'src/domaine/user/usecases/getuser/login.user.usecase';
@@ -14,10 +15,11 @@ import { AwsS3Client } from '../clients/aws/aws-s3.client';
 import { AwsS3Module } from '../clients/aws/aws-s3.module';
 import NodemailerClient from '../clients/nodemailer/nodemailer.client';
 import { NodemailerModules } from '../clients/nodemailer/nodemailer.module';
-import { BookRepositoryTyperom } from '../services/book.repository.typeorm';
+import { BookingRepositoryTypeorm } from '../services/booking.repository.typeorm';
 import { RepositoriesModule } from '../services/repositories.module';
 import { UserRepositoryTypeorm } from '../services/user.repository.typeorm';
 import { UseCaseProxy } from './usecase-proxy';
+import { BookRepositoryTypeorm } from '../services/book.repository.typeorm';
 
 @Module({
   imports: [RepositoriesModule, NodemailerModules, AwsS3Module],
@@ -34,6 +36,8 @@ export class UsecaseProxyModule {
   static GET_BOOK_USECASE_PROXY = 'getBookUsecaseProxy';
   static DELETE_BOOK_USECASE_PROXY = 'deleteBookUsecaseProxy';
   static UPDATE_BOOK_USECASE_PROXY = 'updateBookUsecaseProxy';
+
+  static ADD_BOOKING_USECASE_PROXY = 'addBookingUsecaseProxy';
 
   static register(): DynamicModule {
     return {
@@ -69,48 +73,55 @@ export class UsecaseProxyModule {
             new UseCaseProxy(new GetCurrentUserUseCase(userRepository)),
         },
         {
-          inject: [BookRepositoryTyperom, AwsS3Client],
+          inject: [BookRepositoryTypeorm, AwsS3Client],
           provide: UsecaseProxyModule.ADD_BOOK_USECASE_PROXY,
           useFactory: (
-            bookRepository: BookRepositoryTyperom,
+            bookRepository: BookRepositoryTypeorm,
             awsS3Client: AwsS3Client,
           ) =>
             new UseCaseProxy(new AddBookUseCase(bookRepository, awsS3Client)),
         },
         {
-          inject: [BookRepositoryTyperom],
+          inject: [BookRepositoryTypeorm],
           provide: UsecaseProxyModule.GET_ALL_BOOK_USECASE_PROXY,
-          useFactory: (bookRepository: BookRepositoryTyperom) =>
+          useFactory: (bookRepository: BookRepositoryTypeorm) =>
             new UseCaseProxy(new GetAllBookUsecase(bookRepository)),
         },
         {
-          inject: [BookRepositoryTyperom],
+          inject: [BookRepositoryTypeorm],
           provide: UsecaseProxyModule.GET_BOOKS_BY_USER_USECASE_PROXY,
-          useFactory: (bookRepository: BookRepositoryTyperom) =>
+          useFactory: (bookRepository: BookRepositoryTypeorm) =>
             new UseCaseProxy(new GetBooksByUserUsecase(bookRepository)),
         },
         {
-          inject: [BookRepositoryTyperom],
+          inject: [BookRepositoryTypeorm],
           provide: UsecaseProxyModule.GET_BOOK_USECASE_PROXY,
-          useFactory: (bookRepository: BookRepositoryTyperom) =>
+          useFactory: (bookRepository: BookRepositoryTypeorm) =>
             new UseCaseProxy(new GetBookUsecase(bookRepository)),
         },
         {
-          inject: [BookRepositoryTyperom],
+          inject: [BookRepositoryTypeorm],
           provide: UsecaseProxyModule.DELETE_BOOK_USECASE_PROXY,
-          useFactory: (bookRepository: BookRepositoryTyperom) =>
+          useFactory: (bookRepository: BookRepositoryTypeorm) =>
             new UseCaseProxy(new DeleteBookUsecase(bookRepository)),
         },
         {
-          inject: [BookRepositoryTyperom, AwsS3Client],
+          inject: [BookRepositoryTypeorm, AwsS3Client],
           provide: UsecaseProxyModule.UPDATE_BOOK_USECASE_PROXY,
           useFactory: (
-            bookRepository: BookRepositoryTyperom,
+            bookRepository: BookRepositoryTypeorm,
             awsS3Client: AwsS3Client,
           ) =>
             new UseCaseProxy(
               new UpdateBookUseCase(bookRepository, awsS3Client),
             ),
+        },
+
+        {
+          inject: [BookingRepositoryTypeorm],
+          provide: UsecaseProxyModule.ADD_BOOKING_USECASE_PROXY,
+          useFactory: (bookingRepository: BookingRepositoryTypeorm) =>
+            new UseCaseProxy(new AddBookingUseCase(bookingRepository)),
         },
       ],
 
@@ -126,6 +137,8 @@ export class UsecaseProxyModule {
         UsecaseProxyModule.GET_BOOK_USECASE_PROXY,
         UsecaseProxyModule.DELETE_BOOK_USECASE_PROXY,
         UsecaseProxyModule.UPDATE_BOOK_USECASE_PROXY,
+
+        UsecaseProxyModule.ADD_BOOKING_USECASE_PROXY,
       ],
     };
   }
