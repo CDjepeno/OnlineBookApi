@@ -4,9 +4,11 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Booking } from './booking.model';
 import { User } from './user.model';
 
 @Entity()
@@ -40,6 +42,9 @@ export class Book {
 
   @ManyToOne(() => User, (user) => user.books)
   user: User;
+
+  @OneToMany(() => Booking, (booking) => booking.user)
+  bookings: Booking[];
 
   @CreateDateColumn()
   created_at: Date;

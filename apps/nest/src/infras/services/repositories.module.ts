@@ -7,13 +7,15 @@ import NodemailerClient from '../clients/nodemailer/nodemailer.client';
 import { NodemailerModules } from '../clients/nodemailer/nodemailer.module';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { Book } from '../models/book.model';
+import { Booking } from '../models/booking.model';
 import { User } from '../models/user.model';
-import { BookRepositoryTyperom } from './book.repository.typeorm';
+import { BookRepositoryTypeorm } from './book.repository.typeorm';
+import { BookingRepositoryTypeorm } from './booking.repository.typeorm';
 import { UserRepositoryTypeorm } from './user.repository.typeorm';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Book]),
+    TypeOrmModule.forFeature([User, Book, Booking]),
     ConfigModule,
     NodemailerModules,
     AwsS3Module,
@@ -24,11 +26,16 @@ import { UserRepositoryTypeorm } from './user.repository.typeorm';
   ],
   providers: [
     UserRepositoryTypeorm,
-    BookRepositoryTyperom,
+    BookRepositoryTypeorm,
+    BookingRepositoryTypeorm,
     NodemailerClient,
     ConfigService,
     JwtAuthGuard,
   ],
-  exports: [UserRepositoryTypeorm, BookRepositoryTyperom],
+  exports: [
+    UserRepositoryTypeorm,
+    BookRepositoryTypeorm,
+    BookingRepositoryTypeorm,
+  ],
 })
 export class RepositoriesModule {}

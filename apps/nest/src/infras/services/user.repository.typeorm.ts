@@ -104,6 +104,18 @@ export class UserRepositoryTypeorm implements UsersRepository {
     }
   }
 
+  async getUserById(id: number): Promise<User> {
+    try {
+      const user = await this.repository.findOne({ where: { id } });
+      if (!user) {
+        throw new NotFoundException(ErrorsMessagesEnum.NOT_FOUND);
+      }
+      return user;
+    } catch (error) {
+      handleDatabaseError(error);
+    }
+  }
+
   async loginOrSignUpWithGoogle(idToken: string): Promise<LoginGoogleResponse> {
     try {
       // Vérifie le token Google
