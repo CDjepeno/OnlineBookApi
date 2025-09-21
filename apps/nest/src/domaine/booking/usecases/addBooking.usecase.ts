@@ -1,14 +1,21 @@
 import {
   BadRequestException,
   ConflictException,
+  NotFoundException,
 } from 'src/domaine/errors/onlineBook.error';
+import { ClientMailRepository } from 'src/domaine/user/repositories/client.mail.repository';
+import { UsersRepository } from 'src/domaine/user/repositories/user.repository';
 import { BookingEntity } from '../entities/booking.entity';
 import { BookingRepository } from '../repositories/booking.repository';
 import { AddBookingRequest } from './addBooking.request';
 import { AddBookingResponse } from './addBooking.response';
 
 export class AddBookingUseCase {
-  constructor(private readonly bookingRepository: BookingRepository) {}
+  constructor(
+    private readonly bookingRepository: BookingRepository,
+    private readonly userRepository: UsersRepository,
+    private readonly clientMailRepository: ClientMailRepository,
+  ) {}
 
   async execute(request: AddBookingRequest): Promise<AddBookingResponse> {
     const startAt = new Date(request.startAt);
@@ -42,6 +49,22 @@ export class AddBookingUseCase {
     );
 
     await this.bookingRepository.createBooking(booking);
+
+    const user = await this.userRepository.findById(request.userId);
+
+    if (!user) {
+      throw new NotFoundException(
+        `Impossible de trouver l'utilisateur avec l'ID ${request.userId}`,
+      );
+    }
+
+    await this.clientMailRepository.sendMail({
+      to: user.email,
+      subject: `Confirmation de réservation 📚`,
+      text: `Bonjour ${
+        user.name
+      },\n\nVotre réservation est confirmée.\nDu ${startAt.toLocaleDateString()} au ${endAt.toLocaleDateString()}.\n\nMerci 🚀`,
+    });
 
     return { message: 'Votre réservation a bien été créée' };
   }

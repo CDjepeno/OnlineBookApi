@@ -15,11 +15,11 @@ import { AwsS3Client } from '../clients/aws/aws-s3.client';
 import { AwsS3Module } from '../clients/aws/aws-s3.module';
 import NodemailerClient from '../clients/nodemailer/nodemailer.client';
 import { NodemailerModules } from '../clients/nodemailer/nodemailer.module';
+import { BookRepositoryTypeorm } from '../services/book.repository.typeorm';
 import { BookingRepositoryTypeorm } from '../services/booking.repository.typeorm';
 import { RepositoriesModule } from '../services/repositories.module';
 import { UserRepositoryTypeorm } from '../services/user.repository.typeorm';
 import { UseCaseProxy } from './usecase-proxy';
-import { BookRepositoryTypeorm } from '../services/book.repository.typeorm';
 
 @Module({
   imports: [RepositoriesModule, NodemailerModules, AwsS3Module],
@@ -118,10 +118,24 @@ export class UsecaseProxyModule {
         },
 
         {
-          inject: [BookingRepositoryTypeorm],
+          inject: [
+            BookingRepositoryTypeorm,
+            UserRepositoryTypeorm,
+            NodemailerClient,
+          ],
           provide: UsecaseProxyModule.ADD_BOOKING_USECASE_PROXY,
-          useFactory: (bookingRepository: BookingRepositoryTypeorm) =>
-            new UseCaseProxy(new AddBookingUseCase(bookingRepository)),
+          useFactory: (
+            bookingRepository: BookingRepositoryTypeorm,
+            userRepository: UserRepositoryTypeorm,
+            nodemailerClient: NodemailerClient,
+          ) =>
+            new UseCaseProxy(
+              new AddBookingUseCase(
+                bookingRepository,
+                userRepository,
+                nodemailerClient,
+              ),
+            ),
         },
       ],
 
