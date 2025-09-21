@@ -50,7 +50,7 @@ export class AddBookingUseCase {
 
     await this.bookingRepository.createBooking(booking);
 
-    const user = await this.userRepository.findById(request.userId);
+    const user = await this.userRepository.getUserById(request.userId);
 
     if (!user) {
       throw new NotFoundException(

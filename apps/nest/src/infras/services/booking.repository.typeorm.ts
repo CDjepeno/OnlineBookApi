@@ -16,13 +16,6 @@ export class BookingRepositoryTypeorm implements BookingRepository {
     AddBookingRequest: BookingEntity,
   ): Promise<AddBookingResponse> {
     try {
-      // const booking = new Booking();
-      // booking.startAt = AddBookingRequest.startAt;
-      // booking.endAt = AddBookingRequest.endAt;
-      // booking.userId = AddBookingRequest.userId;
-      // booking.bookId = AddBookingRequest.bookId;
-
-      // await this.bookingRepository.save(booking);
       const booking = this.bookingRepository.create({
         startAt: AddBookingRequest.startAt,
         endAt: AddBookingRequest.endAt,

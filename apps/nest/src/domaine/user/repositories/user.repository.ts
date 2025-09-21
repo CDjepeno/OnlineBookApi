@@ -12,5 +12,5 @@ export interface UsersRepository {
 
   loginOrSignUpWithGoogle(idToken: string): Promise<LoginGoogleResponse>;
 
-  findById(id: number): Promise<AddUserResponse>;
+  getUserById(id: number): Promise<User>;
 }

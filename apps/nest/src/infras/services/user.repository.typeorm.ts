@@ -104,7 +104,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
     }
   }
 
-  async findById(id: number): Promise<AddUserResponse> {
+  async getUserById(id: number): Promise<User> {
     try {
       const user = await this.repository.findOne({ where: { id } });
       if (!user) {
