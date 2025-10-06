@@ -37,7 +37,6 @@ export class GetBookingDatesByBookIdController {
     const result = await this.getBookingDatesProxy
       .getInstance()
       .execute({ bookId });
-    console.log(result);
     return { data: result };
   }
 }
