@@ -1,7 +1,7 @@
 import { Body, Controller, Inject, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AddBookingRequest } from 'src/domaine/booking/usecases/addBooking.request';
-import { AddBookingUseCase } from 'src/domaine/booking/usecases/addBooking.usecase';
+import { AddBookingRequest } from 'src/domaine/booking/usecases/addBooking/addBooking.request';
+import { AddBookingUseCase } from 'src/domaine/booking/usecases/addBooking/addBooking.usecase';
 import { CurrentUser } from 'src/infras/common/decorators/current-user.decorator';
 import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';

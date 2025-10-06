@@ -5,8 +5,8 @@ import {
 } from 'src/domaine/errors/onlineBook.error';
 import { ClientMailRepository } from 'src/domaine/user/repositories/client.mail.repository';
 import { UsersRepository } from 'src/domaine/user/repositories/user.repository';
-import { BookingEntity } from '../entities/booking.entity';
-import { BookingRepository } from '../repositories/booking.repository';
+import { BookingEntity } from '../../entities/booking.entity';
+import { BookingRepository } from '../../repositories/booking.repository';
 import { AddBookingRequest } from './addBooking.request';
 import { AddBookingResponse } from './addBooking.response';
 
