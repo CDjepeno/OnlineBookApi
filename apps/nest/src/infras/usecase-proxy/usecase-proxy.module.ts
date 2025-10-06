@@ -6,7 +6,8 @@ import { GetAllBookUsecase } from 'src/domaine/book/usecases/getAllBook/getAllBo
 import { GetBookUsecase } from 'src/domaine/book/usecases/getBook/getBook.usecase';
 import { GetBooksByUserUsecase } from 'src/domaine/book/usecases/getBooksByUser/getBooksByUser.usecase';
 import { UpdateBookUseCase } from 'src/domaine/book/usecases/updateBook/updateBook.usecase';
-import { AddBookingUseCase } from 'src/domaine/booking/usecases/addBooking.usecase';
+import { AddBookingUseCase } from 'src/domaine/booking/usecases/addBooking/addBooking.usecase';
+import { GetBookingDatesByBookIdUseCase } from 'src/domaine/booking/usecases/getBookingDatesByBookId/getBookingDatesByBookId.usecase';
 import { AddUserUseCase } from 'src/domaine/user/usecases/adduser/add.user.usecase';
 import { GetCurrentUserUseCase } from 'src/domaine/user/usecases/auth/get.current.user.usecase';
 import { LoginUserUseCase } from 'src/domaine/user/usecases/getuser/login.user.usecase';
@@ -38,6 +39,8 @@ export class UsecaseProxyModule {
   static UPDATE_BOOK_USECASE_PROXY = 'updateBookUsecaseProxy';
 
   static ADD_BOOKING_USECASE_PROXY = 'addBookingUsecaseProxy';
+  static GET_BOOKING_DATES_BY_BOOK_ID_USECASE_PROXY =
+    'getBookingDatesByBookUsecaseProxy';
 
   static register(): DynamicModule {
     return {
@@ -137,6 +140,15 @@ export class UsecaseProxyModule {
               ),
             ),
         },
+        {
+          inject: [BookingRepositoryTypeorm],
+          provide:
+            UsecaseProxyModule.GET_BOOKING_DATES_BY_BOOK_ID_USECASE_PROXY,
+          useFactory: (bookingRepository: BookingRepositoryTypeorm) =>
+            new UseCaseProxy(
+              new GetBookingDatesByBookIdUseCase(bookingRepository),
+            ),
+        },
       ],
 
       exports: [
@@ -153,6 +165,7 @@ export class UsecaseProxyModule {
         UsecaseProxyModule.UPDATE_BOOK_USECASE_PROXY,
 
         UsecaseProxyModule.ADD_BOOKING_USECASE_PROXY,
+        UsecaseProxyModule.GET_BOOKING_DATES_BY_BOOK_ID_USECASE_PROXY,
       ],
     };
   }

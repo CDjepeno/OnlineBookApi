@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookingEntity } from 'src/domaine/booking/entities/booking.entity';
 import { BookingRepository } from 'src/domaine/booking/repositories/booking.repository';
-import { AddBookingResponse } from 'src/domaine/booking/usecases/addBooking.response';
+import { AddBookingResponse } from 'src/domaine/booking/usecases/addBooking/addBooking.response';
 import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { Booking } from '../models/booking.model';
@@ -45,6 +45,29 @@ export class BookingRepositoryTypeorm implements BookingRepository {
         ],
       });
       return overlap.map(
+        (b) =>
+          new BookingEntity(
+            b.id,
+            b.createdAt,
+            b.startAt,
+            b.endAt,
+            b.userId,
+            b.bookId,
+          ),
+      );
+    } catch (error) {
+      handleDatabaseError(error);
+    }
+  }
+
+  async findBookingsByBookId(bookId: number): Promise<BookingEntity[]> {
+    try {
+      const bookings = await this.bookingRepository.find({
+        where: { book: { id: bookId } },
+        order: { startAt: 'ASC' },
+      });
+
+      return bookings.map(
         (b) =>
           new BookingEntity(
             b.id,
