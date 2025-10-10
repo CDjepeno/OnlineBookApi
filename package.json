@@ -14,5 +14,8 @@
     "lint:nest": "cd apps/nest && npm run lint",
     "lint:react": "cd apps/client-react && npm run lint",
     "lint:all": "npm run lint:react && npm run lint:nest"
+  },
+  "dependencies": {
+    "react-day-picker": "^9.11.1"
   }
 }

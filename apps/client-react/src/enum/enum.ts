@@ -7,6 +7,12 @@ export enum BookQueriesKeysEnum {
   Book = "book",
 }
 
+export enum BookingQueriesKeysEnum {
+  BOOKINGS_BY_BOOK = "bookingsByBook",
+  BOOKINGS_BY_USER = "bookingsByUser",
+  ADD_BOOKING = "addBooking",
+}
+
 export enum UserQueriesKeysEnum {
   LOGIN = "login",
 }
