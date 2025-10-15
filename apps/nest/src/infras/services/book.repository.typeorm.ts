@@ -3,9 +3,10 @@ import { BookEntity } from 'src/domaine/book/entities/Book.entity';
 import { BookRepository } from 'src/domaine/book/repositories/book.repository';
 import { GetAllBookResponse } from 'src/domaine/book/usecases/getAllBook/getAllBook.response';
 import { GetBookResponse } from 'src/domaine/book/usecases/getBook/getBook.response';
+import { GetBooksByNameResponse } from 'src/domaine/book/usecases/getBooksByName/getBooksByName.response';
 import { GetBooksByUserResponse } from 'src/domaine/book/usecases/getBooksByUser/getBooksByUser.response';
 import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { Book } from '../models/book.model';
 import { User } from '../models/user.model';
@@ -76,6 +77,16 @@ export class BookRepositoryTypeorm implements BookRepository {
       }
 
       return book;
+    } catch (error) {
+      handleDatabaseError(error);
+    }
+  }
+
+  async getBooksByName(name: string): Promise<GetBooksByNameResponse[]> {
+    try {
+      return await this.bookRepository.find({
+        where: { title: ILike(`%${name}%`) },
+      });
     } catch (error) {
       handleDatabaseError(error);
     }
