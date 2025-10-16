@@ -18,7 +18,7 @@ import { GoogleLoginController } from './user/authController/login-google.contro
 import { LoginController } from './user/authController/login.controller';
 import { GetCurrentUserController } from './user/getCurrentUser/getCurrentUser.controller';
 import { GetBookingDatesByBookIdController } from './booking/getBookingDatesByBookIdController/getBookingDatesByBookId.controller';
-import { GetBooksByNameController } from './book/getBooksByName/getBooksByName.controller';
+import { GetBookByNameController } from './book/getBookByName/getBookByName.controller';
 
 @Module({
   imports: [
@@ -37,7 +37,7 @@ import { GetBooksByNameController } from './book/getBooksByName/getBooksByName.c
     GetAllBookController,
     GetBookController,
     GetBookByUserController,
-    GetBooksByNameController,
+    GetBookByNameController,
     UpdateBookController,
     DeleteBookController,
 

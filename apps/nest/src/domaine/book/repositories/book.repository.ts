@@ -1,7 +1,7 @@
 import { BookEntity } from '../entities/Book.entity';
 import { GetAllBookResponse } from '../usecases/getAllBook/getAllBook.response';
 import { GetBookResponse } from '../usecases/getBook/getBook.response';
-import { GetBooksByNameResponse } from '../usecases/getBooksByName/getBooksByName.response';
+import { GetBookByNameResponse } from '../usecases/getBookByName/getBookByName.response';
 import { GetBooksByUserResponse } from '../usecases/getBooksByUser/getBooksByUser.response';
 
 export interface BookRepository {
@@ -11,5 +11,5 @@ export interface BookRepository {
   getBook(id: number): Promise<GetBookResponse>;
   updateBook(book: Partial<BookEntity>): Promise<void>;
   deleteBook(id: number): Promise<void>;
-  getBooksByName(name: string): Promise<GetBooksByNameResponse[]>;
+  getBookByName(name: string): Promise<GetBookByNameResponse[]>;
 }

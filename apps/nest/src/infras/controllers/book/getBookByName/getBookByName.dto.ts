@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GetBooksByNameDTO {
+export class GetBookByNameDTO {
   @ApiProperty({
     description: 'Identifiant unique du livre',
     example: 1,

@@ -4,14 +4,14 @@ import {
   NotFoundException,
 } from 'src/domaine/errors/onlineBook.error';
 import { BookRepository } from '../../repositories/book.repository';
-import { GetBooksByNameResponse } from './getBooksByName.response';
+import { GetBookByNameResponse } from './getBookByName.response';
 
-export class GetBooksByNameUsecase {
+export class GetBookByNameUsecase {
   constructor(private readonly bookRepository: BookRepository) {}
 
-  async execute(name: string): Promise<GetBooksByNameResponse[]> {
+  async execute(name: string): Promise<GetBookByNameResponse[]> {
     try {
-      return this.bookRepository.getBooksByName(name);
+      return await this.bookRepository.getBookByName(name);
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === ErrorsMessagesEnum.NOT_FOUND) {

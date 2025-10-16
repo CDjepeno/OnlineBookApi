@@ -1,17 +1,17 @@
 import { Controller, Get, Inject, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { GetBooksByNameUsecase } from 'src/domaine/book/usecases/getBooksByName/getBooksByName.usecase';
+import { GetBookByNameUsecase } from 'src/domaine/book/usecases/getBookByName/getBookByName.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
-import { GetBooksByNameDTO } from './getBooksByName.dto';
+import { GetBookByNameDTO } from './getBookByName.dto';
 
-@Controller('books')
-export class GetBooksByNameController {
+@Controller('search')
+export class GetBookByNameController {
   constructor(
-    @Inject(UsecaseProxyModule.GET_BOOKS_BY_NAME_USECASE_PROXY)
-    private readonly getBooksByNameUsecaseProxy: UseCaseProxy<GetBooksByNameUsecase>,
+    @Inject(UsecaseProxyModule.GET_BOOK_BY_NAME_USECASE_PROXY)
+    private readonly getBookByNameUsecaseProxy: UseCaseProxy<GetBookByNameUsecase>,
   ) {}
-  @Get('search')
+  @Get()
   @ApiOperation({ summary: 'Rechercher des livres par titre' })
   @ApiQuery({
     name: 'name',
@@ -22,7 +22,7 @@ export class GetBooksByNameController {
   @ApiResponse({
     status: 200,
     description: 'Liste des livres trouvés',
-    type: [GetBooksByNameDTO],
+    type: [GetBookByNameDTO],
   })
   @ApiResponse({
     status: 404,
@@ -30,7 +30,7 @@ export class GetBooksByNameController {
   })
   async getBooksByName(
     @Query('name') name: string,
-  ): Promise<GetBooksByNameDTO[]> {
-    return this.getBooksByNameUsecaseProxy.getInstance().execute(name);
+  ): Promise<GetBookByNameDTO[]> {
+    return this.getBookByNameUsecaseProxy.getInstance().execute(name);
   }
 }

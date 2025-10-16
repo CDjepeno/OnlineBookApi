@@ -1,4 +1,4 @@
-export class GetBooksByNameResponse {
+export class GetBookByNameResponse {
   constructor(
     readonly id: number,
     readonly title: string,
