@@ -5,7 +5,7 @@ import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { GetBookByNameDTO } from './getBookByName.dto';
 
-@Controller('search')
+@Controller('book-search')
 export class GetBookByNameController {
   constructor(
     @Inject(UsecaseProxyModule.GET_BOOK_BY_NAME_USECASE_PROXY)
