@@ -5,6 +5,7 @@ export enum BookQueriesKeysEnum {
   LOGIN = "login",
   ADD_BOOK = "addBook",
   Book = "book",
+  BOOK_SEARCH = "bookSearch"
 }
 
 export enum BookingQueriesKeysEnum {
