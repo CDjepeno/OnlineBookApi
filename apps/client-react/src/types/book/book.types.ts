@@ -83,3 +83,4 @@ export type DeleteBookResponses = {
 export type ErrorResponse = {
   message: string;
 };
+export type SearchFormType = { search: string };

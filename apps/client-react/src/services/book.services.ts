@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useRequestApi";
-import { BOOK_ROUTE, BOOKS_ROUTE } from "../request/route-http/route-http";
+import { BOOK_ROUTE, BOOK_SEARCH_ROUTE, BOOKS_ROUTE } from "../request/route-http/route-http";
 import {
   AddBookResponses,
   DeleteBookResponses,
@@ -28,12 +28,24 @@ export const getBook = async (id: string): Promise<GetBookResponse> => {
   });
 };
 
-export const getBooksByUser = async (userId: string): Promise<GetBooksByUserResponse[]> => {
+export const getBooksByUser = async (
+  userId: string
+): Promise<GetBooksByUserResponse[]> => {
   return await UseRequestApi<GetBooksByUserResponse[], { userId: string }>({
     path: `${BOOKS_ROUTE}/${userId}`,
     method: MethodHttpEnum.GET,
     includeAuthorizationHeader: true,
   });
+};
+
+export const getBookByName = async (
+  name: string
+): Promise<GetBooksResponse[]> => {
+  return await UseRequestApi<GetBooksResponse[], {title: string}>({
+    path: `${BOOK_SEARCH_ROUTE}?name=${encodeURIComponent(name)}`,
+    method: MethodHttpEnum.GET,
+    includeAuthorizationHeader: false
+  })
 };
 
 export const createBook = async (
