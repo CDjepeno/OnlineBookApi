@@ -27,3 +27,4 @@ export class GetAllBookDto {
   @IsUrl()
   coverUrl: string;
 }
+
