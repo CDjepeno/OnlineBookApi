@@ -8,3 +8,13 @@ export class GetAllBookResponse {
   created_at?: Date;
   update_at?: Date;
 }
+
+
+export type GetAllBookResponsePagination = {
+  books: GetAllBookResponse[],
+  meta: {
+    totalBooks: number,
+    currentPage: number,
+    totalPages: number,
+  },
+}

@@ -1,9 +1,9 @@
-import { Controller, Get, Inject } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Inject, Query } from '@nestjs/common';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetAllBookUsecase } from 'src/domaine/book/usecases/getAllBook/getAllBook.usecase';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
-import { GetAllBookDto } from './getAllBook.dto';
+import { GetAllBookPaginationDto } from './getAllBookPagination.dto';
 
 @ApiTags('Book')
 @Controller('books')
@@ -15,15 +15,36 @@ export class GetAllBookController {
 
   @Get()
   @ApiOperation({
-    summary: 'Récupérer la liste des livres',
+    summary: 'Récupérer la liste des livres avec pagination',
   })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 6 })
   @ApiResponse({
     status: 200,
-    description: 'Liste des livres retournée avec succès',
-    type: GetAllBookDto,
-    isArray: true,
+    description: 'Liste des livres paginée avec succès',
+    type: GetAllBookPaginationDto,
   })
-  async getAllBook(): Promise<GetAllBookDto[]> {
-    return this.getAllBookUsecaseProxy.getInstance().execute();
+  async getAllBook(
+    @Query('page') page = 1,
+    @Query('limit') limit = 6,
+  ): Promise<GetAllBookPaginationDto> {
+    const result = await this.getAllBookUsecaseProxy
+      .getInstance()
+      .execute(page, limit);
+
+    const { books, meta } = result;
+
+    return {
+      books: books.map((b) => ({
+        title: b.title,
+        description: b.description,
+        author: b.author,
+        releaseAt: b.releaseAt,
+        coverUrl: b.coverUrl,
+      })),
+      totalBooks: meta.totalBooks,
+      currentPage: meta.currentPage,
+      totalPages: meta.totalPages,
+    };
   }
 }
