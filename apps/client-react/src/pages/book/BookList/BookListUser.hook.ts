@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { BookQueriesKeysEnum } from "../../../enum/enum";
-import { getBooksByUser } from "../../../services/book.services";
+import { getBooksByUser } from "../../../services/book.service";
 import { GetBooksByUserResponse } from "../../../types/book/book.types";
 
 function BookListUserHook() {

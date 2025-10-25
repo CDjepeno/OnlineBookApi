@@ -1,4 +1,3 @@
-import FormInput from "../../components/FormInput";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
@@ -6,15 +5,17 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  Pagination,
   Typography,
 } from "@mui/material";
+import FormInput from "../../components/FormInput";
 import Loading from "../../components/Loading/Loading";
 import BookCard from "../book/components/BookCard";
 import BookSearchHook from "./Booksearch.hook";
 import HomePageHook from "./HomePage.hook";
 
 export function HomePage() {
-  const { isPending, books, error } = HomePageHook();
+  const { isPending, books, error, page, setPage } = HomePageHook();
 
   const {
     control,
@@ -22,7 +23,7 @@ export function HomePage() {
     handleSearchClick,
     booksToDisplay,
     isFetching,
-  } = BookSearchHook(books);
+  } = BookSearchHook(books?.books);
 
   if (isPending) return <Loading />;
   if (error)
@@ -31,6 +32,15 @@ export function HomePage() {
         Erreur lors du chargement des livres.
       </Typography>
     );
+
+  const totalPages = books?.totalPages ?? 1;
+
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
+  };
 
   return (
     <main>
@@ -81,19 +91,31 @@ export function HomePage() {
             Aucun livre trouvé.
           </Typography>
         ) : (
-          <Grid container spacing={4}>
-            {booksToDisplay?.map((book) => (
-              <BookCard
-                key={book.id}
-                id={book.id}
-                coverUrl={book.coverUrl}
-                name={book.title}
-                author={book.author}
-                description={book.description}
-                releaseAt={book.releaseAt}
+          <>
+            <Grid container spacing={4}>
+              {booksToDisplay?.map((book) => (
+                <BookCard
+                  key={book.id}
+                  id={book.id}
+                  coverUrl={book.coverUrl}
+                  name={book.title}
+                  author={book.author}
+                  description={book.description}
+                  releaseAt={book.releaseAt}
+                />
+              ))}
+            </Grid>
+            <Box display="flex" justifyContent="center" mt={4}>
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+                showFirstButton
+                showLastButton
               />
-            ))}
-          </Grid>
+            </Box>
+          </>
         )}
       </Container>
     </main>

@@ -36,6 +36,7 @@ export class GetAllBookController {
 
     return {
       books: books.map((b) => ({
+        id: b.id,
         title: b.title,
         description: b.description,
         author: b.author,

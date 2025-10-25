@@ -43,11 +43,17 @@ export class BookRepositoryTypeorm implements BookRepository {
     }
   }
 
-  async getAllBook(): Promise<GetAllBookResponse[]> {
+  async getAllBook(
+    page: number,
+    limit: number,
+  ): Promise<[GetAllBookResponse[], number]> {
     try {
-      return await this.bookRepository.find({
+      const [books, total] = await this.bookRepository.findAndCount({
         order: { id: 'DESC' },
+        skip: (page - 1) * limit,
+        take: limit,
       });
+      return [books, total];
     } catch (error) {
       handleDatabaseError(error);
     }
