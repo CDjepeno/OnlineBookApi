@@ -1,19 +1,30 @@
 import { AxiosResponse } from "axios";
 import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useRequestApi";
-import { BOOK_ROUTE, BOOK_SEARCH_ROUTE, BOOKS_ROUTE } from "../request/route-http/route-http";
+import {
+  BOOK_ROUTE,
+  BOOK_SEARCH_ROUTE,
+  BOOKS_ROUTE,
+} from "../request/route-http/route-http";
 import {
   AddBookResponses,
   DeleteBookResponses,
+  GetAllBooksPaginationResponse,
   GetBookResponse,
   GetBooksByUserResponse,
   GetBooksResponse,
   UpdateBookResponses,
 } from "../types/book/book.types";
 
-export const getBooks = async (): Promise<GetBooksResponse[]> => {
-  return await UseRequestApi<GetBooksResponse[], null>({
-    path: BOOKS_ROUTE,
+export const getBooks = async (
+  page = 1,
+  limit = 6
+): Promise<GetAllBooksPaginationResponse> => {
+  return await UseRequestApi<
+    GetAllBooksPaginationResponse,
+    { page: string; limit: string }
+  >({
+    path: `${BOOKS_ROUTE}?page=${page}&limit=${limit}`,
     method: MethodHttpEnum.GET,
     includeAuthorizationHeader: false,
   });
@@ -41,11 +52,11 @@ export const getBooksByUser = async (
 export const getBookByName = async (
   name: string
 ): Promise<GetBooksResponse[]> => {
-  return await UseRequestApi<GetBooksResponse[], {title: string}>({
+  return await UseRequestApi<GetBooksResponse[], { title: string }>({
     path: `${BOOK_SEARCH_ROUTE}?name=${encodeURIComponent(name)}`,
     method: MethodHttpEnum.GET,
-    includeAuthorizationHeader: false
-  })
+    includeAuthorizationHeader: false,
+  });
 };
 
 export const createBook = async (

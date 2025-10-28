@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { BookQueriesKeysEnum } from "../../../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../../../request/commons/useQueryWorkflowCallback";
-import { updateBook } from "../../../../services/book.services";
+import { updateBook } from "../../../../services/book.service";
 import {
   UpdateBookFormType,
   UpdateBookResponses,

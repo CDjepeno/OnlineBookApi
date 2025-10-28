@@ -16,6 +16,13 @@ export type GetBooksResponse = {
   coverUrl: string;
 };
 
+export type GetAllBooksPaginationResponse = {
+  books: GetBooksResponse[];
+  totalBooks: number;
+  currentPage: number;
+  totalPages: number;
+};
+
 export type GetBooksByUserResponse = {
   id: string;
   title: string;

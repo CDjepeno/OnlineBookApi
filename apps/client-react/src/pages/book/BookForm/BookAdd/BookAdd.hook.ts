@@ -7,7 +7,7 @@ import * as yup from "yup";
 import { AuthContext } from "../../../../context";
 import { BookQueriesKeysEnum, RouterEnum } from "../../../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../../../request/commons/useQueryWorkflowCallback";
-import { createBook } from "../../../../services/book.services";
+import { createBook } from "../../../../services/book.service";
 import {
   AddBookFormType,
   AddBookInput,

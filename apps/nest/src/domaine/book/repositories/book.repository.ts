@@ -6,7 +6,10 @@ import { GetBooksByUserResponse } from '../usecases/getBooksByUser/getBooksByUse
 
 export interface BookRepository {
   addBook(book: BookEntity): Promise<void>;
-  getAllBook(): Promise<GetAllBookResponse[]>;
+  getAllBook(
+    page: number,
+    limit: number,
+  ): Promise<[GetAllBookResponse[], number]>;
   getBooksByUser(userId: number): Promise<GetBooksByUserResponse[]>;
   getBook(id: number): Promise<GetBookResponse>;
   updateBook(book: Partial<BookEntity>): Promise<void>;

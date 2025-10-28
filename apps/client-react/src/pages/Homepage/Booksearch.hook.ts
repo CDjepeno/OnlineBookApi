@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BookQueriesKeysEnum } from "../../enum/enum";
-import { getBookByName } from "../../services/book.services";
+import { getBookByName } from "../../services/book.service";
 
 export default function BookSearchHook(books: GetBooksResponse[] = []) {
   const [lastSearch, setLastSearch] = useState("");
@@ -40,8 +40,10 @@ export default function BookSearchHook(books: GetBooksResponse[] = []) {
     }
   };
 
-  
-  const booksToDisplay = lastSearch && searchBook.trim() === lastSearch ? searchedBooks : filteredBooks;
+  const booksToDisplay =
+    lastSearch && searchBook.trim() === lastSearch
+      ? searchedBooks
+      : filteredBooks;
 
   return {
     control,
