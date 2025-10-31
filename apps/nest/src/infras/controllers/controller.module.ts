@@ -19,6 +19,7 @@ import { LoginController } from './user/authController/login.controller';
 import { GetCurrentUserController } from './user/getCurrentUser/getCurrentUser.controller';
 import { GetBookingDatesByBookIdController } from './booking/getBookingDatesByBookIdController/getBookingDatesByBookId.controller';
 import { GetBookByNameController } from './book/getBookByName/getBookByName.controller';
+import { GetBookingsByUserController } from './booking/getBookingsByUserController/getBookingsByUser.controller';
 
 @Module({
   imports: [
@@ -42,7 +43,8 @@ import { GetBookByNameController } from './book/getBookByName/getBookByName.cont
     DeleteBookController,
 
     AddBookingController,
-    GetBookingDatesByBookIdController
+    GetBookingDatesByBookIdController,
+    GetBookingsByUserController,
   ],
   providers: [JwtAuthGuard, GoogleAuthGuard, JwtService, AwsS3Client],
 })

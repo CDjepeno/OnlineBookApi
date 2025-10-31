@@ -1,4 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import { BookEntity } from 'src/domaine/book/entities/Book.entity';
 import { BookingEntity } from 'src/domaine/booking/entities/booking.entity';
 import { BookingRepository } from 'src/domaine/booking/repositories/booking.repository';
 import { AddBookingResponse } from 'src/domaine/booking/usecases/addBooking/addBooking.response';
@@ -78,6 +79,39 @@ export class BookingRepositoryTypeorm implements BookingRepository {
             b.bookId,
           ),
       );
+    } catch (error) {
+      handleDatabaseError(error);
+    }
+  }
+
+  async getBookingsByUser(
+    userId: number,
+  ): Promise<{ booking: BookingEntity; book: BookEntity }[]> {
+    try {
+      const booking = await this.bookingRepository.find({
+        where: { userId },
+        relations: ['book'],
+        order: { startAt: 'DESC' },
+      });
+      return booking.map((b) => ({
+        booking: new BookingEntity(
+          b.id,
+          b.createdAt,
+          b.startAt,
+          b.endAt,
+          b.userId,
+          b.bookId,
+        ),
+        book: new BookEntity(
+          b.book.id,
+          b.book.title,
+          b.book.description,
+          b.book.author,
+          b.book.releaseAt,
+          b.book.coverUrl,
+          b.book.userId,
+        ),
+      }));
     } catch (error) {
       handleDatabaseError(error);
     }
