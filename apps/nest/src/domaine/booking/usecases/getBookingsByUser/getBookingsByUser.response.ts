@@ -1,4 +1,4 @@
-export class GetBookingsByUserIdResponse {
+export type GetBookingsByUserResponse = {
   bookingId: number;
   bookId: number;
   title: string;

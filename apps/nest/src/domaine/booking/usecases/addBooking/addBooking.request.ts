@@ -1,4 +1,4 @@
-export class AddBookingRequest {
+export type AddBookingRequest = {
   startAt: Date;
   endAt: Date;
   userId: number;

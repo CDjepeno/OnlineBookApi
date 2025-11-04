@@ -6,5 +6,6 @@ export class BookingEntity {
     readonly endAt: Date,
     readonly userId: number,
     readonly bookId: number,
+    readonly hasFuturReservation: boolean,
   ) {}
 }
