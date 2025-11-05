@@ -43,8 +43,6 @@ export class AddBookingUseCase {
     const hasFutureReservation =
       endAt > now && (startAt > now || startAt < now);
 
-    console.log(hasFutureReservation);
-
     const booking = new BookingEntity(
       Date.now(),
       new Date(),

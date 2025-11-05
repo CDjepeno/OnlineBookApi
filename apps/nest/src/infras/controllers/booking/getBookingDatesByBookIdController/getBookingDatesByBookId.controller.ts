@@ -13,7 +13,6 @@ export class GetBookingDatesByBookIdController {
   ) {}
 
   @Get(':bookId/bookings')
-  // @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: "Recuperer les reservations d'un livre",
     description:
