@@ -1,6 +1,14 @@
-import { Controller, Get, Inject, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  Param,
+  ParseIntPipe,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetBookingsByUserUseCase } from 'src/domaine/booking/usecases/getBookingsByUser/getBookingsByUser.usecase';
+import { JwtAuthGuard } from 'src/infras/common/guards/jwt-auth.guard';
 import { UseCaseProxy } from 'src/infras/usecase-proxy/usecase-proxy';
 import { UsecaseProxyModule } from 'src/infras/usecase-proxy/usecase-proxy.module';
 import { GetBookingsByUserDto } from './getBookingsByUser.dto';
@@ -13,7 +21,6 @@ export class GetBookingsByUserController {
     private readonly getBookingsByUserProxy: UseCaseProxy<GetBookingsByUserUseCase>,
   ) {}
 
-  @Get('user/:userId')
   @ApiOperation({
     summary: "Récupérer les livres réservés d'un utilisateur",
     description:
@@ -25,6 +32,8 @@ export class GetBookingsByUserController {
     type: GetBookingsByUserDto,
     isArray: true,
   })
+  @Get('user/:userId')
+  @UseGuards(JwtAuthGuard)
   async getBookingByUser(@Param('userId', ParseIntPipe) userId: number) {
     return await this.getBookingsByUserProxy.getInstance().execute(userId);
   }
