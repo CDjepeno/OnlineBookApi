@@ -2,6 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BookingEntity } from 'src/domaine/booking/entities/booking.entity';
 import { BookingRepository } from 'src/domaine/booking/repositories/booking.repository';
 import { AddBookingResponse } from 'src/domaine/booking/usecases/addBooking/addBooking.response';
+import { GetBookingsByUserResponse } from 'src/domaine/booking/usecases/getBookingsByUser/getBookingsByUser.response';
 import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { handleDatabaseError } from '../common/errors/errorsSwitch';
 import { Booking } from '../models/booking.model';
@@ -21,6 +22,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
         endAt: AddBookingRequest.endAt,
         userId: AddBookingRequest.userId,
         bookId: AddBookingRequest.bookId,
+        hasFuturReservation: AddBookingRequest.hasFuturReservation,
       });
       await this.bookingRepository.save(booking);
       return { message: 'Réservation enregistrée' };
@@ -53,6 +55,7 @@ export class BookingRepositoryTypeorm implements BookingRepository {
             b.endAt,
             b.userId,
             b.bookId,
+            b.hasFuturReservation,
           ),
       );
     } catch (error) {
@@ -76,8 +79,37 @@ export class BookingRepositoryTypeorm implements BookingRepository {
             b.endAt,
             b.userId,
             b.bookId,
+            b.hasFuturReservation,
           ),
       );
+    } catch (error) {
+      handleDatabaseError(error);
+    }
+  }
+
+  async getBookingsByUser(
+    userId: number,
+  ): Promise<GetBookingsByUserResponse[]> {
+    try {
+      return await this.bookingRepository
+        .createQueryBuilder('b')
+        .innerJoin('b.book', 'book')
+        .select([
+          'b.id AS bookingId',
+          'book.id AS bookId',
+          'book.title AS title',
+          'book.coverUrl AS coverUrl',
+          'b.startAt AS startAt',
+          'b.endAt AS endAt',
+          `(SELECT COUNT(*) 
+          FROM bookings bb 
+          WHERE bb.bookId = book.id 
+          AND bb.startAt > NOW()
+        ) > 0 AS hasFutureReservation`,
+        ])
+        .where('b.userId = :userId', { userId })
+        .orderBy('b.startAt', 'DESC')
+        .getRawMany();
     } catch (error) {
       handleDatabaseError(error);
     }

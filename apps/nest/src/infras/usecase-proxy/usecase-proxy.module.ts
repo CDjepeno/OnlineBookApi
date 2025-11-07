@@ -22,6 +22,7 @@ import { BookingRepositoryTypeorm } from '../services/booking.repository.typeorm
 import { RepositoriesModule } from '../services/repositories.module';
 import { UserRepositoryTypeorm } from '../services/user.repository.typeorm';
 import { UseCaseProxy } from './usecase-proxy';
+import { GetBookingsByUserUseCase } from 'src/domaine/booking/usecases/getBookingsByUser/getBookingsByUser.usecase';
 
 @Module({
   imports: [RepositoriesModule, NodemailerModules, AwsS3Module],
@@ -43,6 +44,7 @@ export class UsecaseProxyModule {
   static ADD_BOOKING_USECASE_PROXY = 'addBookingUsecaseProxy';
   static GET_BOOKING_DATES_BY_BOOK_ID_USECASE_PROXY =
     'getBookingDatesByBookUsecaseProxy';
+  static GET_BOOKINGS_BY_USER_USECASE_PROXY = 'getBookingsByUserUsecaseProxy';
 
   static register(): DynamicModule {
     return {
@@ -157,6 +159,15 @@ export class UsecaseProxyModule {
               new GetBookingDatesByBookIdUseCase(bookingRepository),
             ),
         },
+        {
+          inject: [BookingRepositoryTypeorm],
+          provide:
+            UsecaseProxyModule.GET_BOOKINGS_BY_USER_USECASE_PROXY,
+          useFactory: (bookingRepository: BookingRepositoryTypeorm) =>
+            new UseCaseProxy(
+              new GetBookingsByUserUseCase(bookingRepository),
+            ),
+        },
       ],
 
       exports: [
@@ -175,6 +186,7 @@ export class UsecaseProxyModule {
 
         UsecaseProxyModule.ADD_BOOKING_USECASE_PROXY,
         UsecaseProxyModule.GET_BOOKING_DATES_BY_BOOK_ID_USECASE_PROXY,
+        UsecaseProxyModule.GET_BOOKINGS_BY_USER_USECASE_PROXY,
       ],
     };
   }

@@ -28,6 +28,9 @@ export class Booking {
   @Column()
   bookId: number;
 
+  @Column({ type: 'boolean', default: false })
+  hasFuturReservation: boolean;
+
   @ManyToOne(() => User, (user) => user.bookings)
   user: User;
 

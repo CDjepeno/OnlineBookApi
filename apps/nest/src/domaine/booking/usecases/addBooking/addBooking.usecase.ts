@@ -18,6 +18,7 @@ export class AddBookingUseCase {
   ) {}
 
   async execute(request: AddBookingRequest): Promise<AddBookingResponse> {
+    const now = new Date();
     const startAt = new Date(request.startAt);
     const endAt = new Date(request.endAt);
 
@@ -39,6 +40,9 @@ export class AddBookingUseCase {
       );
     }
 
+    const hasFutureReservation =
+      endAt > now && (startAt > now || startAt < now);
+
     const booking = new BookingEntity(
       Date.now(),
       new Date(),
@@ -46,6 +50,7 @@ export class AddBookingUseCase {
       endAt,
       request.userId,
       request.bookId,
+      hasFutureReservation,
     );
 
     await this.bookingRepository.createBooking(booking);
