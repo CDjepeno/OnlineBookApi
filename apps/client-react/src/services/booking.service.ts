@@ -1,6 +1,7 @@
 import {
   AddBookingInput,
   GetBookingByBookResponse,
+  GetBookingUserResponse,
 } from "@/types/booking/GetBookingByBookResponse";
 import { AxiosResponse } from "axios";
 import { MethodHttpEnum } from "../enum/enum";
@@ -8,6 +9,7 @@ import { UseRequestApi } from "../request/commons/useRequestApi";
 import {
   BOOKING_ROUTE,
   BOOKINGS_BY_BOOK_ROUTE,
+  BOOKINGS_BY_USER_ROUTE,
   BOOKINGS_ROUTE,
 } from "../request/route-http/route-http";
 
@@ -42,4 +44,14 @@ export const createBooking = async (
   });
 
   return response.data;
+};
+
+export const getBookingsByUser = async (
+  userId: string
+): Promise<GetBookingUserResponse[]> => {
+  return await UseRequestApi<GetBookingUserResponse[], { userId: string }>({
+    path: `${BOOKINGS_BY_USER_ROUTE}/${userId}`,
+    method: MethodHttpEnum.GET,
+    includeAuthorizationHeader: true,
+  });
 };

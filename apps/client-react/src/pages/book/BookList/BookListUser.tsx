@@ -16,7 +16,9 @@ import {
   Typography,
 } from "@mui/material";
 import { useCallback, useContext, useState } from "react";
+import { NavLink } from "react-router-dom";
 import { AuthContext } from "../../../context";
+import { BOOKINGS_BY_USER_ROUTE } from "../../../request/route-http/route-http";
 import { UpdateBookFormType } from "../../../types/book/book.types";
 import { AuthContextType } from "../../../types/user/auth.context.type";
 import { formatDate } from "../../../utils/formatDate";
@@ -149,8 +151,7 @@ export default function BookListUser() {
   if (error) {
     return renderCenteredContent(
       <Typography variant="h6" color="error">
-        // {getDisplayErrorMessage(error)}
-        //{" "}
+        {getDisplayErrorMessage(error)}
       </Typography>
     );
   }
@@ -163,9 +164,27 @@ export default function BookListUser() {
 
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">
-      <Typography component="h1" variant="h5" mb="30px">
-        Livres de {user?.name}
-      </Typography>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={3}
+      >
+        <Typography component="h1" variant="h5" mb="30px">
+          Livres de{" "}
+          {user?.name &&
+            user.name.charAt(0).toUpperCase() +
+              user.name.slice(1).toLocaleLowerCase()}
+        </Typography>
+        <NavLink
+          to={`${BOOKINGS_BY_USER_ROUTE}/${user?.id}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Button variant="contained" color="primary">
+            Réservation
+          </Button>
+        </NavLink>
+      </Box>
       <TableList headCells={headCells} rows={rows} />
 
       <Modal

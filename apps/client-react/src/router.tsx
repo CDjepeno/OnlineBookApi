@@ -4,6 +4,7 @@ import { RouterEnum } from "./enum/enum";
 import BookDetail from "./pages/book/BookDetail/BookDetail";
 import AddBook from "./pages/book/BookForm/BookAdd/BookAddForm";
 import BookUser from "./pages/book/BookList/BookListUser";
+import BookingsUser from "./pages/booking/bookingList/BookingListUser";
 import { HomePage } from "./pages/Homepage/HomePage";
 import Login from "./pages/user/Login/Login";
 import Register from "./pages/user/Register/Register";
@@ -28,6 +29,10 @@ const routes: CustomRouteObject[] = [
       {
         path: RouterEnum.BOOK_USER,
         element: <PrivateRoute element={<BookUser />} />,
+      },
+      {
+        path: RouterEnum.BOOKINGS_USER,
+        element: <PrivateRoute element={<BookingsUser />} />,
       },
       { path: RouterEnum.BOOK, element: <BookDetail /> },
       { path: RouterEnum.GOOGLE_CALLBACK, element: <Login /> },

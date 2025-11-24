@@ -34,6 +34,7 @@ export enum RouterEnum {
   ADD_BOOK = "/add-book",
   BOOK = "/book/:id",
   BOOK_USER = "/books/:userId",
+  BOOKINGS_USER = "/bookings/user/:userId",
   HOME = "/",
 
   GOOGLE_CALLBACK = "/auth/google/callback",
