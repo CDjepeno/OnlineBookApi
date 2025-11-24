@@ -5,7 +5,6 @@ import { getBookingsByUser } from "../../../services/booking.service";
 
 function BookingListUserHook() {
   const { userId } = useParams<{ userId: string }>();
-  console.log("userId", userId)
 
   const {
     data: bookings = [],
@@ -19,10 +18,8 @@ function BookingListUserHook() {
     },
     enabled: Boolean(userId),
   });
-  console.log(bookings)
 
   return { bookings, isPending, error };
 }
 
 export default BookingListUserHook;
-
