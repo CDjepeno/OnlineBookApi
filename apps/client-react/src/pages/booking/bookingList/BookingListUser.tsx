@@ -6,14 +6,7 @@ import { AuthContextType } from "../../../types/user/auth.context.type";
 import { formatDate } from "../../../utils/formatDate";
 import BookingListUserHook from "./BookingListUserHook";
 
-const headCells = [
-  "N° de réservation",
-  "N° de livre",
-  "Titre",
-  "Date de début",
-  "Date de fin",
-  "Couverture",
-];
+const headCells = ["Titre", "Couverture", "Date de début", "Date de fin"];
 
 export default function BookingListUser() {
   const { user } = useContext(AuthContext) as AuthContextType;
@@ -55,17 +48,15 @@ export default function BookingListUser() {
   const rows =
     bookings.map((booking) => ({
       cells: [
-        booking.bookingId,
-        booking.bookId,
         booking.title,
-        formatDate(booking.startAt),
-        formatDate(booking.endAt),
         <img
           key={`cover-${booking.bookId}`}
           src={booking.coverUrl}
           alt={`Couverture du livre ${booking.title}`}
           style={{ width: "50px", height: "30px", objectFit: "cover" }}
         />,
+        formatDate(booking.startAt),
+        formatDate(booking.endAt),
       ],
     })) || [];
 
