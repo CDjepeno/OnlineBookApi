@@ -10,3 +10,12 @@ export interface AddBookingInput {
   startAt: string;
   endAt: string;
 }
+
+export type GetBookingUserResponse = {
+  bookingId: number;
+  bookId: number;
+  title: string;
+  coverUrl: string;
+  startAt: string;
+  endAt: string;
+};
