@@ -61,12 +61,32 @@ export class BookRepositoryTypeorm implements BookRepository {
 
   async getBooksByUser(userId: number): Promise<GetBooksByUserResponse[]> {
     try {
-      const books = await this.bookRepository.find({
-        where: { userId },
-        order: { id: 'DESC' },
-      });
-
-      return books;
+      return await this.bookRepository
+        .createQueryBuilder('book')
+        .select([
+          'book.id AS id',
+          'book.title AS title',
+          'book.description AS description',
+          'book.author AS author',
+          'book.releaseAt AS releaseAt',
+          'book.coverUrl AS coverUrl',
+          'book.userId AS userId',
+          'book.created_at AS created_at',
+          'book.updated_at AS updated_at',
+          `
+        CASE WHEN EXISTS (
+          SELECT 1
+          FROM bookings b
+          WHERE b.bookId = book.id
+          AND b.startAt > NOW()
+        )
+        THEN TRUE ELSE FALSE END
+        AS hasFutureReservations
+        `,
+        ])
+        .where('book.userId = :userId', { userId })
+        .orderBy('book.created_at', 'DESC')
+        .getRawMany();
     } catch (error) {
       handleDatabaseError(error);
     }
