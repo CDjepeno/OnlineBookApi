@@ -1,4 +1,8 @@
-import { NotFoundException } from 'src/domaine/errors/onlineBook.error';
+import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
+import {
+  InternalServerException,
+  NotFoundException,
+} from 'src/domaine/errors/onlineBook.error';
 import { BookingRepository } from '../../repositories/booking.repository';
 import { GetBookingDatesByBookIdRequest } from './getBookingDatesByBookId.request';
 import { GetBookingDatesByBookIdResponse } from './getBookingDatesByBookId.response';
@@ -9,21 +13,23 @@ export class GetBookingDatesByBookIdUseCase {
   async execute(
     request: GetBookingDatesByBookIdRequest,
   ): Promise<GetBookingDatesByBookIdResponse[]> {
-    const { bookId } = request;
-
-    const bookings = await this.bookingRepository.findBookingsByBookId(bookId);
-
-    if (!bookings || bookings.length === 0) {
-      throw new NotFoundException(
-        `Aucune réservation trouvée pour le livre avec l'ID ${bookId}`,
+    try {
+      return await this.bookingRepository.findBookingsByBookId(request.bookId);
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === ErrorsMessagesEnum.NOT_FOUND) {
+          throw new NotFoundException('Aucun Livre trouvé.');
+        }
+        if (error.message === ErrorsMessagesEnum.DATABASE_ERROR) {
+          throw new InternalServerException('Erreur de base de données.');
+        }
+        throw new InternalServerException(
+          'Une erreur interne est survenue lors de la récupération du livre.',
+        );
+      }
+      throw new InternalServerException(
+        'Erreur inconnue. Impossible de récupérer le livre.',
       );
     }
-
-    return bookings.map((b) => ({
-      id: b.id,
-      startAt: b.startAt,
-      endAt: b.endAt,
-      userId: b.userId,
-    }));
   }
 }

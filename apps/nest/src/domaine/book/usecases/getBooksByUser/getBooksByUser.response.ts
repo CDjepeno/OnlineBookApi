@@ -7,4 +7,5 @@ export class GetBooksByUserResponse {
   coverUrl: string;
   created_at?: Date;
   update_at?: Date;
+  hasFutureReservations: boolean;
 }
