@@ -30,6 +30,7 @@ export type GetBooksByUserResponse = {
   author: string;
   releaseAt: string;
   coverUrl: string;
+  hasFutureReservations: boolean | string
 };
 
 export type AddBookResponse = {
