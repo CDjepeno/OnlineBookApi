@@ -13,6 +13,7 @@ import {
   IconButton,
   Modal,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useCallback, useContext, useState } from "react";
@@ -110,39 +111,66 @@ export default function BookListUser() {
   );
 
   const rows =
-    books?.map((book) => ({
-      cells: [
-        book.title,
-        book.author,
-        book.description,
-        formatDate(book.releaseAt),
-        <img
-          key={`cover-${book.id}`}
-          src={book.coverUrl}
-          alt={`Couverture du livre ${book.title}`}
-          style={{ width: "50px", height: "30px", objectFit: "cover" }}
-        />,
-        <Stack key={`actions-${book.id}`} direction="row" justifyContent="end">
-          <IconButton
-            onClick={() => editBook(book)}
-            aria-label={`Modifier le livre ${book.title}`}
-            size="small"
+    books?.map((book) => {
+      const hasReservations = String(book.hasFutureReservations) === "1";
+
+      const deleteTooltipMessage = hasReservations
+        ? "Suppression désactivée pour ce livre"
+        : `Supprimer le livre ${book.title}`;
+
+      return {
+        cells: [
+          book.title,
+          book.author,
+          book.description,
+          formatDate(book.releaseAt),
+          <img
+            key={`cover-${book.id}`}
+            src={book.coverUrl}
+            alt={`Couverture du livre ${book.title}`}
+            style={{ width: "50px", height: "30px", objectFit: "cover" }}
+          />,
+          <Stack
+            key={`actions-${book.id}`}
+            direction="row"
+            justifyContent="end"
           >
-            <EditTwoToneIcon />
-          </IconButton>
-          <IconButton
-            onClick={() =>
-              confirmDeleteBook({ id: book.id, title: book.title })
-            }
-            aria-label={`Supprimer le livre ${book.title}`}
-            size="small"
-            color="error"
-          >
-            <DeleteTwoToneIcon />
-          </IconButton>
-        </Stack>,
-      ],
-    })) || [];
+            <IconButton
+              onClick={() => editBook(book)}
+              aria-label={`Modifier le livre ${book.title}`}
+              size="small"
+            >
+              <EditTwoToneIcon />
+            </IconButton>
+            <Tooltip title={deleteTooltipMessage} arrow>
+              <span>
+                <IconButton
+                  onClick={() =>
+                    !hasReservations &&
+                    confirmDeleteBook({ id: book.id, title: book.title })
+                  }
+                  aria-label={`Supprimer le livre ${book.title}`}
+                  size="small"
+                  color="error"
+                  disabled={hasReservations}
+                  sx={{
+                    opacity: hasReservations ? 0.4 : 1,
+                    cursor: hasReservations ? "not-allowed" : "pointer",
+                  }}
+                  title={
+                    hasReservations
+                      ? "Ce livre ne peut pas être supprimé car il a des réservations à venir"
+                      : ""
+                  }
+                >
+                  <DeleteTwoToneIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
+          </Stack>,
+        ],
+      };
+    }) || [];
 
   if (isPending) {
     return renderCenteredContent(<CircularProgress />);
