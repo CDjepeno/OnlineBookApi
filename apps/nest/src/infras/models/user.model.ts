@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsString,
   Length,
@@ -17,6 +18,7 @@ import {
 } from 'typeorm';
 import { Book } from './book.model';
 import { Booking } from './booking.model';
+import { Sexe } from 'src/domaine/enums/sexe.enum';
 
 @Entity()
 export class User {
@@ -25,7 +27,7 @@ export class User {
 
   @Column('varchar', { unique: true })
   @IsEmail()
-  @IsNotEmpty({ message: 'The email is required' })
+  @IsNotEmpty({ message: "L'email est requis" })
   email: string;
 
   @Column({ nullable: true })
@@ -33,7 +35,7 @@ export class User {
   @Length(6, 24)
   @Matches(/^(?=.*?[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-_]).{8,}$/, {
     message:
-      'Password should have 1 upper case, 1 lowercase letter, 1 number, and 1 special character.',
+      'Le mot de passe doit contenir 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial.',
   })
   password: string;
 
@@ -44,6 +46,14 @@ export class User {
   @Column({ nullable: true })
   @IsString()
   phone: string;
+
+  @Column({
+    type: 'enum',
+    enum: Sexe,
+    nullable: true,
+  })
+  @IsEnum(Sexe, { message: 'Le sexe doit être homme, femme ou autre' })
+  sexe: Sexe;
 
   @OneToMany(() => Book, (book) => book.user)
   books: Book[];

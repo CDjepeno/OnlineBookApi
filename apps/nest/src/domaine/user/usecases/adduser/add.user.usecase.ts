@@ -36,6 +36,7 @@ export class AddUserUseCase {
         request.email,
         request.password,
         request.phone,
+        request.sexe
       );
 
       await this.usersRepository.signUp(user);
