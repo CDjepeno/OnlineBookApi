@@ -18,6 +18,7 @@ export class GetCurrentUserUseCase {
         name: user.name,
         email: user.email,
         phone: user.phone,
+        sexe: user.sexe
       };
 
       return responses;

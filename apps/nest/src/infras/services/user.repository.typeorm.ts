@@ -42,6 +42,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
       user.password = addUserRequest.password;
       user.name = addUserRequest.name;
       user.phone = addUserRequest.phone;
+      user.sexe = addUserRequest.sexe;
 
       return await this.repository.save(user);
     } catch (error) {
@@ -96,6 +97,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
         name: userEntity.name,
         email: userEntity.email,
         phone: userEntity.phone,
+        sexe: userEntity.sexe
       };
 
       return response;
