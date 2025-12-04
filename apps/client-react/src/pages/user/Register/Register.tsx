@@ -1,7 +1,14 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { IconButton, InputAdornment } from "@mui/material";
+import {
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -13,6 +20,7 @@ import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import { Controller } from "react-hook-form";
 import FormInput from "../../../components/FormInput";
+import { Sexe } from "../../../enum/sexe.enum";
 import RegisterHook from "./Register.hook";
 
 export default function Register() {
@@ -69,6 +77,14 @@ export default function Register() {
             </Grid>
             <Grid item xs={12}>
               <FormInput
+                name="phone"
+                label="Numéro de téléphone"
+                control={control}
+                errors={errors}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormInput
                 name="email"
                 label="Email"
                 errors={errors}
@@ -76,12 +92,27 @@ export default function Register() {
               />
             </Grid>
             <Grid item xs={12}>
-              <FormInput
-                name="phone"
-                label="Numéro de téléphone"
-                control={control}
-                errors={errors}
-              />
+              <FormControl fullWidth error={!!errors.sexe}>
+                <InputLabel id="sexe-label">Sexe</InputLabel>
+
+                <Controller
+                  name="sexe"
+                  control={control}
+                  render={({ field }) => (
+                    <Select {...field} labelId="sexe-label" label="Sexe">
+                      <MenuItem value="">Sélectionner</MenuItem>
+                      <MenuItem value={Sexe.HOMME}>Homme</MenuItem>
+                      <MenuItem value={Sexe.FEMME}>Femme</MenuItem>
+                    </Select>
+                  )}
+                />
+
+                {errors.sexe && (
+                  <Typography color="error" variant="caption">
+                    {errors.sexe.message}
+                  </Typography>
+                )}
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               <Controller
