@@ -11,11 +11,13 @@ import { Booking } from '../models/booking.model';
 import { User } from '../models/user.model';
 import { BookRepositoryTypeorm } from './book.repository.typeorm';
 import { BookingRepositoryTypeorm } from './booking.repository.typeorm';
+import { ContactRepositoryTypeorm } from './contact.repository.typeorm';
 import { UserRepositoryTypeorm } from './user.repository.typeorm';
+import { Contact } from '../models/contact.model';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Book, Booking]),
+    TypeOrmModule.forFeature([User, Book, Booking, Contact]),
     ConfigModule,
     NodemailerModules,
     AwsS3Module,
@@ -28,6 +30,7 @@ import { UserRepositoryTypeorm } from './user.repository.typeorm';
     UserRepositoryTypeorm,
     BookRepositoryTypeorm,
     BookingRepositoryTypeorm,
+    ContactRepositoryTypeorm,
     NodemailerClient,
     ConfigService,
     JwtAuthGuard,
@@ -36,6 +39,7 @@ import { UserRepositoryTypeorm } from './user.repository.typeorm';
     UserRepositoryTypeorm,
     BookRepositoryTypeorm,
     BookingRepositoryTypeorm,
+    ContactRepositoryTypeorm,
   ],
 })
 export class RepositoriesModule {}

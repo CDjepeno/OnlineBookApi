@@ -20,6 +20,7 @@ import { GetCurrentUserController } from './user/getCurrentUser/getCurrentUser.c
 import { GetBookingDatesByBookIdController } from './booking/getBookingDatesByBookIdController/getBookingDatesByBookId.controller';
 import { GetBookByNameController } from './book/getBookByName/getBookByName.controller';
 import { GetBookingsByUserController } from './booking/getBookingsByUserController/getBookingsByUser.controller';
+import { AddContactController } from './contact/addContact/addContact.controller';
 
 @Module({
   imports: [
@@ -45,6 +46,8 @@ import { GetBookingsByUserController } from './booking/getBookingsByUserControll
     AddBookingController,
     GetBookingDatesByBookIdController,
     GetBookingsByUserController,
+    
+    AddContactController,
   ],
   providers: [JwtAuthGuard, GoogleAuthGuard, JwtService, AwsS3Client],
 })
