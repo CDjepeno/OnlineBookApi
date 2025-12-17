@@ -9,6 +9,7 @@ import { HomePage } from "./pages/Homepage/HomePage";
 import Login from "./pages/user/Login/Login";
 import Register from "./pages/user/Register/Register";
 import PrivateRoute from "./Private-route";
+import AddContactForm from "./pages/contact/AddContactForm";
 
 type CustomRouteObject = RouteObject & {
   element: JSX.Element;
@@ -36,6 +37,7 @@ const routes: CustomRouteObject[] = [
       },
       { path: RouterEnum.BOOK, element: <BookDetail /> },
       { path: RouterEnum.GOOGLE_CALLBACK, element: <Login /> },
+      { path: RouterEnum.CONTACT, element: < AddContactForm/> },
     ],
   },
 ];

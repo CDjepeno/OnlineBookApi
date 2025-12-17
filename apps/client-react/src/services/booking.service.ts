@@ -2,7 +2,7 @@ import {
   AddBookingInput,
   GetBookingByBookResponse,
   GetBookingUserResponse,
-} from "@/types/booking/GetBookingByBookResponse";
+} from "@/types/booking/booking.types";
 import { AxiosResponse } from "axios";
 import { MethodHttpEnum } from "../enum/enum";
 import { UseRequestApi } from "../request/commons/useRequestApi";

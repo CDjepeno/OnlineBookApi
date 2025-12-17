@@ -1,8 +1,8 @@
-import { GetBookingByBookResponse } from "../../types/booking/GetBookingByBookResponse";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { BookingQueriesKeysEnum } from "../../enum/enum";
 import { getBookingsByBook } from "../../services/booking.service";
+import { GetBookingByBookResponse } from "../../types/booking/booking.types";
 
 function BookBookingHook() {
   const { id } = useParams<{ id: string }>();
@@ -15,7 +15,6 @@ function BookBookingHook() {
     },
     enabled: Boolean(id),
   });
-
 
   return { bookings };
 }

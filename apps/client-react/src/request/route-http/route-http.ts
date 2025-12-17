@@ -18,3 +18,6 @@ export const BOOKINGS_BY_USER_ROUTE = "/bookings/user";
 export const BOOKINGS_BY_BOOK_ROUTE = "/books";
 export const BOOKINGS_ROUTE = "bookings";
 export const BOOKING_ROUTE = "booking/";
+
+// Contact
+export const CONTACT_ROUTE = "/contact"
