@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { RouterEnum } from "../../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../../request/commons/useQueryWorkflowCallback";
-import { registerUser } from "../../../services/user.services";
+import { registerUser } from "../../../services/user.service";
 import {
   RegisterFormInput,
   RegisterResponse,

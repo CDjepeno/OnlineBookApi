@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import { BookingQueriesKeysEnum } from "../../enum/enum";
 import { UseQueryWorkflowCallback } from "../../request/commons/useQueryWorkflowCallback";
 import { createBooking } from "../../services/booking.service";
-import { AddBookingInput } from "../../types/booking/GetBookingByBookResponse";
+import { AddBookingInput } from "../../types/booking/booking.types";
 import { getDisplayErrorMessage } from "../../utils/getDisplayErrorMessage";
 
 function BookAddBookingHook(bookId: string, userId: number | null) {

@@ -7,7 +7,7 @@ import {
   GOOGLE_CALLBACK_ROUTE,
   LOGIN_ROUTE,
 } from "../request/route-http/route-http";
-import { getCurrentUser } from "../services/user.services";
+import { getCurrentUser } from "../services/user.service";
 import { AuthFormInput, GoogleLoginInput } from "../types/user/input.types";
 import {
   CurrentUserResponse,

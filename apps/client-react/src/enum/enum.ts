@@ -38,4 +38,6 @@ export enum RouterEnum {
   HOME = "/",
 
   GOOGLE_CALLBACK = "/auth/google/callback",
+
+  CONTACT = "/contact"
 }
