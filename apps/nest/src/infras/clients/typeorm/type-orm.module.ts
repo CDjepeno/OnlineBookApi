@@ -21,7 +21,11 @@ import { User } from 'src/infras/models/user.model';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         entities: [User, Book, Booking, Contact],
-        synchronize: true,
+        synchronize:
+          configService.get('NODE_ENV', 'development') === 'development',
+        logging: configService.get('NODE_ENV', 'development') === 'development',
+        charset: 'utf8mb4',
+        timezone: 'Z',
       }),
       inject: [ConfigService],
     }),
