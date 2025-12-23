@@ -97,3 +97,4 @@ dist/main.js.map
 dist/tsconfig.build.tsbuildinfo
 src/main.ts
 .env
+.env.docker
