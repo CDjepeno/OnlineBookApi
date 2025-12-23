@@ -6,6 +6,14 @@ services:
     container_name: nest_backend
     env_file:
       - ./.env.docker
+    environment:
+      LOAD_FIXTURES: "true"
+      DB_HOST: mysql-db # ← Définir explicitement aussi
+      DB_PORT: "3306"
+      DB_USERNAME: book_user
+      DB_PASSWORD: Bonjour_12@
+      DB_NAME: book_db
+      NODE_ENV: development
     ports:
       - "8000:8000"
     depends_on:
@@ -14,6 +22,8 @@ services:
     volumes:
       # À retirer en prod si tu ne veux pas monter le code en live
       - ./apps/nest:/app
+      - /app/node_modules
+    restart: unless-stopped
 
   client-react:
     build:
@@ -27,6 +37,7 @@ services:
       - react-node-modules:/app/node_modules
     stdin_open: true
     tty: true
+    restart: unless-stopped
 
   mysql-db:
     image: mysql:8
@@ -34,15 +45,28 @@ services:
     restart: always
     ports:
       - "3307:3306"
-    env_file:
-      - ./.env.docker
+    environment:
+      MYSQL_ROOT_PASSWORD: Bonjour_12@
+      MYSQL_DATABASE: book_db
+      MYSQL_USER: book_user
+      MYSQL_PASSWORD: Bonjour_12@
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-ubook_user",
+          "-pBonjour_12@",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
 volumes:
   mysql-data:
