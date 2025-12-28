@@ -164,4 +164,15 @@ export class UserRepositoryTypeorm implements UsersRepository {
       handleDatabaseError(error);
     }
   }
+
+  async deleteUser(id: number): Promise<void> {
+    try {
+      const result = await this.repository.delete(id);
+      if (result.affected === 0) {
+        throw new NotFoundException(ErrorsMessagesEnum.NOT_FOUND);
+      }
+    } catch (error) {
+      handleDatabaseError(error);
+    }
+  }
 }

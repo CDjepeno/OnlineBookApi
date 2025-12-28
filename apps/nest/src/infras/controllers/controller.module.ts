@@ -16,6 +16,7 @@ import { AddBookingController } from './booking/addBookingController/addBooking.
 import { AddUserController } from './user/addUserController/addUser.controller';
 import { GoogleLoginController } from './user/authController/login-google.controller';
 import { LoginController } from './user/authController/login.controller';
+import { DeleteUserController } from './user/deleteUser/deleteUser.controller';
 import { GetCurrentUserController } from './user/getCurrentUser/getCurrentUser.controller';
 import { GetBookingDatesByBookIdController } from './booking/getBookingDatesByBookIdController/getBookingDatesByBookId.controller';
 import { GetBookByNameController } from './book/getBookByName/getBookByName.controller';
@@ -34,6 +35,7 @@ import { AddContactController } from './contact/addContact/addContact.controller
     LoginController,
     GoogleLoginController,
     GetCurrentUserController,
+    DeleteUserController,
 
     AddBookController,
     GetAllBookController,
