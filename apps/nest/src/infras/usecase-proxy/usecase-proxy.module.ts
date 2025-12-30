@@ -15,6 +15,7 @@ import { AddUserUseCase } from 'src/domaine/user/usecases/adduser/add.user.useca
 import { GetCurrentUserUseCase } from 'src/domaine/user/usecases/auth/get.current.user.usecase';
 import { DeleteUserUseCase } from 'src/domaine/user/usecases/deleteuser/delete.user.usecase';
 import { LoginUserUseCase } from 'src/domaine/user/usecases/getuser/login.user.usecase';
+import { GetUserByIdUseCase } from 'src/domaine/user/usecases/getUserById/getUserById.usecase';
 import { LoginGoogleUseCase } from 'src/domaine/user/usecases/google/login.google.usecase';
 import { AwsS3Client } from '../clients/aws/aws-s3.client';
 import { AwsS3Module } from '../clients/aws/aws-s3.module';
@@ -36,6 +37,7 @@ export class UsecaseProxyModule {
   static LOGIN_GOOGLE_USECASE_PROXY = 'loginGoogleUseCaseProxy';
   static GET_CURRENT_USER_USECASE_PROXY = 'getCurrentUserUseCaseProxy';
   static DELETE_USER_USECASE_PROXY = 'deleteUserUsecaseProxy';
+  static GET_USER_BY_ID_USECASE_PROXY = 'getUserByIdUseCaseProxy';
 
   static ADD_BOOK_USECASE_PROXY = 'addBookUsecaseProxy';
   static GET_ALL_BOOK_USECASE_PROXY = 'getAllBookUsecaseProxy';
@@ -90,6 +92,9 @@ export class UsecaseProxyModule {
           provide: UsecaseProxyModule.DELETE_USER_USECASE_PROXY,
           useFactory: (userRepository: UserRepositoryTypeorm) =>
             new UseCaseProxy(new DeleteUserUseCase(userRepository)),
+          provide: UsecaseProxyModule.GET_USER_BY_ID_USECASE_PROXY,
+          useFactory: (userRepository: UserRepositoryTypeorm) =>
+            new UseCaseProxy(new GetUserByIdUseCase(userRepository)),
         },
         {
           inject: [BookRepositoryTypeorm, AwsS3Client],
@@ -197,6 +202,7 @@ export class UsecaseProxyModule {
         UsecaseProxyModule.LOGIN_GOOGLE_USECASE_PROXY,
         UsecaseProxyModule.GET_CURRENT_USER_USECASE_PROXY,
         UsecaseProxyModule.DELETE_USER_USECASE_PROXY,
+        UsecaseProxyModule.GET_USER_BY_ID_USECASE_PROXY,
 
         UsecaseProxyModule.ADD_BOOK_USECASE_PROXY,
         UsecaseProxyModule.GET_ALL_BOOK_USECASE_PROXY,
