@@ -15,6 +15,7 @@ import { AddUserUseCase } from 'src/domaine/user/usecases/adduser/add.user.useca
 import { GetCurrentUserUseCase } from 'src/domaine/user/usecases/auth/get.current.user.usecase';
 import { LoginUserUseCase } from 'src/domaine/user/usecases/getuser/login.user.usecase';
 import { LoginGoogleUseCase } from 'src/domaine/user/usecases/google/login.google.usecase';
+import { UpdateUserUseCase } from 'src/domaine/user/usecases/updateuser/update.user.usecase';
 import { AwsS3Client } from '../clients/aws/aws-s3.client';
 import { AwsS3Module } from '../clients/aws/aws-s3.module';
 import NodemailerClient from '../clients/nodemailer/nodemailer.client';
@@ -34,6 +35,7 @@ export class UsecaseProxyModule {
   static LOGIN_USER_USECASE_PROXY = 'loginUserUseCaseProxy';
   static LOGIN_GOOGLE_USECASE_PROXY = 'loginGoogleUseCaseProxy';
   static GET_CURRENT_USER_USECASE_PROXY = 'getCurrentUserUseCaseProxy';
+  static UPDATE_USER_USECASE_PROXY = 'updateUserUseCaseProxy';
 
   static ADD_BOOK_USECASE_PROXY = 'addBookUsecaseProxy';
   static GET_ALL_BOOK_USECASE_PROXY = 'getAllBookUsecaseProxy';
@@ -82,6 +84,12 @@ export class UsecaseProxyModule {
           provide: UsecaseProxyModule.GET_CURRENT_USER_USECASE_PROXY,
           useFactory: (userRepository: UserRepositoryTypeorm) =>
             new UseCaseProxy(new GetCurrentUserUseCase(userRepository)),
+        },
+        {
+          inject: [UserRepositoryTypeorm],
+          provide: UsecaseProxyModule.UPDATE_USER_USECASE_PROXY,
+          useFactory: (userRepository: UserRepositoryTypeorm) =>
+            new UseCaseProxy(new UpdateUserUseCase(userRepository)),
         },
         {
           inject: [BookRepositoryTypeorm, AwsS3Client],
@@ -188,6 +196,7 @@ export class UsecaseProxyModule {
         UsecaseProxyModule.LOGIN_USER_USECASE_PROXY,
         UsecaseProxyModule.LOGIN_GOOGLE_USECASE_PROXY,
         UsecaseProxyModule.GET_CURRENT_USER_USECASE_PROXY,
+        UsecaseProxyModule.UPDATE_USER_USECASE_PROXY,
 
         UsecaseProxyModule.ADD_BOOK_USECASE_PROXY,
         UsecaseProxyModule.GET_ALL_BOOK_USECASE_PROXY,

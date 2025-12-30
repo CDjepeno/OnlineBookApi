@@ -97,7 +97,7 @@ export class UserRepositoryTypeorm implements UsersRepository {
         name: userEntity.name,
         email: userEntity.email,
         phone: userEntity.phone,
-        sexe: userEntity.sexe
+        sexe: userEntity.sexe,
       };
 
       return response;
@@ -160,6 +160,62 @@ export class UserRepositoryTypeorm implements UsersRepository {
         email: user.email,
         token,
       };
+    } catch (error) {
+      handleDatabaseError(error);
+    }
+  }
+
+  async updateUser(user: Partial<User>): Promise<void> {
+    try {
+      if (!user.id) {
+        throw new Error(ErrorsMessagesEnum.NOT_FOUND);
+      }
+
+      const existingUser = await this.repository.findOneBy({ id: user.id });
+
+      if (!existingUser) {
+        throw new NotFoundException(ErrorsMessagesEnum.USER_NOT_FOUND);
+      }
+
+      let hasChanges = false;
+
+      if (user.name !== undefined && user.name !== existingUser.name) {
+        existingUser.name = user.name;
+        hasChanges = true;
+      }
+
+      if (user.email !== undefined && user.email !== existingUser.email) {
+        existingUser.email = user.email;
+        hasChanges = true;
+      }
+
+      if (user.phone !== undefined && user.phone !== existingUser.phone) {
+        existingUser.phone = user.phone;
+        hasChanges = true;
+      }
+
+      if (user.sexe !== undefined && user.sexe !== existingUser.sexe) {
+        existingUser.sexe = user.sexe;
+        hasChanges = true;
+      }
+
+      if (user.password) {
+        const isSamePassword = await bcrypt.compare(
+          user.password,
+          existingUser.password,
+        );
+
+        if (!isSamePassword) {
+          existingUser.password = user.password;
+          hasChanges = true;
+        }
+      }
+
+      if (!hasChanges) {
+        return;
+      }
+
+      await this.repository.save(existingUser);
     } catch (error) {
       handleDatabaseError(error);
     }
