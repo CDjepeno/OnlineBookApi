@@ -152,22 +152,8 @@ The database will be automatically seeded with sample data on first startup.
    npm install
    ```
 
-5. **Start MySQL**
-   ```bash
-   # Using Docker
-   docker run -d \
-     --name mysql-book \
-     -e MYSQL_ROOT_PASSWORD=Bonjour_12@ \
-     -e MYSQL_DATABASE=book_db \
-     -e MYSQL_USER=book_user \
-     -e MYSQL_PASSWORD=Bonjour_12@ \
-     -p 3307:3306 \
-     mysql:8
 
-   # Or use your local MySQL installation
-   ```
-
-6. **Run the applications**
+5. **Run the applications**
    ```bash
    # Terminal 1 - Backend
    cd apps/nest
@@ -178,44 +164,12 @@ The database will be automatically seeded with sample data on first startup.
    npm run dev
    ```
 
-7. **Access the application**
+6. **Access the application**
    - Frontend: http://localhost:5173
    - Backend API: http://localhost:3000 (or your configured port)
 
 ## 🏗️ Project Structure
 
-```
-OnlineBookApi/
-├── apps/
-│   ├── nest/                 # Backend (NestJS)
-│   │   ├── src/
-│   │   │   ├── domaine/      # Business logic (Clean Architecture)
-│   │   │   │   ├── user/     # User domain
-│   │   │   │   ├── book/     # Book domain
-│   │   │   │   ├── booking/  # Booking domain
-│   │   │   │   └── contact/  # Contact domain
-│   │   │   └── infras/       # Infrastructure layer
-│   │   │       ├── controllers/  # HTTP controllers
-│   │   │       ├── services/     # Repository implementations
-│   │   │       ├── models/       # TypeORM entities
-│   │   │       ├── clients/      # External services (S3, Email)
-│   │   │       └── common/       # Guards, filters, decorators
-│   │   └── test/             # Tests
-│   │
-│   └── client-react/         # Frontend (React)
-│       ├── src/
-│       │   ├── pages/        # Page components
-│       │   ├── components/   # Reusable components
-│       │   ├── services/     # API services
-│       │   ├── request/      # API client configuration
-│       │   ├── context/      # React contexts
-│       │   └── types/        # TypeScript types
-│       └── public/           # Static assets
-│
-├── docker-compose.yml        # Docker orchestration
-├── CLAUDE.md                 # AI assistant documentation
-└── README.md                 # This file
-```
 
 ## 📄 License
 
