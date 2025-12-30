@@ -13,4 +13,5 @@ export interface UsersRepository {
   loginOrSignUpWithGoogle(idToken: string): Promise<LoginGoogleResponse>;
 
   getUserById(id: number): Promise<User>;
+  deleteUser(id: number): Promise<void>;
 }

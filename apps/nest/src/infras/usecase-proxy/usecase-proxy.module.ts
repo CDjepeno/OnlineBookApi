@@ -13,6 +13,7 @@ import { GetBookingsByUserUseCase } from 'src/domaine/booking/usecases/getBookin
 import { AddContactUseCase } from 'src/domaine/contact/usecases/addContact/addContact.usecase';
 import { AddUserUseCase } from 'src/domaine/user/usecases/adduser/add.user.usecase';
 import { GetCurrentUserUseCase } from 'src/domaine/user/usecases/auth/get.current.user.usecase';
+import { DeleteUserUseCase } from 'src/domaine/user/usecases/deleteuser/delete.user.usecase';
 import { LoginUserUseCase } from 'src/domaine/user/usecases/getuser/login.user.usecase';
 import { GetUserByIdUseCase } from 'src/domaine/user/usecases/getUserById/getUserById.usecase';
 import { LoginGoogleUseCase } from 'src/domaine/user/usecases/google/login.google.usecase';
@@ -35,6 +36,7 @@ export class UsecaseProxyModule {
   static LOGIN_USER_USECASE_PROXY = 'loginUserUseCaseProxy';
   static LOGIN_GOOGLE_USECASE_PROXY = 'loginGoogleUseCaseProxy';
   static GET_CURRENT_USER_USECASE_PROXY = 'getCurrentUserUseCaseProxy';
+  static DELETE_USER_USECASE_PROXY = 'deleteUserUsecaseProxy';
   static GET_USER_BY_ID_USECASE_PROXY = 'getUserByIdUseCaseProxy';
 
   static ADD_BOOK_USECASE_PROXY = 'addBookUsecaseProxy';
@@ -87,6 +89,9 @@ export class UsecaseProxyModule {
         },
         {
           inject: [UserRepositoryTypeorm],
+          provide: UsecaseProxyModule.DELETE_USER_USECASE_PROXY,
+          useFactory: (userRepository: UserRepositoryTypeorm) =>
+            new UseCaseProxy(new DeleteUserUseCase(userRepository)),
           provide: UsecaseProxyModule.GET_USER_BY_ID_USECASE_PROXY,
           useFactory: (userRepository: UserRepositoryTypeorm) =>
             new UseCaseProxy(new GetUserByIdUseCase(userRepository)),
@@ -196,6 +201,7 @@ export class UsecaseProxyModule {
         UsecaseProxyModule.LOGIN_USER_USECASE_PROXY,
         UsecaseProxyModule.LOGIN_GOOGLE_USECASE_PROXY,
         UsecaseProxyModule.GET_CURRENT_USER_USECASE_PROXY,
+        UsecaseProxyModule.DELETE_USER_USECASE_PROXY,
         UsecaseProxyModule.GET_USER_BY_ID_USECASE_PROXY,
 
         UsecaseProxyModule.ADD_BOOK_USECASE_PROXY,
