@@ -7,6 +7,9 @@ export const LOGIN_ROUTE = "/auth/login";
 export const REGISTER_ROUTE = "/register";
 export const GOOGLE_CALLBACK_ROUTE = "/auth/google/callback";
 
+// User
+export const USER_ROUTE = "/user";
+
 // Books
 export const BOOKS_ROUTE = "/books";
 export const BOOK_ROUTE = "/book";

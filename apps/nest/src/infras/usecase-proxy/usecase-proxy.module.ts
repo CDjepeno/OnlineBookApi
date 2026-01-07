@@ -89,12 +89,16 @@ export class UsecaseProxyModule {
         },
         {
           inject: [UserRepositoryTypeorm],
-          provide: UsecaseProxyModule.DELETE_USER_USECASE_PROXY,
-          useFactory: (userRepository: UserRepositoryTypeorm) =>
-            new UseCaseProxy(new DeleteUserUseCase(userRepository)),
           provide: UsecaseProxyModule.GET_USER_BY_ID_USECASE_PROXY,
           useFactory: (userRepository: UserRepositoryTypeorm) =>
             new UseCaseProxy(new GetUserByIdUseCase(userRepository)),
+        },
+
+        {
+          inject: [UserRepositoryTypeorm],
+          provide: UsecaseProxyModule.DELETE_USER_USECASE_PROXY,
+          useFactory: (userRepository: UserRepositoryTypeorm) =>
+            new UseCaseProxy(new DeleteUserUseCase(userRepository)),
         },
         {
           inject: [BookRepositoryTypeorm, AwsS3Client],
