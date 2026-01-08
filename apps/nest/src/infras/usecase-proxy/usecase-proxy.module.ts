@@ -95,6 +95,13 @@ export class UsecaseProxyModule {
           useFactory: (userRepository: UserRepositoryTypeorm) =>
             new UseCaseProxy(new GetUserByIdUseCase(userRepository)),
         },
+
+        {
+          inject: [UserRepositoryTypeorm],
+          provide: UsecaseProxyModule.DELETE_USER_USECASE_PROXY,
+          useFactory: (userRepository: UserRepositoryTypeorm) =>
+            new UseCaseProxy(new DeleteUserUseCase(userRepository)),
+        },
         {
           inject: [UserRepositoryTypeorm],
           provide: UsecaseProxyModule.DELETE_USER_USECASE_PROXY,

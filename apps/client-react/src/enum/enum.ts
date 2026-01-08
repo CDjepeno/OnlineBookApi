@@ -5,7 +5,7 @@ export enum BookQueriesKeysEnum {
   LOGIN = "login",
   ADD_BOOK = "addBook",
   Book = "book",
-  BOOK_SEARCH = "bookSearch"
+  BOOK_SEARCH = "bookSearch",
 }
 
 export enum BookingQueriesKeysEnum {
@@ -16,6 +16,7 @@ export enum BookingQueriesKeysEnum {
 
 export enum UserQueriesKeysEnum {
   LOGIN = "login",
+  GET_USER_BY_ID = "getUserById",
 }
 
 // Method HTTP
@@ -29,15 +30,14 @@ export enum MethodHttpEnum {
 
 // Router
 export enum RouterEnum {
-  LOGIN = "/login",
+  HOME = "/",
   REGISTER = "/register",
+  GOOGLE_CALLBACK = "/auth/google/callback",
+  LOGIN = "/login",
+  PROFILE = "/profile/:userId",
   ADD_BOOK = "/add-book",
   BOOK = "/book/:id",
   BOOK_USER = "/books/:userId",
   BOOKINGS_USER = "/bookings/user/:userId",
-  HOME = "/",
-
-  GOOGLE_CALLBACK = "/auth/google/callback",
-
-  CONTACT = "/contact"
+  CONTACT = "/contact",
 }

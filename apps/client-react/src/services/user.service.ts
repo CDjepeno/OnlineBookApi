@@ -3,6 +3,7 @@ import { UseRequestApi } from "../request/commons/useRequestApi";
 import {
   CURRENT_USER_ROUTE,
   REGISTER_ROUTE,
+  USER_ROUTE,
 } from "../request/route-http/route-http";
 import { RegisterFormInput, RegisterResponse } from "../types/user/form.types";
 import { CurrentUserResponse } from "../types/user/response.types";
@@ -23,6 +24,18 @@ export const getCurrentUser = async () => {
   const response = await UseRequestApi<CurrentUserResponse, unknown>({
     method: MethodHttpEnum.GET,
     path: CURRENT_USER_ROUTE,
+    includeAuthorizationHeader: true,
+  });
+
+  return response;
+};
+
+export const getUserById = async (
+  userId: string
+): Promise<CurrentUserResponse> => {
+  const response = await UseRequestApi<CurrentUserResponse, unknown>({
+    method: MethodHttpEnum.GET,
+    path: `${USER_ROUTE}/${userId}`,
     includeAuthorizationHeader: true,
   });
 

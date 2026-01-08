@@ -1,5 +1,7 @@
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+
 import {
   Box,
   Button,
@@ -198,12 +200,12 @@ export default function BookListUser() {
         alignItems="center"
         mb={3}
       >
-        <Typography component="h1" variant="h5" mb="30px">
-          Livres de{" "}
-          {user?.name &&
-            user.name.charAt(0).toUpperCase() +
-              user.name.slice(1).toLocaleLowerCase()}
-        </Typography>
+        <Box display="flex" alignItems="center">
+          <MenuBookIcon sx={{ mr: 2, color: "primary.main" }} />
+          <Typography component="h1" variant="h5">
+            Mes livres ({books.length})
+          </Typography>
+        </Box>
         <NavLink
           to={`${BOOKINGS_BY_USER_ROUTE}/${user?.id}`}
           style={{ textDecoration: "none", color: "inherit" }}
