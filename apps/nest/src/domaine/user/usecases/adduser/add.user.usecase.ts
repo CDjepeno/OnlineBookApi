@@ -1,13 +1,13 @@
 import { HttpException } from '@nestjs/common';
 import { ErrorsMessagesEnum } from 'src/domaine/enums/errors.enums';
 import {
-  BadRequestException,
   ConflictException,
   InternalServerException,
 } from 'src/domaine/errors/onlineBook.error';
 import NodemailerClient from 'src/infras/clients/nodemailer/nodemailer.client';
 import { User } from '../../entities/User.entity';
 import { UsersRepository } from '../../repositories/user.repository';
+import { Phone } from '../../value-objects/phone.value-object';
 import { AddUserRequest } from './add.user.request';
 import { AddUserResponseType } from './add.user.response';
 
@@ -19,10 +19,7 @@ export class AddUserUseCase {
 
   async execute(request: AddUserRequest): Promise<AddUserResponseType> {
     try {
-      const regexPhone = /^((\+)33)|(0)[6-7](\d{2}){4}$/;
-      if (!regexPhone.test(request.phone)) {
-        throw new BadRequestException("Numero n'est pas valide");
-      }
+      const phone = new Phone(request.phone);
 
       await this.nodemailerClient.sendMail({
         to: request.email,
@@ -35,8 +32,8 @@ export class AddUserUseCase {
         request.name,
         request.email,
         request.password,
-        request.phone,
-        request.sexe
+        phone.getValue(),
+        request.sexe,
       );
 
       await this.usersRepository.signUp(user);

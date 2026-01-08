@@ -7,8 +7,10 @@ import {
   Length,
   Matches,
 } from 'class-validator';
+import { Sexe } from 'src/domaine/enums/sexe.enum';
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -18,7 +20,6 @@ import {
 } from 'typeorm';
 import { Book } from './book.model';
 import { Booking } from './booking.model';
-import { Sexe } from 'src/domaine/enums/sexe.enum';
 
 @Entity()
 export class User {
@@ -68,10 +69,32 @@ export class User {
   updated_at: Date;
 
   @BeforeInsert()
-  async setPassword() {
+  async hashPasswordOnInsert() {
+    if (!this.password) return;
+    await this.hashPassword();
+  }
+
+  @BeforeUpdate()
+  async hashPasswordOnUpdates() {
+    if (this.password && !this.isPasswordHashed()) {
+      await this.hashPassword();
+    }
+  }
+
+
+
+  private async hashPassword() {
     if (!this.password) return;
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
     this.password = await bcrypt.hash(this.password, salt);
+  }
+
+  private isPasswordHashed(): boolean {
+    return /^\$2[aby]\$/.test(this.password);
+  }
+
+  async comparePassword(plainPassword: string): Promise<boolean> {
+    return bcrypt.compare(plainPassword, this.password);
   }
 }
