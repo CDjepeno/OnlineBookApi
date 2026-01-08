@@ -17,7 +17,6 @@ export enum BookingQueriesKeysEnum {
 export enum UserQueriesKeysEnum {
   LOGIN = "login",
   GET_USER_BY_ID = "getUserById",
-  // CURRENT_USER = "currentUser",
 }
 
 // Method HTTP
