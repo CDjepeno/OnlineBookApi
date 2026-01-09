@@ -6,7 +6,11 @@ import {
   USER_ROUTE,
 } from "../request/route-http/route-http";
 import { RegisterFormInput, RegisterResponse } from "../types/user/form.types";
-import { CurrentUserResponse } from "../types/user/response.types";
+import {
+  CurrentUserResponse,
+  UpdateUserDto,
+  UpdateUserResponse,
+} from "../types/user/response.types";
 
 export const registerUser = async (
   input: RegisterFormInput
@@ -36,6 +40,19 @@ export const getUserById = async (
   const response = await UseRequestApi<CurrentUserResponse, unknown>({
     method: MethodHttpEnum.GET,
     path: `${USER_ROUTE}/${userId}`,
+    includeAuthorizationHeader: true,
+  });
+
+  return response;
+};
+
+export const updateUser = async (
+  data: UpdateUserDto
+): Promise<UpdateUserResponse> => {
+  const response = await UseRequestApi<UpdateUserResponse, UpdateUserDto>({
+    method: MethodHttpEnum.PUT,
+    path: `${USER_ROUTE}/profile`,
+    params: data,
     includeAuthorizationHeader: true,
   });
 
