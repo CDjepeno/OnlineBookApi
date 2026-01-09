@@ -38,7 +38,6 @@ export function ProfileEditHook(userId: string) {
         queryKey: [UserQueriesKeysEnum.GET_USER_BY_ID, userId],
       });
 
-      // Rediriger vers le profil
       navigate(`/profile/${userId}`);
     },
 

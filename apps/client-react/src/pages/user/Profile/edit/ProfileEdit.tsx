@@ -26,13 +26,11 @@ import ProfileEditHook from "./ProfileEdit.hook";
 export function ProfileEdit() {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
-  // const { user: currentUser } = useContext(AuthContext) as AuthContextType;
   const { user, isLoading } = ProfileHook();
   const { submit, handleSubmit, control, reset, errors } = ProfileEditHook(
     userId!
   );
 
-  // Pré-remplir le formulaire quand les données sont chargées
   useEffect(() => {
     if (user) {
       reset({
@@ -47,19 +45,6 @@ export function ProfileEdit() {
   const handleCancel = () => {
     navigate(`/profile/${userId}`);
   };
-
-  // Vérifier si c'est le profil de l'utilisateur connecté
-  // const isOwnProfile = currentUser?.id === userId;
-
-  // if (!isOwnProfile) {
-  //   return (
-  //     <Container sx={{ mt: 4, textAlign: "center" }}>
-  //       <Typography variant="h6" color="error">
-  //         Vous ne pouvez modifier que votre propre profil
-  //       </Typography>
-  //     </Container>
-  //   );
-  // }
 
   if (isLoading || !user) {
     return (
@@ -79,7 +64,6 @@ export function ProfileEdit() {
 
           <Box component="form" onSubmit={handleSubmit(submit)} sx={{ mt: 3 }}>
             <Grid container spacing={3}>
-              {/* Nom */}
               <Grid item xs={12}>
                 <Controller
                   name="name"
@@ -98,7 +82,6 @@ export function ProfileEdit() {
                 />
               </Grid>
 
-              {/* Email */}
               <Grid item xs={12}>
                 <Controller
                   name="email"
@@ -124,7 +107,6 @@ export function ProfileEdit() {
                 />
               </Grid>
 
-              {/* Téléphone */}
               <Grid item xs={12}>
                 <Controller
                   name="phone"
@@ -142,7 +124,6 @@ export function ProfileEdit() {
                 />
               </Grid>
 
-              {/* Genre */}
               <Grid item xs={12}>
                 <Controller
                   name="sexe"
@@ -176,7 +157,6 @@ export function ProfileEdit() {
                 />
               </Grid>
 
-              {/* Boutons */}
               <Grid item xs={12}>
                 <Box display="flex" gap={2}>
                   <Button
