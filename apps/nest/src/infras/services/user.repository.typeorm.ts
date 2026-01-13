@@ -165,7 +165,6 @@ export class UserRepositoryTypeorm implements UsersRepository {
     }
   }
 
-
   async updateUser(user: Partial<User>): Promise<void> {
     try {
       if (!user.id) {
@@ -220,10 +219,9 @@ export class UserRepositoryTypeorm implements UsersRepository {
     } catch (error) {
       handleDatabaseError(error);
     }
+  }
 
-}
-
- async deleteUser(id: number): Promise<void> {
+  async deleteUser(id: number): Promise<void> {
     try {
       const result = await this.repository.delete(id);
       if (result.affected === 0) {
@@ -233,3 +231,4 @@ export class UserRepositoryTypeorm implements UsersRepository {
       handleDatabaseError(error);
     }
   }
+}

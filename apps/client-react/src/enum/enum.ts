@@ -41,3 +41,4 @@ export enum RouterEnum {
   BOOKINGS_USER = "/bookings/user/:userId",
   CONTACT = "/contact",
 }
+

@@ -5,9 +5,11 @@ import EmailIcon from "@mui/icons-material/Email";
 import PersonIcon from "@mui/icons-material/Person";
 import PhoneIcon from "@mui/icons-material/Phone";
 
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Avatar,
   Box,
+  Button,
   Card,
   Chip,
   CircularProgress,
@@ -15,9 +17,11 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { ProfileHook } from "./Profile.hook";
 
 export function Profile() {
+  const navigate = useNavigate();
   const { user, isLoading, error } = ProfileHook();
 
   if (isLoading) {
@@ -75,6 +79,17 @@ export function Profile() {
               size="small"
               sx={{ mb: 2 }}
             />
+            <Box sx={{ mt: 2 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<EditIcon />}
+                onClick={() => navigate(`/profile/edit/${user.id}`)}
+                fullWidth
+              >
+                Modifier mon profil
+              </Button>
+            </Box>
           </Card>
         </Grid>
 

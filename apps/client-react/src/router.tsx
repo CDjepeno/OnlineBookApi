@@ -11,6 +11,7 @@ import Login from "./pages/user/Login/Login";
 import { Profile } from "./pages/user/Profile/Profile";
 import Register from "./pages/user/Register/Register";
 import PrivateRoute from "./Private-route";
+import { ProfileEdit } from "./pages/user/Profile/edit/ProfileEdit";
 
 type CustomRouteObject = RouteObject & {
   element: JSX.Element;
@@ -28,6 +29,10 @@ const routes: CustomRouteObject[] = [
       {
         path: RouterEnum.PROFILE,
         element: <PrivateRoute element={<Profile />} />,
+      },
+       {
+        path: "/profile/edit/:userId",
+        element: <PrivateRoute element={<ProfileEdit />} />,
       },
 
       {
