@@ -63,7 +63,7 @@ function BookAddForm() {
           sx={{ mt: 3 }}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormInput
                 name="title"
                 label="Titre"
@@ -71,7 +71,7 @@ function BookAddForm() {
                 errors={errors}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormInput
                 name="description"
                 label="Description"
@@ -79,7 +79,7 @@ function BookAddForm() {
                 errors={errors}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormInput
                 name="author"
                 label="Auteur"
@@ -88,7 +88,7 @@ function BookAddForm() {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Controller
                 name="releaseAt"
                 control={control}
@@ -113,7 +113,7 @@ function BookAddForm() {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Box
                 sx={{
                   width: "100%",

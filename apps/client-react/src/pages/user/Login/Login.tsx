@@ -20,11 +20,7 @@ export default function Login() {
   return (
     <Grid container component="main" sx={{ height: "100vh" }} maxWidth="xs">
       <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
-        sx={{
+        size={{ sm: 4, md: 7 }}sx={{
           backgroundImage: "url(https://source.unsplash.com/random?wallpapers)",
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
@@ -35,7 +31,7 @@ export default function Login() {
           backgroundPosition: "center",
         }}
       />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+      <Grid size={{ xs: 12, sm: 8, md: 5 }}component={Paper} elevation={6} square>
         <Box
           sx={{
             my: 8,

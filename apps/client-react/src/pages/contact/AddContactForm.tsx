@@ -37,7 +37,7 @@ function AddContactForm() {
           sx={{ mt: 3 }}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormInput
                 name="name"
                 label="Nom"
@@ -46,7 +46,7 @@ function AddContactForm() {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormInput
                 name="email"
                 label="Email"
@@ -55,7 +55,7 @@ function AddContactForm() {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormInput
                 name="message"
                 label="Message"

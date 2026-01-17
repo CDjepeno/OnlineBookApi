@@ -73,7 +73,7 @@ function BookUpdateForm({ bookUpdate, onClose }: BookUpdateFormProps) {
           sx={{ mt: 3 }}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormInput
                 name="title"
                 label="Titre"
@@ -81,7 +81,7 @@ function BookUpdateForm({ bookUpdate, onClose }: BookUpdateFormProps) {
                 errors={errors}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormInput
                 name="author"
                 label="Auteur"
@@ -89,7 +89,7 @@ function BookUpdateForm({ bookUpdate, onClose }: BookUpdateFormProps) {
                 errors={errors}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormInput
                 name="description"
                 label="Description"
@@ -97,7 +97,7 @@ function BookUpdateForm({ bookUpdate, onClose }: BookUpdateFormProps) {
                 errors={errors}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Controller
                 name="releaseAt"
                 control={control}
@@ -122,7 +122,7 @@ function BookUpdateForm({ bookUpdate, onClose }: BookUpdateFormProps) {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Box
                 sx={{
                   width: "100%",

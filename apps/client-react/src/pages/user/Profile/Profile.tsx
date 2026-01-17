@@ -82,7 +82,7 @@ export function Profile() {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card sx={{ textAlign: "center", p: 3 }}>
             <Avatar
               src={avatarDataUri}
@@ -131,7 +131,7 @@ export function Profile() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={8}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Card sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
               Informations personnelles

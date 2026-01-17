@@ -22,7 +22,7 @@ export interface TableListProps extends TableContainerProps {
 export function TableList({ headCells, rows, isLoading }: TableListProps) {
   return (
     <TableContainer component={Paper}>
-      <Grid item xs={12} sm={6} md={4}>
+      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
