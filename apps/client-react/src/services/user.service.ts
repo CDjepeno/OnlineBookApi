@@ -8,6 +8,7 @@ import {
 import { RegisterFormInput, RegisterResponse } from "../types/user/form.types";
 import {
   CurrentUserResponse,
+  DeletProfileResponse,
   UpdateUserDto,
   UpdateUserResponse,
 } from "../types/user/response.types";
@@ -53,6 +54,16 @@ export const updateUser = async (
     method: MethodHttpEnum.PUT,
     path: `${USER_ROUTE}/profile`,
     params: data,
+    includeAuthorizationHeader: true,
+  });
+
+  return response;
+};
+
+export const deleteUser = async (): Promise<DeletProfileResponse> => {
+  const response = await UseRequestApi<DeletProfileResponse, unknown>({
+    method: MethodHttpEnum.DELETE,
+    path: `${USER_ROUTE}/profile`,
     includeAuthorizationHeader: true,
   });
 

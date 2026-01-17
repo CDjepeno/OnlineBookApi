@@ -22,5 +22,11 @@ export type UpdateUserDto = {
 export type UpdateUserResponse = {
   data: {
     message: string;
-  }
+  };
+};
+
+export type DeletProfileResponse = {
+  data: {
+    message: string;
+  };
 };
