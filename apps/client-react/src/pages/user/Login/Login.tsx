@@ -20,7 +20,8 @@ export default function Login() {
   return (
     <Grid container component="main" sx={{ height: "100vh" }} maxWidth="xs">
       <Grid
-        size={{ sm: 4, md: 7 }}sx={{
+        size={{ sm: 4, md: 7 }}
+        sx={{
           backgroundImage: "url(https://source.unsplash.com/random?wallpapers)",
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
@@ -31,7 +32,12 @@ export default function Login() {
           backgroundPosition: "center",
         }}
       />
-      <Grid size={{ xs: 12, sm: 8, md: 5 }}component={Paper} elevation={6} square>
+      <Grid
+        size={{ xs: 12, sm: 8, md: 5 }}
+        component={Paper}
+        elevation={6}
+        square
+      >
         <Box
           sx={{
             my: 8,
@@ -99,12 +105,12 @@ export default function Login() {
           />
 
           <Grid container sx={{ mt: 2 }}>
-            <Grid item xs>
+            <Grid size="grow">
               <Link href="#" variant="body2">
                 Mot de passe oublié ?
               </Link>
             </Grid>
-            <Grid item>
+            <Grid size="auto">
               <Link href="/register" variant="body2">
                 {"Vous n'avez pas de compte ? Inscrivez-vous"}
               </Link>
