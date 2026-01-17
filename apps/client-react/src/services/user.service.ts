@@ -4,6 +4,7 @@ import {
   CURRENT_USER_ROUTE,
   REGISTER_ROUTE,
   USER_ROUTE,
+  USER_ROUTES,
 } from "../request/route-http/route-http";
 import { RegisterFormInput, RegisterResponse } from "../types/user/form.types";
 import {
@@ -60,10 +61,10 @@ export const updateUser = async (
   return response;
 };
 
-export const deleteUser = async (): Promise<DeletProfileResponse> => {
+export const deleteUser = async (userId: string): Promise<DeletProfileResponse> => {
   const response = await UseRequestApi<DeletProfileResponse, unknown>({
     method: MethodHttpEnum.DELETE,
-    path: `${USER_ROUTE}/profile`,
+    path: `${USER_ROUTES}/${userId}`,
     includeAuthorizationHeader: true,
   });
 

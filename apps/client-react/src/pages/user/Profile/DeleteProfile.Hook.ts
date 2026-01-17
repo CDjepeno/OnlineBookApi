@@ -10,7 +10,7 @@ import { AuthContextType } from "../../../types/user/auth.context.type";
 import { DeletProfileResponse } from "../../../types/user/response.types";
 import { getDisplayErrorMessage } from "../../../utils/getDisplayErrorMessage";
 
-function DeleteProfileHook() {
+function DeleteProfileHook(userId: string) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { signout } = useContext(AuthContext) as AuthContextType;
@@ -18,7 +18,7 @@ function DeleteProfileHook() {
 
   const { mutateAsync: deleteProfileMutation, isPending: isDeleting } =
     useMutation<DeletProfileResponse, AxiosError<unknown>>({
-      mutationFn: async () => deleteUser(),
+      mutationFn: async () => deleteUser(userId),
 
       onSuccess: (response) => {
         onSuccessCommon(response.data.message);

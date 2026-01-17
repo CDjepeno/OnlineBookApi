@@ -31,7 +31,9 @@ import { ProfileHook } from "./Profile.hook";
 export function Profile() {
   const navigate = useNavigate();
   const { user, isLoading, error } = ProfileHook();
-  const { submit: deleteProfile, isDeleting } = DeleteProfileHook();
+  const { submit: deleteProfile, isDeleting } = DeleteProfileHook(
+    user?.id ? String(user.id) : "",
+  );
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
