@@ -44,7 +44,7 @@ export default function BookCardDetail({
 
       <CardContent>
         <Grid container spacing={2} alignItems="flex-start">
-          <Grid item xs={12} md={5}>
+          <Grid size={{ xs: 12, md: 5 }}>
             <Typography gutterBottom variant="h5" component="h2">
               {name}
             </Typography>
@@ -66,7 +66,7 @@ export default function BookCardDetail({
             </Typography>
           </Grid>
 
-          <Grid item xs={12} md={7}>
+          <Grid size={{ xs: 12, md: 7 }}>
             <Box
               sx={{
                 display: "flex",

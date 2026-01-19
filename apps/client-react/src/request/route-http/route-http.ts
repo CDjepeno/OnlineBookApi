@@ -9,6 +9,7 @@ export const GOOGLE_CALLBACK_ROUTE = "/auth/google/callback";
 
 // User
 export const USER_ROUTE = "/user";
+export const USER_ROUTES = "/users";
 
 // Books
 export const BOOKS_ROUTE = "/books";

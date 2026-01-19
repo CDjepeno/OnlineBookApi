@@ -39,7 +39,7 @@ export default function Register() {
   };
 
   const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
   };
@@ -67,7 +67,7 @@ export default function Register() {
           sx={{ mt: 3 }}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormInput
                 name="name"
                 label="Name"
@@ -75,7 +75,7 @@ export default function Register() {
                 errors={errors}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormInput
                 name="phone"
                 label="Numéro de téléphone"
@@ -83,7 +83,7 @@ export default function Register() {
                 errors={errors}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormInput
                 name="email"
                 label="Email"
@@ -91,7 +91,7 @@ export default function Register() {
                 control={control}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormControl fullWidth error={!!errors.sexe}>
                 <InputLabel id="sexe-label">Sexe</InputLabel>
 
@@ -114,7 +114,7 @@ export default function Register() {
                 )}
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Controller
                 name="password"
                 control={control}
@@ -145,7 +145,7 @@ export default function Register() {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Controller
                 name="confirmPassword"
                 control={control}
@@ -158,23 +158,25 @@ export default function Register() {
                     type={showConfirmPassord ? "text" : "password"}
                     error={!!errors.confirmPassword}
                     helperText={errors.confirmPassword?.message}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowConfirmPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showConfirmPassord ? (
-                              <VisibilityOff />
-                            ) : (
-                              <Visibility />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowConfirmPassword}
+                              onMouseDown={handleMouseDownPassword}
+                              edge="end"
+                            >
+                              {showConfirmPassord ? (
+                                <VisibilityOff />
+                              ) : (
+                                <Visibility />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      },
                     }}
                   />
                 )}
@@ -191,7 +193,7 @@ export default function Register() {
             S'inscrire
           </Button>
           <Grid container justifyContent="flex-end">
-            <Grid item>
+            <Grid size="auto">
               <Link href="/login" variant="body2">
                 Vous avez déjà un compte ? Connectez-vous
               </Link>

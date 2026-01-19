@@ -64,7 +64,7 @@ export function ProfileEdit() {
 
           <Box component="form" onSubmit={handleSubmit(submit)} sx={{ mt: 3 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Controller
                   name="name"
                   control={control}
@@ -82,7 +82,7 @@ export function ProfileEdit() {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Controller
                   name="email"
                   control={control}
@@ -107,7 +107,7 @@ export function ProfileEdit() {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Controller
                   name="phone"
                   control={control}
@@ -124,7 +124,7 @@ export function ProfileEdit() {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Controller
                   name="sexe"
                   control={control}
@@ -157,7 +157,7 @@ export function ProfileEdit() {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Box display="flex" gap={2}>
                   <Button
                     type="submit"
